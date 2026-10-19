@@ -77,6 +77,8 @@ With none of the mode names set, the server is headless with an empty project.
 .mcp.json                         the plugin's MCP server "bashcutpro" (scripts/bashcutpro-mcp.sh)
 skills/<name>/SKILL.md            the skills (Agent Skills format, shared by Claude Code and Codex)
 skills/<name>/REFERENCE.md        detail a skill reads on demand (keeps SKILL.md under 250 lines)
+scripts/commands.json             FilmCraft command catalogue (copy of BashCutPro bashcut/commands.json); check.py
+                                  rejects command ids a skill names that are not in it
 skills/<name>/agents/openai.yaml  Codex policy, only for a user-only skill (disable-model-invocation: true)
 scripts/bashcutpro-mcp.sh         finds filmcraft-cli and starts `filmcraft-cli mcp` in the configured mode
 scripts/install-codex.sh          Codex setup
