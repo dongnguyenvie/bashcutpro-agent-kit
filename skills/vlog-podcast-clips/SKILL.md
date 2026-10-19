@@ -10,6 +10,9 @@ hard part: the select-by-quote loop is bcp:rough-cut's; this recipe adds the gen
 then edited with bcp:vlog-talking-head. Plan with bcp:vlog-plan. A measured reference (shorts from a channel the
 user points to) wins over these ranges (T15 §7).
 
+Many recordings with the same treatment: the `podcast-shorts` batch preset (`bcp:batch`) runs this recipe per
+recording as a capped agent step, each reviewed with `bashcut.review.run`; pick and polish the best by hand after.
+
 ## Ranges
 
 Outputs per clip: vertical → Shorts, TikTok, Reels; a topic clip for YouTube → 1080p landscape.

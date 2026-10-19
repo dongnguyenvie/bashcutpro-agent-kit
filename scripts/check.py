@@ -14,6 +14,8 @@ problems = []
 # Command ids are checked only in namespaces the catalogue knows, so `grade.py` or `looks.json` are not ids.
 CATALOGUE = json.load(open(os.path.join(ROOT, "scripts", "commands.json"), encoding="utf-8"))
 COMMANDS = {c["id"] for c in CATALOGUE["commands"]}
+# BashCutPro's window commands (bashcut.ui.*, bashcut.agent.*, bashcut.batch.*, …): bridge mode only.
+COMMANDS |= {c["id"] for c in (CATALOGUE.get("frontend") or {}).get("ids", [])}
 NAMESPACES = {i.split(".", 1)[0] for i in COMMANDS}
 # Planned bashcut.* ids a skill may name (with a fallback) before they are merged.
 PENDING = set((CATALOGUE.get("pending") or {}).get("ids") or {})
