@@ -2,7 +2,7 @@
  "source": "filmcraft-cli 0.9.0 mcp --demo, tools/call command_list {} (release build, default features, no whisper)",
  "generated": "2026-10-20",
  "upstream": "FilmCraft 105c09bd",
- "bashcut": "bashcut.* ids added by hand from BashCutPro origin/main 35bd2adb (crates/engine/src/bashcut/: templates #42, profiles #43), not yet from a build's command_list; refresh from a build in the build pass",
+ "bashcut": "bashcut.* ids added by hand from BashCutPro origin/main 35bd2adb (crates/engine/src/bashcut/: templates #42, profiles #43; looks #47), not yet from a build's command_list; refresh from a build in the build pass",
  "enabledNote": "enabled is the state in the --demo project with no selection; most false entries need a selection, a transcript or an open caption track",
  "mcpTools": [
   "command_batch",
@@ -23,7 +23,7 @@
   "ui_screenshot",
   "ui_type"
  ],
- "count": 716,
+ "count": 723,
  "pending": {
   "note": "bashcut.* ids that skills may name before they are merged, always with a fallback for builds without them (detect with command_list); move each into commands when its issue lands",
   "ids": {}
@@ -6404,6 +6404,62 @@
    "menu": [],
    "shortcut": null,
    "params": "{\"profile\":str? (loudness target from bashcut.profiles.*; default -14 LUFS / -1 dBTP),\"checks\":[\"sound\"|\"picture\"|\"captions\"|\"edit\"]?,\"range\":{\"start\":seconds?,\"end\":seconds?}?,\"writeMarkers\":bool=true,\"samplesPerSecond\":0.5..60=5,\"sequence\":id? (must be the active one)} (findings in seconds; markers replace the previous review's)",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.looks.list",
+   "label": "List Looks",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"tags\":[str]|str? (any of; e.g. \"talking-head\",\"travel\",\"food\"),\"query\":str?}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.looks.get",
+   "label": "Get Look",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"look\":str,\"intensity\":0..1.5=1?}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.looks.apply",
+   "label": "Apply Look",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"look\":str,\"intensity\":0..1.5=1? (clamped to the look's safe range),\"clips\":[id]? (default the selection)}",
+   "enabled": false
+  },
+  {
+   "id": "bashcut.looks.remove",
+   "label": "Remove Look",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"clips\":[id]? (default the selection)}",
+   "enabled": false
+  },
+  {
+   "id": "bashcut.looks.thumbnail",
+   "label": "Look Thumbnail",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"look\":str,\"intensity\":0..1.5=1?,\"width\":n=160,\"frame\":bool=false (on the program frame at the playhead),\"path\":str? (PNG; default a cache file in the data dir)}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.looks.export",
+   "label": "Export Looks as LUTs",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"look\":str?,\"path\":str? (.cube, with look),\"dir\":str? (the whole pack + looks.json),\"intensity\":0..1.5=1?,\"size\":2..65=33}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.looks.check",
+   "label": "Check Looks",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"look\":str? (default every look)}  (clipped highlights, crushed shadows, skin hue shift at min / default / max)",
    "enabled": true
   }
  ]

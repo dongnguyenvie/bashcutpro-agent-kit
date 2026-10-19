@@ -18,6 +18,7 @@ intent. Every `command_run` is one undo step (`edit.undo`), so a bad try costs n
 | Source colour facts | `media.colorInfo {item}` (transfer, primaries, range), `color.spaces` |
 | A LUT into the project | `lut.import {path, name}` → id `lib:<id>`; `lut.list` also lists `builtin:<id>` looks |
 | Look on a clip | `lumetri.setLook {clip, lut}` (creative look), `lumetri.setInputLut {clip, lut}` (technical: log or HLG to Rec.709 first) |
+| Curated looks | `bashcut.looks.list {tags}` (purpose, genre tags, safe intensity range), `bashcut.looks.thumbnail {look, frame: true, path}`, `bashcut.looks.apply {look, intensity, clips}` (replaces a previous look; one undo step), `bashcut.looks.remove`, `bashcut.looks.check` |
 | Presets | `lumetri.presets`, `lumetri.presetThumbnails {names, path}` (one sheet), `lumetri.applyPreset {name, clips}` |
 | Match one shot to another | `lumetri.applyMatch {clip, referenceTime}` (faces protected by default) |
 | One grade over the edit | `file.newAdjustmentLayer {seconds}`, `timeline.place {item, track: "new", time: 0, duration}`, then `lumetri.setLook` on the placed clip |
@@ -60,6 +61,13 @@ per band; see REFERENCE.md).
 
 **One sheet, one pick.** Turn the intent into a target, then show few candidates on the check frames:
 
+0. **BashCutPro's look pack first** (when `command_list` has `bashcut.looks.list`): list by the brief's genre
+   (`tags`: `talking-head`, `interview`, `podcast`, `travel`, `food`, `product-ad`, `tutorial`, `news`, `daily`,
+   `cinematic`, `shorts`, `mono`, `fix`…) and pick 2–3 whose one-line **purpose** matches the intent. Render each
+   on a check frame (`bashcut.looks.thumbnail {look, frame: true, path}`, playhead on that frame) and read them.
+   Apply the pick with `bashcut.looks.apply {look, intensity, clips: [<adjustment clip>]}`: `intensity` is the
+   look's strength (1.0 as designed; clamped to its safe range, listed as `intensity.min` / `max`).
+   `bashcut.looks.get` reports the look's own damage on reference colours; still measure the footage (§4).
 1. Presets: `lumetri.presets`, then `lumetri.presetThumbnails {names: [...], path}` draws the chosen ones on the
    current frame in one image; read it.
 2. LUTs: `lut.list` (built-in and imported). The user's own `.cube` files: `lut.import`.
@@ -99,7 +107,8 @@ intent. Check every sampled clip, not the average; name the clip and time that f
 
 ## 5. Back off
 
-On damage, lower before adding: the look's strength first, then the exposure or white balance you gave
+On damage, lower before adding: the look's strength first (a pack look: `bashcut.looks.apply` again with a lower
+`intensity`), then the exposure or white balance you gave
 `grade.py`. Resolve backs off ×0.8 per try down to 0.5. Change the parameter (`effects.setParam`) or `edit.undo`
 and apply again. **At most 3 attempts.** Then stop: show the user `render_frame` of the gentlest attempt with its
 numbers and ask.
