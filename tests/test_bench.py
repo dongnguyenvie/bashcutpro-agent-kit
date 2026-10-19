@@ -73,6 +73,12 @@ class BenchTests(unittest.TestCase):
         self.assertEqual(bare["parts"]["captions"]["note"], "captions missing")  # expected but absent: a real 0
         self.assertAlmostEqual(bare["total"], 100.0 / 3)  # length 100 (weight 10), captions 0 (20); the rest left out
 
+    def test_engine_review_severities(self):
+        value, note = score.score_review({"review": {"findings": [{"severity": "blocking"}, {"severity": "warning"},
+                                                                  {"severity": "info"}]}})
+        self.assertEqual(value, 100 - 25 - 3)
+        self.assertEqual(note, "1 blocker, 1 minor, 1 polish")
+
     def test_winner_and_scorecard(self):
         self.put("pro", self.job["id"], metrics(cuts=(0.9, 2.0)))
         self.put("bashcut", self.job["id"], metrics(lufs=-18.0, findings=("blocker",), black=2))
