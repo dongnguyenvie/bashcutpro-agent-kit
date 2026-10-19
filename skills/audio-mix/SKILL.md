@@ -28,7 +28,10 @@ Clip ids and cut times: `sequence_inspect`. Times are ticks (254 016 000 000 per
 
 ## 1. Measure before fixing
 
-Nothing in BashCutPro measures loudness without changing it, so export and measure outside:
+`bashcut.audio.loudness {clip?, track?, range?: {start, end}, series?}` measures without changing anything: one clip,
+a track's input (`track: "A1"`) or the whole mix (neither), integrated / short-term LUFS, LRA, true peak and clipped
+samples; `series: true` adds short-term LUFS per second (times in seconds). Use it first. For silences, the bed under
+the voice, or a build whose `command_list` lacks the id, export and measure outside:
 
 ```json
 {"id": "file.exportMedia", "params": {"path": "/abs/tmp/mix.wav", "format": "wav", "wait": true,

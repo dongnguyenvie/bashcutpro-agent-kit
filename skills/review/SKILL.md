@@ -9,9 +9,11 @@ Measure, look, judge by what a viewer perceives, fix, measure again. Passing che
 one tool's edit had all 29 actions on the beat and every cut on a bar line, and still had cramped frames, small
 text and titles over the icons: "the model will satisfy whatever can be quantified" (guizang). Look at the pixels.
 
-BashCutPro measures less than BashCut did. Nothing reads loudness, black or frozen frames or text contrast without
-help: loudness comes from a WAV export (`bcp:audio-mix`'s `loudness.py`), black frames from `scopes.read`, the rest
-from your eyes on rendered frames. Say what you could not measure; never report it as passing.
+BashCutPro measures part of this itself: `bashcut.audio.loudness` (mix, track or clip: LUFS, true peak, clipping) and
+`bashcut.review.pictureChecks {range?, samplesPerSecond?}` (black, frozen, long-still and flash stretches, in seconds).
+Text contrast and the rest come from your eyes on rendered frames; a build without those ids falls back to
+`loudness.py` on a WAV export (`bcp:audio-mix`) and `scopes.read`. Say what you could not measure; never report it as
+passing.
 
 ## Severity: what the viewer perceives
 
@@ -57,10 +59,12 @@ profiles (`loudnessLufs`, `truePeakDbtp`, `safeArea` as fractions of the frame),
 2. **Measure.** (REFERENCE.md has the exact calls.)
    - **Cuts against words**: every cut time from `sequence_inspect` against the word spans: a cut inside a word
      clips it; a caption or title more than the word-landing limit off its word.
-   - **Gaps and black**: gaps in `sequence_inspect` on the main video track; `scopes.read {scopes: ["waveform"],
-     seconds}` at each cut ± a few frames and at every gap: a luma maximum near 0 is black.
+   - **Gaps and black**: gaps in `sequence_inspect` on the main video track; `bashcut.review.pictureChecks` for black,
+     frozen and flashing stretches (else `scopes.read {scopes: ["waveform"], seconds}` at each cut ± a few frames and
+     at every gap: a luma maximum near 0 is black).
    - **Shot lengths**: from the clip list against the limits; runs of the same framing (`bcp:beat-cut`).
-   - **Sound**: export the mix as WAV, `loudness.py --curve`: silences over the limit, jumps between sections,
+   - **Sound**: `bashcut.audio.loudness {series: true}` for the mix (integrated, true peak, loud seconds); export the
+     mix as WAV, `loudness.py --curve`: silences over the limit, jumps between sections,
      true peak; voice and music stems with `--speech` for the bed under the voice (`bcp:audio-mix`).
    - **Colour jumps**: `scopes.read` at the middle of neighbouring clips; a jump between clips meant to match
      goes to `bcp:color-grade`.
