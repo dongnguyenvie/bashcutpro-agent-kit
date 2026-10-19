@@ -11,14 +11,17 @@ never the whole file. A recipe (`bcp:vlog-<kind>`, routed by `bcp:vlog-plan`) ad
 the plan; this skill still runs the stages.
 
 Every edit goes through BashCutPro's MCP server (`bcp:setup` if its tools are missing): `command_list {filter}` to
-find a command, `command_run {id, params}` for one edit (one undo step), `command_batch` for many in order,
+find a command, `command_run {id, params}` for one edit (one undo step), `bashcut.batch` for many in order (one
+undo step, all or nothing; `command_batch` on a build without it),
 `doc_inspect` / `sequence_inspect` to read, `render_frame` to look. Use only ids that `command_list` returns.
 
 ## Hard rules
 
 - **Plan first, then one batch per stage.** Work the stage out on paper (the plan), then apply it as one
-  `command_batch` with `stop_on_error: true`. A batch has no undo grouping: each step is its own undo step, so note
-  the `history.list` length before it to know how far `edit.undo` must go back.
+  `command_run {id: "bashcut.batch", params: {commands: [{id, params}], label: "<stage>"}}`: the stage is one undo
+  step, and a failing step leaves the project unchanged and names the step (fix it, send the batch again). A build
+  without `bashcut.batch` (not in `command_list`): `command_batch` with `stop_on_error: true`, where each step is its
+  own undo step, so note the `history.list` length before it to know how far `edit.undo` must go back.
 - **Read little.** `doc_inspect` at start, after a gate and after a batch that failed; otherwise trust what your
   own commands returned. Never print a whole transcript: search it (`transcript.search`) or read a range.
 - **Look in batches.** `render_frame {seconds, max_side: 540}` at the frames that matter (hook, each section start,
