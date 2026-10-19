@@ -119,7 +119,9 @@ Write each clip's shots down so other skills and later sessions need not look ag
 `metadata.set {item, fields: {"Description": ..., "Scene": ..., "Log Note": ...}}`, one line per shot in
 Description: `0–4.2 WS eye pan-left: market, vendor, 3 people; best 2.6 (looked 0.5, 2.6, 4.0)`. Sizes ECU…EWS,
 insert. Facts only: no pairings or verdicts ("good opener"): those belong to the plan. Say how sure you are when you
-saw one frame of a fast move. Coverage gaps, silent clips, cues and restarts go into a `survey` key of the project
+saw one frame of a fast move. With the `bashcut.vision` plugin, `describe` hands you each clip's frames and
+`describe-apply` keeps your descriptions in `<project>.vision.json`; `ocr` adds the on-screen text with boxes and
+`subjects` the faces. Coverage gaps, silent clips, cues and restarts go into a `survey` key of the project
 notes' JSON block (`bcp:edit-workflow`).
 
 ## Picking in-points
