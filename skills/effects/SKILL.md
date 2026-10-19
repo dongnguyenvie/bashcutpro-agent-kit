@@ -154,18 +154,18 @@ trimmed). Building the text itself: bcp:captions-text, bcp:motion-graphics.
 `bashcut.batch {commands: [{id, params}]}` runs steps in order as one undo step; a failing step leaves the project
 unchanged and names the step. Without it, `command_batch` with `stop_on_error` (each step its own undo step: on a
 mistake undo step by step with `edit.undo` or fix forward). Ticks: 254 016 000 000 per second.
-Example at 30 fps: a 15-frame Cross Dissolve out of clip c12, and a Ken Burns drift on c13 (8 s, 100 to 104 %)
+Example at 30 fps: a 15-frame Cross Dissolve out of clip 12, and a Ken Burns drift on clip 13 (8 s, 100 to 104 %)
 starting at 40 s:
 
 ```json
 {"stop_on_error": true, "steps": [
-  {"id": "sequence.applyVideoTransition", "params": {"clip": "c12", "effect": "Cross Dissolve", "frames": 15, "edge": "out"}},
-  {"id": "effects.setParam", "params": {"clip": "c13", "effect": "motion", "param": "scale", "value": 100, "time": 10160640000000, "keyframe": true}},
-  {"id": "effects.setParam", "params": {"clip": "c13", "effect": "motion", "param": "scale", "value": 104, "time": 12192768000000, "keyframe": true}}
+  {"id": "sequence.applyVideoTransition", "params": {"clip": 12, "effect": "Cross Dissolve", "frames": 15, "edge": "out"}},
+  {"id": "effects.setParam", "params": {"clip": 13, "effect": "motion", "param": "scale", "value": 100, "time": 10160640000000, "keyframe": true}},
+  {"id": "effects.setParam", "params": {"clip": 13, "effect": "motion", "param": "scale", "value": 104, "time": 12192768000000, "keyframe": true}}
 ]}
 ```
 
-Take the ids from `sequence_inspect` and the parameter names from `effects.list {"detail": true}` (spelling as
+Take the clip ids (numbers) from `sequence_inspect` and the parameter names from `effects.list {"detail": true}` (spelling as
 printed); then set interpolation with `effects.setInterpolation` (`linear` for this drift). If a step is
 refused, `command_list {"filter": "<id>"}` shows its params.
 

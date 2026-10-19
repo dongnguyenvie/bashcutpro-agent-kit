@@ -71,7 +71,8 @@ Captions made before a cut keep words of lines cut away (one edit showed half a 
 
 Word-by-word highlight (karaoke): `bashcut.captions.wordStyle {captions, style: {preset: "karaoke" | "pop" | "clean",
 highlight, pop, bold, dim}}` after the cues are final (it turns them into graphic text layers, one per spoken word,
-timed from the transcript; one undo step). Keep such cues to one line of 2–5 words and `pop` ≤ 1.25 (the line reflows).
+timed from the transcript; one undo step). The caption track is empty afterwards, so write any sidecar first
+(`captions.export {path}` before it, else the .srt has 0 cues). Keep such cues to one line of 2–5 words and `pop` ≤ 1.25 (the line reflows).
 Builds without it (`command_list`): short groups (2–3 words, one line) instead, and say so if the user asked for it.
 
 ## 3. Caption look

@@ -137,6 +137,7 @@ scripts/bashcutpro-mcp.sh         finds filmcraft-cli and starts `filmcraft-cli 
 scripts/install-codex.sh          Codex setup
 scripts/check.py                  checks skills, links, the Skills table and the packaging files
 scripts/refresh_bashcut.py        refreshes BashCutPro's bashcut.* ids in commands.json from a checkout (engine + window commands)
+scripts/refresh_commands.py       refreshes commands.json from a build's own command_list (the authority; window ids kept)
 ```
 
 ## Writing skills
