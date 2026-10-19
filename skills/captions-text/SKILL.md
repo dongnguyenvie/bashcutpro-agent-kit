@@ -20,8 +20,10 @@ voiceover are locked.
 - **Default build**: transcribe outside, then `transcript.set {item, transcript}` per media item
   (`bcp:footage-survey`). The outside Whisper takes a vocabulary (REFERENCE "Vocabulary and Whisper").
 - **A script or voiceover text exists**: show the script's exact words, never the recogniser's paraphrase (T09
-  §2, §4). Captions from speech, then `captions.setText` each cue to the script line it plays (REFERENCE "Script
-  text").
+  §2, §4). Align it: the `bashcut.align` plugin puts the script (or an SRT / VTT) on the heard words with word
+  timing, writes them with `transcript.set` and one caption per line with `captions.import` (`--dry-run` first;
+  listen to its `low` spans). Without the plugin: captions from speech, then `captions.setText` each cue to the
+  script line it plays (REFERENCE "Script text").
 - **SRT / VTT from elsewhere**: `captions.import {path}` makes a captions track; `captions.export {path,
   format}` writes one out.
 
