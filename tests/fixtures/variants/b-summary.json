@@ -1,0 +1,82 @@
+{
+ "name": "main \u2014 hook B",
+ "fps": 30,
+ "duration": 18.0,
+ "captions": 12,
+ "tracks": [
+  {
+   "name": "V1",
+   "kind": "video",
+   "clips": [
+    {
+     "item": 101,
+     "name": "broll-city.mp4",
+     "start": 0,
+     "end": 2,
+     "sourceIn": 2,
+     "effects": [
+      "lumetri",
+      "lut"
+     ]
+    },
+    {
+     "item": 100,
+     "name": "talk.mp4",
+     "start": 2,
+     "end": 8,
+     "sourceIn": 0,
+     "link": 1,
+     "effects": [
+      "lumetri"
+     ]
+    },
+    {
+     "item": 100,
+     "name": "talk.mp4",
+     "start": 8,
+     "end": 18,
+     "sourceIn": 8,
+     "link": 3,
+     "effects": [
+      "lumetri"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "A1",
+   "kind": "audio",
+   "clips": [
+    {
+     "item": 100,
+     "name": "talk.mp4",
+     "start": 2,
+     "end": 8,
+     "sourceIn": 0,
+     "link": 1
+    },
+    {
+     "item": 100,
+     "name": "talk.mp4",
+     "start": 8,
+     "end": 18,
+     "sourceIn": 8,
+     "link": 3
+    }
+   ]
+  },
+  {
+   "name": "A2",
+   "kind": "audio",
+   "clips": [
+    {
+     "item": 201,
+     "name": "bed-upbeat.wav",
+     "start": 0,
+     "end": 18,
+     "sourceIn": 0
+    }
+   ]
+  }
+ ]
+}

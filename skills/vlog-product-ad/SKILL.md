@@ -1,6 +1,6 @@
 ---
 name: vlog-product-ad
-description: Recipe for an ad or selling video (paid, commerce, UGC, launch, channel teaser): a truth source, hook and CTA as a pair, an arc chosen from what the product has, beat proportions, disclosure rules, one-change A/B variants as project copies. Use after bcp:vlog-plan picks product-ad. Triggers: "product ad", "sales video", "UGC ad", "quảng cáo", "video bán hàng", "TVC", "chạy ads", "UGC", "A/B test".
+description: Recipe for an ad or selling video (paid, commerce, UGC, launch, channel teaser): a truth source, hook and CTA as a pair, an arc chosen from what the product has, beat proportions, disclosure rules, one-change A/B variants as sequences. Use after bcp:vlog-plan picks product-ad. Triggers: "product ad", "sales video", "UGC ad", "quảng cáo", "video bán hàng", "TVC", "chạy ads", "UGC", "A/B test".
 ---
 
 # Product ad
@@ -72,8 +72,10 @@ Variants are for a real A/B test only; a revision is made in place. Each changes
 including the cut (T14 §3, §4):
 
 1. Finish, review (bcp:review) and save the base version first.
-2. One project copy per variant (`file.saveCopy`, named for the change); open it, make only that change, review it.
-3. Compare the copy's `sequence_inspect` with the base: anything beyond the declared change is a mistake to undo.
+2. One sequence per variant in the same project (`bcp:variants`: duplicated and named `<base> — <change>`); make
+   only that change, review it.
+3. Compare it with the base (`bcp:variants` `diff.py --one-change`): anything beyond the declared change is a
+   mistake to undo.
 4. Check one variant in every output shape at the hook and the CTA (`render_frame`) before making the batch.
 5. Typical single changes: the hook, the opening shot, the CTA wording, the voice, the music.
 
