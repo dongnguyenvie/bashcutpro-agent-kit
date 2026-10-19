@@ -23,7 +23,7 @@
   "ui_screenshot",
   "ui_type"
  ],
- "count": 711,
+ "count": 712,
  "pending": {
   "note": "bashcut.* ids that skills may name before they are merged, always with a fallback for builds without them (detect with command_list); move each into commands when its issue lands",
   "ids": {
@@ -6367,6 +6367,14 @@
    "menu": [],
    "shortcut": null,
    "params": "{\"range\":{\"start\":seconds?,\"end\":seconds?}?,\"samplesPerSecond\":0.5..60=5} (black, frozen, long-still and flash stretches; result in seconds)",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.audio.polish",
+   "label": "Polish Voice",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"clips\":[id]? (default the selection),\"amount\":0..1=0.5,\"target\":lufs?,\"profile\":str? (its loudness when no target),\"loudness\":bool=true,\"savePreset\":bool=false,\"dir\":str?}",
    "enabled": true
   }
  ]
