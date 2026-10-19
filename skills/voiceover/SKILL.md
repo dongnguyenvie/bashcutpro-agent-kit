@@ -57,7 +57,8 @@ or adds what the speech does not say.
 
 Then `narration.py windows words.json --rate R --min-seconds S` gives speech-free windows (0.3 s kept from real
 speech each side, `--margin`) with a unit budget each. Write each line to its budget, with slack from the voice's
-p10–p90 spread. A line that does not fit: **cut text**, never plan to speed the voice (T02 §4). TTS length drifts
+p10–p90 spread. The `bashcut.align` plugin's `check --script lines.txt --rate R --windows windows.json` reports
+every line over its window (`data.over`). A line that does not fit: **cut text**, never plan to speed the voice (T02 §4). TTS length drifts
 (a 50 s script came out 40–45 s, T10 §3): final timing comes from the take, not the script.
 
 ## 2. Prepare the text
@@ -105,7 +106,8 @@ The model misreads, drops or repeats words, mostly **at the start** of a line. T
 on the wav) and compare: `narration.py check take.json --text "line" --min-similarity 0.9`. Read `unmatched`,
 `extra` and `atStart`, not only `similarity`: a repeated word barely moves it. The threshold is your call (one kit
 gates at 0.92 for Chinese, T10 §3). Recognition also mishears some regional accents (s→x, final n→ng): count only
-errors a listener would hear. Fix by rewording or a re-take.
+errors a listener would hear. Fix by rewording or a re-take. Captions of the kept voiceover: align the script to it with the
+`bashcut.align` plugin (`align --script lines.txt`), not a fresh transcription.
 
 No transcription at all: say so and ask the user to listen to the lines with names and numbers; never call a take
 checked when it was not.
