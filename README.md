@@ -120,6 +120,7 @@ skills/<name>/REFERENCE.md        detail a skill reads on demand (keeps SKILL.md
 scripts/commands.json             FilmCraft command catalogue (copy of BashCutPro bashcut/commands.json); check.py
                                   rejects command ids a skill names that are not in it
 hooks/hooks.json                  optional Claude Code hooks (self-learn's correction candidates; off unless BASHCUTPRO_SELF_LEARN=1)
+bench/                            quality bench Pro vs BashCut: jobs, rubric, score.py, scorecard template (BashCutPro#58)
 tests/                            unit tests of the kit's scripts: python3 -m unittest discover -s tests
 skills/<name>/agents/openai.yaml  Codex policy, only for a user-only skill (disable-model-invocation: true)
 scripts/bashcutpro-mcp.sh         finds filmcraft-cli and starts `filmcraft-cli mcp` in the configured mode
