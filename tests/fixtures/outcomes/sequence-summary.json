@@ -1,0 +1,60 @@
+{
+ "name": "main",
+ "duration": 20.0,
+ "fps": 30,
+ "markers": [
+  {
+   "name": "hook",
+   "start": 0,
+   "duration": 3
+  },
+  {
+   "name": "problem",
+   "start": 3,
+   "duration": 7
+  },
+  {
+   "name": "demo",
+   "start": 10,
+   "duration": 10
+  }
+ ],
+ "tracks": [
+  {
+   "name": "V1",
+   "kind": "video",
+   "clips": [
+    {
+     "item": 100,
+     "name": "talk.mp4",
+     "start": 0,
+     "end": 6
+    },
+    {
+     "item": 101,
+     "name": "broll-city.mp4",
+     "start": 6,
+     "end": 10
+    },
+    {
+     "item": 102,
+     "name": "screen-demo.mp4",
+     "start": 10,
+     "end": 20
+    }
+   ]
+  },
+  {
+   "name": "A1",
+   "kind": "audio",
+   "clips": [
+    {
+     "item": 100,
+     "name": "talk.mp4",
+     "start": 0,
+     "end": 20
+    }
+   ]
+  }
+ ]
+}
