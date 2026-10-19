@@ -38,12 +38,14 @@ tracked in [BashCutPro#24](https://github.com/dongnguyenvie/BashCutPro/issues/24
 | `audio-mix` | Mixing by measurement: voice levelled per clip, a fixed music bed under it (ducking for long silences), fades, keyframes, SFX at cuts, music retimed, music and SFX found (`fetch_audio.py`), loudness read from WAV exports (`loudness.py`) and set per output |
 | `color-grade` | Grading by measurement: scopes on the brightest, darkest and skin-heavy frames, Lumetri presets and LUTs (`grade.py` generates fitted looks), damage checks and backing off, shot match, one adjustment layer |
 | `footage-survey` | The survey before an edit: inventory, scene detection, contact sheets from rendered frames (`contact_sheet.py`), transcripts (outside words imported with `words_to_transcript.py`), cues and restarts, shot descriptions in metadata, coverage gaps; run by the `surveyor` sub-agent |
+| `review` | The review before export, 1–3 rounds: limits from sourced ranges, cuts against words, black frames from scopes, frames at phone size at every cut and text, loudness from a WAV export, severities by what a viewer sees, fixes re-measured; an independent `critic` sub-agent each round |
 
 Claude Code shows them under the plugin name (`/bcp:setup`); Codex as `bcp-<name>`. The editing skills
 (`edit-workflow`, `rough-cut`, `captions-text`, …) follow in BashCutPro#5–#7, once the command catalogue (#3) lands.
 
 **Agents.** Claude Code also gets sub-agents from [`agents/`](agents): `surveyor` (reads the footage for
-`footage-survey` and answers in under 450 words). Codex has no sub-agents: its skills follow the same brief
+`footage-survey` and answers in under 450 words) and `critic` (judges a draft for `review` without the maker's
+reasons, in under 300 words). Codex has no sub-agents: its skills follow the same brief
 themselves.
 
 ## Requirements
@@ -102,7 +104,7 @@ With none of the mode names set, the server is headless with an empty project.
 .claude-plugin/plugin.json        plugin "bcp" (skills show as /bcp:<name>)
 .claude-plugin/marketplace.json   marketplace "bashcutpro-agent-kit", serving this repository as the plugin
 .mcp.json                         the plugin's MCP server "bashcutpro" (scripts/bashcutpro-mcp.sh)
-agents/<name>.md                  Claude Code sub-agents (surveyor); skills point Codex at the same brief
+agents/<name>.md                  Claude Code sub-agents (surveyor, critic); skills point Codex at the same brief
 skills/<name>/SKILL.md            the skills (Agent Skills format, shared by Claude Code and Codex)
 skills/<name>/REFERENCE.md        detail a skill reads on demand (keeps SKILL.md under 250 lines)
 scripts/commands.json             FilmCraft command catalogue (copy of BashCutPro bashcut/commands.json); check.py
