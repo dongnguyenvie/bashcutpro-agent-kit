@@ -117,8 +117,9 @@ With none of the mode names set, the server is headless with an empty project.
 agents/<name>.md                  Claude Code sub-agents (surveyor, critic, voice); skills point Codex at the same brief
 skills/<name>/SKILL.md            the skills (Agent Skills format, shared by Claude Code and Codex)
 skills/<name>/REFERENCE.md        detail a skill reads on demand (keeps SKILL.md under 250 lines)
-scripts/commands.json             FilmCraft command catalogue (copy of BashCutPro bashcut/commands.json); check.py
-                                  rejects command ids a skill names that are not in it
+scripts/commands.json             FilmCraft command catalogue (copy of BashCutPro bashcut/commands.json) plus the merged
+                                  bashcut.* ids and a `pending` list of planned ones; check.py rejects command ids a
+                                  skill names that are not in it
 hooks/hooks.json                  optional Claude Code hooks (self-learn's correction candidates; off unless BASHCUTPRO_SELF_LEARN=1)
 bench/                            quality bench Pro vs BashCut: jobs, rubric, score.py, scorecard template (BashCutPro#58)
 tests/                            unit tests of the kit's scripts: python3 -m unittest discover -s tests

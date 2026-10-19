@@ -33,6 +33,10 @@ on purpose; wait for the user.
 
 ## 3. One export per output
 
+One `bashcut.profiles.apply {"profile", "path", "wait": true}` per output where the build has output profiles
+(`tiktok`, `reels`, `shorts`, `youtube`, `youtube-4k`, `facebook-square`, or the user's own): the platform's size,
+fps, bitrate, loudness, true peak and caption mode come from the profile; `bashcut.profiles.list {"seconds"}` shows
+the estimated file sizes when an upload limit matters. Without them (`command_list` has no `bashcut.profiles.*`):
 `file.exportMedia` per output with `path`, the size, `loudnessLufs` at that output's target, and captions burned
 in (`burnCaptions`) or as a sidecar file (`captionSidecar` srt or vtt). Vertical apps usually get them burned in;
 YouTube landscape often a sidecar the viewer can switch off (T09 §7). Long exports: `wait`, or follow `jobs.list`.

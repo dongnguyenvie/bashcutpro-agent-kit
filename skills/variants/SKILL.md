@@ -60,9 +60,10 @@ variant's sequence open): the opening for a hook test, a skin-heavy frame for a 
 
 ## 4. Export
 
-One export per variant, each from its own sequence (`sequence.open`, then `file.exportMedia`), named
-`<project>-<variant>.mp4` and made with that variant's output profile (the platform's size, bitrate, loudness and
-caption mode; `bcp:vlog-publish`). Set the variant's `status` to `exported` with the file path in the sidecar.
+One export per variant, each from its own sequence, named `<project>-<variant>.mp4` and made with that variant's
+output profile: `bashcut.profiles.apply {"profile", "path", "sequence": <variant item>, "wait": true}` where the build
+has profiles, else `sequence.open` then `file.exportMedia` with the platform's size, loudness and caption mode
+(`bcp:vlog-publish`). Set the variant's `status` to `exported` with the file path in the sidecar.
 
 ## Report
 

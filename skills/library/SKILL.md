@@ -37,7 +37,7 @@ save only what the user picks:
 | a look fitted for the creator (bcp:color-grade) | `look` | from the app's LUT library: `LB save --kind look --lut lib:<id>` (`lut.export`); a `.cube` file: `LB add --kind look --file` |
 | a sting, whoosh or music bed cut to length | `sound` / `music` | `LB save --kind sound --start <s> --end <s>` (`file.exportMedia`, wav) |
 | a sticker or overlay with alpha | `sticker` / `overlay` | `LB save --kind overlay --start <s> --end <s>` (ProRes 4444) |
-| the project set up as a starting point | `template` | `LB add --kind template --file <copy.fcproj>` |
+| the project set up as a starting point | `template` | where the build has templates: a bundle with slots, `bashcut.template.save {"name", "slots": [footage, music bed, logo items]}` (kept in `<data dir>/bashcut/templates/`, listed by `bashcut.template.list`, reused with `bashcut.template.instantiate`); else a plain copy, `LB add --kind template --file <copy.fcproj>` |
 
 Every item gets a purpose line ("lower third for guest names, two lines"), 2–5 tags (genre, mood, colour, the
 channel), and its licence: "own" for what the creator made, the source's licence for fetched files (bcp:stock-images

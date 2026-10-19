@@ -2,6 +2,7 @@
  "source": "filmcraft-cli 0.9.0 mcp --demo, tools/call command_list {} (release build, default features, no whisper)",
  "generated": "2026-10-20",
  "upstream": "FilmCraft 105c09bd",
+ "bashcut": "bashcut.* ids added by hand from BashCutPro origin/main 35bd2adb (crates/engine/src/bashcut/: templates #42, profiles #43), not yet from a build's command_list; refresh from a build in the build pass",
  "enabledNote": "enabled is the state in the --demo project with no selection; most false entries need a selection, a transcript or an open caption track",
  "mcpTools": [
   "command_batch",
@@ -22,7 +23,14 @@
   "ui_screenshot",
   "ui_type"
  ],
- "count": 701,
+ "count": 708,
+ "pending": {
+  "note": "bashcut.* ids that skills may name before they are merged, always with a fallback for builds without them (detect with command_list); move each into commands when its issue lands",
+  "ids": {
+   "bashcut.timeline.summary": "BashCutPro#50",
+   "bashcut.review.run": "BashCutPro#57"
+  }
+ },
  "commands": [
   {
    "id": "file.newProject",
@@ -6279,6 +6287,62 @@
    "menu": [],
    "shortcut": null,
    "params": "{}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.template.save",
+   "label": "Save as Template…",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"path\":str (bundle folder) | \"name\":str (in <data dir>/bashcut/templates),\"slots\":[id | {\"item\":id,\"name\":str?}],\"title\":str?,\"poster\":bool=true,\"overwrite\":bool=false,\"dir\":str?}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.template.instantiate",
+   "label": "New Project from Template…",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"template\":str (folder or name),\"fills\":[{\"slot\":str,\"file\":str}],\"saveAs\":str?,\"dir\":str?}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.template.list",
+   "label": "List Templates",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"dir\":str?}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.profiles.list",
+   "label": "List Output Profiles",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"seconds\":f64? (estimate; default the active sequence),\"dir\":str?}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.profiles.get",
+   "label": "Get Output Profile",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"profile\":str,\"seconds\":f64?,\"dir\":str?}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.profiles.compile",
+   "label": "Compile Output Profiles to Export Presets",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"profile\":str? (default every profile),\"dir\":str?}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.profiles.apply",
+   "label": "Export with Output Profile",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"profile\":str,\"path\":str?,\"queue\":bool=false,\"wait\":bool=false,\"sequence\":id?,\"range\":str?,\"dir\":str?}  (no path: compile only, for filmcraft-cli export --preset)",
    "enabled": true
   }
  ]

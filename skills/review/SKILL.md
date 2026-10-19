@@ -31,7 +31,9 @@ long title a "long still"): fix it, change the limit for this video, or keep it 
 
 Choose limits for this genre and footage from the ranges below, write them into the plan's `review` key in the
 project notes (`bcp:edit-workflow`) with the source and reason, and tell the user. Platform numbers (length,
-loudness, safe zones) come from the brief's outputs (`bcp:edit-workflow` REFERENCE "Export").
+loudness, safe zones) come from the brief's outputs: `bashcut.profiles.get {"profile"}` where the build has output
+profiles (`loudnessLufs`, `truePeakDbtp`, `safeArea` as fractions of the frame), else `bcp:edit-workflow` REFERENCE
+"Export".
 
 | Limit | Range seen in other review tools | What moves it |
 |---|---|---|
