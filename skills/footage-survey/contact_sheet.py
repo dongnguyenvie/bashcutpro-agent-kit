@@ -3,10 +3,12 @@
 
   contact_sheet.py plan --item ID --seconds 95.2 --count 12 --dir /abs/tmp/frames [--from S --to S]
       prints one command_batch `steps` list of file.exportFrame (target "source"), times evenly spread
+  contact_sheet.py plan --program --at 1.5,4.2,9.8 --dir /abs/tmp/cuts
+      the same for the edit (target "program") at given timeline seconds, or --seconds/--count spread over it
   contact_sheet.py sheet /abs/tmp/frames/*.png -o /abs/tmp/sheet.png [--cols 4] [--width 320]
       tiles the PNGs in name order, each cell numbered in its corner; prints the sheet path and one line per cell
 
-`plan` names files <item>-<seconds>.png, so `sheet` can print each cell's source second. Frames from MCP
+`plan` names files <item>-<seconds>.png (program-<seconds>.png), so `sheet` can print each cell's source second. Frames from MCP
 `render_frame` saved as PNG tile the same way. Reads 8 or 16-bit PNG (grey, RGB, palette, with alpha; not
 interlaced), writes 8-bit RGB PNG."""
 import argparse, glob, json, os, re, struct, sys, zlib
@@ -105,10 +107,17 @@ def stamp(canvas, x0, y0, text, scale):
 
 
 def cmd_plan(o):
-    start, end = o.start or 0.0, o.to if o.to is not None else o.seconds
-    times = [start + (end - start) * (i + 0.5) / o.count for i in range(o.count)]
-    steps = [{"id": "file.exportFrame", "params": {"target": "source", "item": o.item, "time": round(t * TICKS),
-              "format": "png", "path": os.path.join(o.dir, f"{re.sub(r'[^A-Za-z0-9_-]', '_', o.item)}-{t:08.2f}.png")}}
+    if o.at:
+        times = [float(t) for t in o.at.split(",")]
+    else:
+        if o.seconds is None:
+            sys.exit("plan needs --seconds (with --count) or --at")
+        start, end = o.start or 0.0, o.to if o.to is not None else o.seconds
+        times = [start + (end - start) * (i + 0.5) / o.count for i in range(o.count)]
+    name = "program" if o.program else re.sub(r"[^A-Za-z0-9_-]", "_", o.item)
+    target = {"target": "program"} if o.program else {"target": "source", "item": o.item}
+    steps = [{"id": "file.exportFrame", "params": dict(target, time=round(t * TICKS), format="png",
+                                                        path=os.path.join(o.dir, f"{name}-{t:08.2f}.png"))}
              for t in times]
     print(json.dumps(steps, indent=1))
 
@@ -146,9 +155,12 @@ def cmd_sheet(o):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
-    p = sub.add_parser("plan", help="print file.exportFrame steps for one media item")
-    p.add_argument("--item", required=True)
-    p.add_argument("--seconds", type=float, required=True, help="the item's length")
+    p = sub.add_parser("plan", help="print file.exportFrame steps for one media item or the edit")
+    g = p.add_mutually_exclusive_group(required=True)
+    g.add_argument("--item", help="a media item (source frames)")
+    g.add_argument("--program", action="store_true", help="the edit's composite (timeline seconds)")
+    p.add_argument("--seconds", type=float, help="the item's (or the edit's) length")
+    p.add_argument("--at", help="comma-separated seconds instead of --seconds/--count")
     p.add_argument("--count", type=int, default=12)
     p.add_argument("--dir", required=True, help="absolute folder for the PNGs")
     p.add_argument("--from", dest="start", type=float)

@@ -45,4 +45,5 @@ Standard library only. `plan` prints `file.exportFrame` steps (`target: "source"
 `<item>-<seconds>.png`) for one `command_batch`; `sheet` tiles PNGs in name order into one sheet (default 4 columns,
 320 px cells), numbers each cell in its top-left corner, and prints the sheet path then `n file seconds` per cell.
 It reads 8 or 16-bit PNGs that are not interlaced, about 1.5 s per 1080p frame. Several sheets for a long folder:
-one per clip, at most six for the surveyor before it zooms in.
+one per clip, at most six for the surveyor before it zooms in. `plan --program --at S1,S2,…` renders the edit
+itself (`target: "program"`, timeline seconds) for `bcp:review`.
