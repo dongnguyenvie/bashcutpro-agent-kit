@@ -15,6 +15,7 @@ tracked in [BashCutPro#24](https://github.com/dongnguyenvie/BashCutPro/issues/24
 | Skill | Use it for |
 |---|---|
 | `setup` | Getting `filmcraft-cli` (source build or release, macOS / Windows / Linux), registering its MCP server headless (a project, the demo, or empty) or bridged to the running app, and checking `command_list` answers |
+| `color-grade` | Grading by measurement: scopes on the brightest, darkest and skin-heavy frames, Lumetri presets and LUTs (`grade.py` generates fitted looks), damage checks and backing off, shot match, one adjustment layer |
 
 Claude Code shows them under the plugin name (`/bcp:setup`); Codex as `bcp-<name>`. The editing skills
 (`edit-workflow`, `rough-cut`, `captions-text`, …) follow in BashCutPro#5–#7, once the command catalogue (#3) lands.
