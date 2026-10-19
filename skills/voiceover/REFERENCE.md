@@ -1,7 +1,7 @@
 # Voiceover reference
 
 Times are ticks (254 016 000 000 per second) unless a param says `seconds`. Clip and item ids come from
-`sequence_inspect` and `doc_inspect`. Many edits at once go in one `command_batch` (each step its own undo step).
+`sequence_inspect` and `doc_inspect`. Many edits at once go in one `bashcut.batch` (one undo step; `command_batch` without it).
 
 ## Words and narration.py
 

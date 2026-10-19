@@ -25,7 +25,7 @@ You cannot listen: measure, change, measure again, and report the numbers. Lock 
 | Final loudness | `bashcut.profiles.apply {profile, path}` (the platform's loudness, size, bitrate and captions); by hand `file.exportMedia {loudnessLufs}` |
 
 Clip ids and cut times: `sequence_inspect`. Times are ticks (254 016 000 000 per second) unless a param says
-`seconds`. Many edits at once go in one `command_batch` (each step its own undo step).
+`seconds`. Many edits at once go in one `bashcut.batch` (one undo step; `command_batch` without it).
 
 ## 1. Measure before fixing
 

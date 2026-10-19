@@ -151,8 +151,9 @@ trimmed). Building the text itself: bcp:captions-text, bcp:motion-graphics.
 
 ## 9. Apply in one batch
 
-`command_batch` runs steps in order and stops on the first error with `stop_on_error`; each step is still its own
-undo step, so on a mistake undo step by step (`edit.undo`) or fix forward. Ticks: 254 016 000 000 per second.
+`bashcut.batch {commands: [{id, params}]}` runs steps in order as one undo step; a failing step leaves the project
+unchanged and names the step. Without it, `command_batch` with `stop_on_error` (each step its own undo step: on a
+mistake undo step by step with `edit.undo` or fix forward). Ticks: 254 016 000 000 per second.
 Example at 30 fps: a 15-frame Cross Dissolve out of clip c12, and a Ken Burns drift on c13 (8 s, 100 to 104 %)
 starting at 40 s:
 

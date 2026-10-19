@@ -23,7 +23,7 @@
   "ui_screenshot",
   "ui_type"
  ],
- "count": 712,
+ "count": 713,
  "pending": {
   "note": "bashcut.* ids that skills may name before they are merged, always with a fallback for builds without them (detect with command_list); move each into commands when its issue lands",
   "ids": {
@@ -6375,6 +6375,14 @@
    "menu": [],
    "shortcut": null,
    "params": "{\"clips\":[id]? (default the selection),\"amount\":0..1=0.5,\"target\":lufs?,\"profile\":str? (its loudness when no target),\"loudness\":bool=true,\"savePreset\":bool=false,\"dir\":str?}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.batch",
+   "label": "Run Batch",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"commands\":[{\"id\":str,\"params\":{}?}] (at most 10000),\"atomic\":bool=true,\"label\":str?} (one undo step; atomic: an error restores the project and names the failing step; times inside each step's params use that command's units)",
    "enabled": true
   }
  ]

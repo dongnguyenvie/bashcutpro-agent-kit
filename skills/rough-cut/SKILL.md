@@ -109,7 +109,8 @@ Two ways; pick by the source (REFERENCE "Two ways to cut" has the batches):
   by text: `transcript.extract {from, to}` (ripple) for each dead range, `transcript.removeFillers` and
   `transcript.removePauses {minSeconds, keepSeconds}`. Best for a single clean monologue or a tutorial.
 
-Send it as one `command_batch` (`stop_on_error: true`), then save. Before it, check on paper: every edge on a word
+Send it as one `bashcut.batch` (one undo step, all or nothing; else `command_batch` with `stop_on_error: true`), then
+save. Before it, check on paper: every edge on a word
 boundary or in a gap (no cut inside a word), no cue inside a range, the total against the plan's length.
 
 After it, `sequence_inspect` for the cut list and duration; `render_frame` at doubtful joins (same framing on
