@@ -53,8 +53,10 @@ to copy a reference video's style first: `bcp:style-study` before stage 2.
 
 ## 0. Intake
 
-1. `doc_inspect` (what is open), then the project: an existing `.fcproj` → `file.open {path}`; else
-   `file.newProject {name}` and a sequence shaped for where it will be watched:
+1. `doc_inspect` (what is open), then the project: an existing `.fcproj` → `file.open {path}`; a template the user
+   names or a series they repeat (`bashcut.template.list`) → `bashcut.template.instantiate {"template", "fills":
+   [{"slot", "file"}], "saveAs": "/abs/new.fcproj"}` (their cut, effects and captions with this footage in the slots,
+   one undo step); else `file.newProject {name}` and a sequence shaped for where it will be watched:
 
    | Watched on | `file.newSequence` |
    |---|---|
@@ -124,8 +126,9 @@ draft:
 
 ## 11. Export
 
-After G5, one export per output (REFERENCE "Export"): full size, the platform's loudness, captions burned in or
-as a sidecar (`captionSidecar: "srt"`). A cover frame: `file.exportFrame {path, time}` at the hook. YouTube
+After G5, one export per output (REFERENCE "Export"), each with its output profile where the build has them
+(`bashcut.profiles.apply {profile, path, wait: true}`: size, bitrate, loudness and captions from the profile), else
+`file.exportMedia` at full size, the platform's loudness, captions burned in or as a sidecar (`captionSidecar: "srt"`). A cover frame: `file.exportFrame {path, time}` at the hook. YouTube
 chapters: `markers.addChapter` per section, then write the chapter text from the markers. End with the hand-off
 report (REFERENCE "Hand-off report").
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Check the kit: every skill's frontmatter (name matches its folder, description within limits and ending in
 trigger phrases), its size, the files it references and the command ids it names (against scripts/commands.json,
-copied from BashCutPro's bashcut/commands.json); relative links in every Markdown file; the README's
+copied from BashCutPro's bashcut/commands.json plus its merged bashcut.* ids and a `pending` list); relative links in every Markdown file; the README's
 Skills table; the plugin, marketplace and MCP files. Prints one line per skill, then OK or the problems; exit 1
 on any problem. Standard library only."""
 import json, os, re, sys
@@ -15,6 +15,8 @@ problems = []
 CATALOGUE = json.load(open(os.path.join(ROOT, "scripts", "commands.json"), encoding="utf-8"))
 COMMANDS = {c["id"] for c in CATALOGUE["commands"]}
 NAMESPACES = {i.split(".", 1)[0] for i in COMMANDS}
+# Planned bashcut.* ids a skill may name (with a fallback) before they are merged.
+PENDING = set((CATALOGUE.get("pending") or {}).get("ids") or {})
 ID = re.compile(r"`([a-z][A-Za-z0-9]*(?:\.[A-Za-z0-9]+)+)`")
 FILE_EXT = {"py", "json", "md", "sh", "cube", "fcgt", "fcproj", "srt", "vtt", "wav", "mp4", "png", "yaml", "txt"}
 
@@ -23,6 +25,10 @@ def check_command_ids(path):
     text = open(path, encoding="utf-8").read()
     for cid in sorted(set(ID.findall(text))):
         if cid.rsplit(".", 1)[1] in FILE_EXT or cid.split(".", 1)[0] not in NAMESPACES:
+            continue
+        if cid.startswith("bashcut.") and cid.count(".") == 1:
+            continue  # a plugin id (`bashcut.vision`), not an engine command (`bashcut.profiles.apply`)
+        if cid in PENDING:
             continue
         if cid not in COMMANDS and not any(c.startswith(cid + ".") for c in COMMANDS):
             problems.append(f"{rel(path)}: command `{cid}` is not in scripts/commands.json")

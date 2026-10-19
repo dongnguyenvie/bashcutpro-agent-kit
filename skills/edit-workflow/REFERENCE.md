@@ -119,6 +119,18 @@ Every call resends the whole context, so cost is roughly calls × context. Measu
 
 ## Export
 
+**Output profiles first.** Builds with BashCutPro's profiles (`command_list {"filter": "bashcut.profiles"}` lists
+them) export each output with `bashcut.profiles.apply {"profile": "tiktok", "path": "/abs/out/name-tiktok.mp4",
+"wait": true}`: the platform's frame size and fps, codec, bitrate from upload guidance, loudness and true peak,
+captions burned in or as a sidecar, all from the profile. Built-ins: `tiktok`, `reels`, `shorts` (1080×1920),
+`youtube` (1080p), `youtube-4k`, `facebook-square`; the user's own in `<data dir>/bashcut/profiles/*.json` (same `id`
+replaces a built-in). `bashcut.profiles.get {"profile"}` gives its `loudnessLufs`, `truePeakDbtp`, `captions` and
+`safeArea` (review uses them); `bashcut.profiles.list {"seconds"}` adds the estimated file size. `sequence` exports
+another sequence (a variant), `queue: true` adds to the export queue instead. For `filmcraft-cli export --preset`,
+`bashcut.profiles.compile` writes the presets (`BashCut TikTok`, …).
+
+Builds without them (no `bashcut.profiles.*` in `command_list`), or the draft and the master, use `file.exportMedia`:
+
 | Output | `file.exportMedia` params |
 |---|---|
 | Draft | `format: "h264"`, `height: 960` (portrait) or `540` (landscape), `loudnessLufs: -14`, `burnCaptions: true`, `wait: true` |
