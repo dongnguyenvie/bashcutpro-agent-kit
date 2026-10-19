@@ -97,6 +97,9 @@ loudness, safe zones) come from the brief's outputs (`bcp:edit-workflow` REFEREN
 - From round 2, first confirm the previous fixes, then **only a new blocker fails the round**. New polish and
   taste findings are listed, not chased: rubric creep is how loops never end.
 - Stop early when a round fixes nothing. What is left goes to the user with reasons, never silently shipped.
+- A finding that repeats (the same kind in two rounds, or one a lesson already names: `python3
+  <skill_dir>/../self-learn/knowledge.py lessons --query "<words>"`) becomes a lesson or `--seen` on the old one,
+  with `bcp:self-learn`.
 
 ## The draft
 
