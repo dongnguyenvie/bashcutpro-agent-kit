@@ -43,6 +43,7 @@ tracked in [BashCutPro#24](https://github.com/dongnguyenvie/BashCutPro/issues/24
 | `beat-cut` | Rhythm by measurement: word edges for speech-led edits, a beat grid from `beats.py` (an out-of-process estimate on a WAV: tempo, beats, downbeats, energy, cut sync) for music-led ones, shot lengths per section, cuts in one batch, punch-ins from zoom headroom |
 | `style-study` | Learning a creator's or channel's style by measurement in a study project (pacing from scene detection, shots, hook, speech, music with `beats.py`, sound with `loudness.py`, colour from scopes), a profile with tolerances, deliberate differences, then a look, text presets and the edit plan's bands |
 | `voiceover` | Voiceover by measurement: speaking rate and narration windows from the words (`narration.py`), lines sized to them, text prepared for TTS, English with `tts.*`, Vietnamese with the `bashcut.vieneu-tts` plugin, every take checked against its text, fit to picture, re-takes, dubbing; run by the `voice` sub-agent |
+| `stock-images` | Pictures the footage lacks: stock photos and video, emoji, logos, Iconify icons, illustration sets in one style, fetched through the resources plugin with each file's licence recorded, placed with `media_import`, `timeline.place` and Motion keyframes |
 
 Claude Code shows them under the plugin name (`/bcp:setup`); Codex as `bcp-<name>`. The editing skills
 (`edit-workflow`, `rough-cut`, `captions-text`, …) follow in BashCutPro#5–#7, once the command catalogue (#3) lands.
