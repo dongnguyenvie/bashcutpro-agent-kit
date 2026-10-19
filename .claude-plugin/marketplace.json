@@ -1,0 +1,12 @@
+{
+  "name": "bashcutpro-agent-kit",
+  "description": "Editing skills and the MCP server for the BashCutPro video editor.",
+  "owner": { "name": "BashCutPro" },
+  "plugins": [
+    {
+      "name": "bcp",
+      "source": "./",
+      "description": "Editing skills and the MCP server for the BashCutPro video editor."
+    }
+  ]
+}
