@@ -52,7 +52,8 @@ profiles (`loudnessLufs`, `truePeakDbtp`, `safeArea` as fractions of the frame),
 
 ## Each round
 
-1. **Read the edit once.** `sequence_inspect`: clips, gaps, tracks, length; `transcript.inspect` for the words;
+1. **Read the edit once.** `bashcut.timeline.summary` (clips, tracks, length in seconds; `sequence_inspect` when you
+   need effect params or transitions); `transcript.inspect` for the words;
    the plan from `project.notes`. Every stage the plan requires (effects, sound, colour) that is still open is a
    blocker, whatever else passes: one BashCut tutorial passed review with its effects stage not done, one zoom
    reused on every screen shot.

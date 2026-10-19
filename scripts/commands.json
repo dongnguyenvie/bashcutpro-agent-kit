@@ -23,11 +23,10 @@
   "ui_screenshot",
   "ui_type"
  ],
- "count": 713,
+ "count": 714,
  "pending": {
   "note": "bashcut.* ids that skills may name before they are merged, always with a fallback for builds without them (detect with command_list); move each into commands when its issue lands",
   "ids": {
-   "bashcut.timeline.summary": "BashCutPro#50",
    "bashcut.review.run": "BashCutPro#57"
   }
  },
@@ -6383,6 +6382,14 @@
    "menu": [],
    "shortcut": null,
    "params": "{\"commands\":[{\"id\":str,\"params\":{}?}] (at most 10000),\"atomic\":bool=true,\"label\":str?} (one undo step; atomic: an error restores the project and names the failing step; times inside each step's params use that command's units)",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.timeline.summary",
+   "label": "Timeline Summary",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"sequence\":id? (default the active sequence)} (tracks and clips with ids; start / end / in / duration in seconds, only fields that differ from a plain clip)",
    "enabled": true
   }
  ]

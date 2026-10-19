@@ -22,8 +22,11 @@ undo step, all or nothing; `command_batch` on a build without it),
   step, and a failing step leaves the project unchanged and names the step (fix it, send the batch again). A build
   without `bashcut.batch` (not in `command_list`): `command_batch` with `stop_on_error: true`, where each step is its
   own undo step, so note the `history.list` length before it to know how far `edit.undo` must go back.
-- **Read little.** `doc_inspect` at start, after a gate and after a batch that failed; otherwise trust what your
-  own commands returned. Never print a whole transcript: search it (`transcript.search`) or read a range.
+- **Read little.** `doc_inspect` at start (project, bins, items); then `bashcut.timeline.summary` (tracks and clips
+  in seconds, only what differs from a plain clip, a few KB) after a gate or a failed batch. Otherwise trust what your
+  own commands returned: `bashcut.batch` answers with `changed` (clips added / changed / removed) and `createdId`.
+  Errors start with a code: `notFound` (re-read, fix the id), `badParams` (fix the params), `refused` (change the
+  state or ask), `busy` (wait, retry), `offline` (relink or tell the user). Never print a whole transcript: search it (`transcript.search`) or read a range.
 - **Look in batches.** `render_frame {seconds, max_side: 540}` at the frames that matter (hook, each section start,
   every text), phone size, not every second.
 - **You never certify yourself.** "Done" needs evidence (a frame, a command result, an export path). You cannot
