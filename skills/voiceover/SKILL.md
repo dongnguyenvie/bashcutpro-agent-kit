@@ -161,6 +161,11 @@ length changed; re-time its caption.
 The user records: `audio.voiceover.settings`, then `audio.voiceover.start {track, time}` and
 `audio.voiceover.stop` (the app must have a microphone, so bridge mode). Measure and check it like a take.
 
+Clean a recorded (not synthesized) voice by default with `bashcut.audio.polish {clips, amount: 0.5, target}`: one
+chain (highpass, noise reduction, de-esser, compressor, limiter) and the loudness match in one undo step. Raise
+`amount` for a noisy room, lower it if the voice starts to sound thin; `amount: 0` leaves the clip as it is.
+Builds without it (`command_list`): the same chain by hand (bcp:audio-mix), then `essentialSound.autoMatch`.
+
 ## Report
 
 Per line: id, voice, take, seconds, similarity (or "not checked" and why); lines reworded (old → new words); lines

@@ -16,12 +16,13 @@ You cannot listen: measure, change, measure again, and report the numbers. Lock 
 | Track level, mute, solo | `mixer.setStrip {strip: "A2", volumeDb, muted, solo}`; automation `mixer.setKeyframe` / `mixer.writeAutomation`; `mixer.inspect` reads it |
 | Fades and joins | `sequence.applyAudioTransition {clip, effect: "constant_power", frames, edge: "in" \| "out"}` |
 | Roles | `essentialSound.setType {clips, type: "dialogue" \| "music" \| "sfx" \| "ambience"}`; `essentialSound.inspect` |
+| Dialogue clean-up + loudness (default for speech) | `bashcut.audio.polish {clips, amount: 0.5, target}` (or `profile` for the output's target): highpass, noise reduction, de-esser, compressor and limiter scaled by one `amount`, then Auto-Match, as one undo step; `amount: 0` changes nothing. Builds without it (`command_list`): `effects.apply` of `highpass`, `denoise`, `deesser`, `single_band_compressor`, `hard_limiter`, then Auto-Match |
 | Voice to a loudness | `essentialSound.autoMatch {clips, target}` (dialogue clips): applies gain and reports the measured LUFS |
 | Ducking | `essentialSound.set {clips: [music], key: "ducking.reduceDb", value}` (other `ducking.*` keys in `essentialSound.inspect`), then `essentialSound.generateDucking {clips: [music]}` writes volume keyframes under the dialogue |
 | Music to a length | `clip.remix {clip, seconds}` (rebuilds the song at that length on its own phrase joins) |
 | Peaks, sync | `clip.audioPeak {clips}`; a second camera by sound `clip.synchronize {method: "audio", clips, reference}` |
 | Place a sound | `file.import {paths}` (or MCP `media_import`), `timeline.place {item, track: "A3", time}`; more tracks `sequence.addTracks {audio: 1}` |
-| Final loudness | `file.exportMedia {loudnessLufs}` |
+| Final loudness | `bashcut.profiles.apply {profile, path}` (the platform's loudness, size, bitrate and captions); by hand `file.exportMedia {loudnessLufs}` |
 
 Clip ids and cut times: `sequence_inspect`. Times are ticks (254 016 000 000 per second) unless a param says
 `seconds`. Many edits at once go in one `command_batch` (each step its own undo step).
