@@ -57,7 +57,12 @@ profiles (`loudnessLufs`, `truePeakDbtp`, `safeArea` as fractions of the frame),
    the plan from `project.notes`. Every stage the plan requires (effects, sound, colour) that is still open is a
    blocker, whatever else passes: one BashCut tutorial passed review with its effects stage not done, one zoom
    reused on every screen shot.
-2. **Measure.** (REFERENCE.md has the exact calls.)
+2. **Measure.** First `bashcut.review.run {profile}` (the brief's output profile): measured findings for sound,
+   picture, captions and the edit, each with severity, range in seconds, the number and a fix, written as Review
+   markers on the timeline (`writeMarkers: false` to only read), a score per category and `verdict` (`needsFix` when
+   anything blocks). Judge each finding as below; a measured warning is not automatically a blocker. What it lists
+   under `skipped` (music over speech, caption safe area and contrast) and a build without it use the checks below.
+   (REFERENCE.md has the exact calls.)
    - **Cuts against words**: every cut time from `sequence_inspect` against the word spans: a cut inside a word
      clips it; a caption or title more than the word-landing limit off its word.
    - **Gaps and black**: gaps in `sequence_inspect` on the main video track; `bashcut.review.pictureChecks` for black,

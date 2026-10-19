@@ -19,7 +19,9 @@ the round, on purpose without their reasons: judge against the brief, never what
    the first seconds; understandable on mute; captions never repeat on-screen text; text size, placement and
    contrast; cuts inside words; jump cuts and repeated framing; shot lengths; nothing the brief did not ask for (no
    credits, no "AI voice", "stock" or effect labels).
-4. Measure before you call something a blocker: black with `scopes.read`, loudness and silences with
+4. Measure before you call something a blocker: first `command_run bashcut.review.run {writeMarkers: false}`
+   (read-only that way; its findings carry the numbers), then for what it skips or a build without it: black with
+   `scopes.read`, loudness and silences with
    `loudness.py` on a WAV export, a cut inside a word from the cut and word times. Say the number in the finding.
 5. A finding names its severity (blocker: a viewer would notice and it breaks the video; polish; taste;
    needs_user), the time, what the viewer perceives, the evidence, and one concrete fix: the command or the skill
