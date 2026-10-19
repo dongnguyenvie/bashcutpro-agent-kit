@@ -134,7 +134,7 @@ as each line's `pause` in the plan.
 - Give each voiceover section b-roll longer than the line: a too-short clip made the voiceover run into the next
   spoken cut.
 - Captions come from your `caption` text, timed by the take (`bcp:captions-text`). Level: against the music, not
-  one number (`bcp:audio-mix`, `loudness.py` on a WAV export).
+  one number (`bcp:audio-mix`: `bashcut.audio.loudness {clip}`, or `loudness.py` on a WAV export).
 
 ## 6. Re-take one line
 

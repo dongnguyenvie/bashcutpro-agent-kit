@@ -23,7 +23,7 @@
   "ui_screenshot",
   "ui_type"
  ],
- "count": 708,
+ "count": 711,
  "pending": {
   "note": "bashcut.* ids that skills may name before they are merged, always with a fallback for builds without them (detect with command_list); move each into commands when its issue lands",
   "ids": {
@@ -6343,6 +6343,30 @@
    "menu": [],
    "shortcut": null,
    "params": "{\"profile\":str,\"path\":str?,\"queue\":bool=false,\"wait\":bool=false,\"sequence\":id?,\"range\":str?,\"dir\":str?}  (no path: compile only, for filmcraft-cli export --preset)",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.audio.loudness",
+   "label": "Measure Loudness",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"clip\":id?,\"track\":id|\"A1\"?,\"range\":{\"start\":seconds?,\"end\":seconds?}?,\"series\":bool?} (no clip / track = the sequence mix; result in LUFS, LU, dBTP, seconds)",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.audio.beats",
+   "label": "Detect Beats",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"clip\":id?,\"writeMarkers\":bool?} (default: the selected audio clip; result in sequence seconds and BPM)",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.review.pictureChecks",
+   "label": "Picture Checks",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"range\":{\"start\":seconds?,\"end\":seconds?}?,\"samplesPerSecond\":0.5..60=5} (black, frozen, long-still and flash stretches; result in seconds)",
    "enabled": true
   }
  ]

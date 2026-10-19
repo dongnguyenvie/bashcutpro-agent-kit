@@ -28,8 +28,10 @@ keeping the result (`render_frame` on both sides): a long "pause" can be a react
 
 ## 2. Read the music
 
-BashCutPro has no beat analysis command (`clip.remix` analyses beats only for itself). `beats.py` in this folder is
-a small out-of-process estimate: standard-library Python, a WAV in, JSON out.
+Music on the timeline: `bashcut.audio.beats {clip, writeMarkers?}` returns `bpm`, `confidence`, `beats` and
+`downbeats` in sequence seconds; `writeMarkers: true` adds them as markers (Beat / Downbeat) in one undo step. Use it
+first. `beats.py` in this folder stays the fallback (a WAV not on the timeline, `alternates` and `phaseScores`, or a
+build without the command): a small out-of-process estimate, standard-library Python, a WAV in, JSON out.
 
 1. A WAV of the music: the file itself when it is WAV, else place the music, mute the other tracks
    (`mixer.setStrip {muted: true}`), `file.exportMedia {format: "wav", range: "custom", startSeconds, endSeconds,
