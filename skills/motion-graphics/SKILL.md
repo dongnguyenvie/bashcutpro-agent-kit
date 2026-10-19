@@ -68,7 +68,7 @@ word time − (W − E).
 
 A card the series repeats (a stat card, a lower third, a price tag, a chapter card) is built once and reused:
 
-1. Build it on the first use: `graphics.newRectangle` (the plate), `graphics.newText {text, size, font, position,
+1. Build it on the first use: `graphics.newRectangle` (the plate; `position` is its centre), `graphics.newText {text, size, font, position,
    seconds, time, track}` into the same clip (`clip`), `graphics.set {props}` for fill, stroke, background and
    shadow; `graphics.setCharStyle` for the keyword or number in the accent.
 2. Motion that survives length changes: `graphics.setResponsiveTime {introSeconds, outroSeconds}` keeps the

@@ -2,27 +2,33 @@
 
 ## Template cards
 
-`time` is ticks (254 016 000 000 per second); `seconds` is a length. Positions are pixels of the sequence frame.
+`time` is ticks (254 016 000 000 per second); `seconds` is a length. Positions are pixels of the sequence frame: a
+rectangle's `position` is its **centre** (the plate below spans x 120–960, y 1320–1620), a point text's is its first
+baseline.
 
-**Build the first card** (a stat card: plate, number, label), one `command_batch`:
+**Build the first card** (a stat card: plate, number, label): make the plate, read its `clip` from the result, then
+one `command_batch` that adds the layers to that clip (`<clip>` below):
+
+```json
+{"id": "graphics.newRectangle", "params": {"position": [540, 1470], "size": [840, 300], "seconds": 4,
+  "time": 3048192000000, "track": 2}}
+```
 
 ```json
 [
-  {"id": "graphics.newRectangle", "params": {"position": [120, 1320], "size": [840, 300], "seconds": 4,
-    "time": 3048192000000, "track": 2}},
-  {"id": "graphics.newText", "params": {"text": "11,2 ha", "position": [170, 1450], "size": 140,
+  {"id": "graphics.newText", "params": {"clip": <clip>, "text": "11,2 ha", "position": [170, 1450], "size": 140,
     "font": "Be Vietnam Pro", "fontStyle": "Black"}},
-  {"id": "graphics.newText", "params": {"text": "Hồ Gươm · mặt hồ", "position": [170, 1550], "size": 56,
+  {"id": "graphics.newText", "params": {"clip": <clip>, "text": "Hồ Gươm · mặt hồ", "position": [170, 1550], "size": 56,
     "font": "Be Vietnam Pro"}},
-  {"id": "graphics.set", "params": {"layer": 0, "props": {"fill_color": "#111111", "opacity": 85}}},
-  {"id": "graphics.setCharStyle", "params": {"layer": 1, "start": 5, "style": {"color": "#ffcc00"}}},
-  {"id": "graphics.setResponsiveTime", "params": {"introSeconds": 0.4, "outroSeconds": 0.3}}
+  {"id": "graphics.set", "params": {"clip": <clip>, "layer": 0, "props": {"fill_color": "#111111", "opacity": 85}}},
+  {"id": "graphics.setCharStyle", "params": {"clip": <clip>, "layer": 1, "start": 5, "style": {"color": "#ffcc00"}}},
+  {"id": "graphics.setResponsiveTime", "params": {"clip": <clip>, "introSeconds": 0.4, "outroSeconds": 0.3}}
 ]
 ```
 
-`newText` without `clip` adds a layer to the selected graphic; pass `clip` (the id the rectangle's result gave)
-when anything else may be selected. Check it at phone size (`render_frame {seconds, max_side: 390}`) before
-keeping it: the template copies its mistakes into every card.
+`newText` with `clip` adds a layer to that graphic (result `{"clip": <clip>, "layer": 1}`); without `clip` it starts
+a new graphic clip of its own, so the card falls apart into three clips.
+Check it at phone size (`render_frame {seconds, max_side: 390}`) before keeping it: the template copies its mistakes into every card.
 
 **Keep it** with one control per field that changes. Name controls by what they mean, not by layer:
 

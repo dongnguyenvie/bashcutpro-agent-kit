@@ -28,15 +28,18 @@ Every other `transcript.*` command then works on these words.
 
 ```json
 {"steps": [
-  {"id": "clip.makeSubclip", "params": {"item": "M3", "name": "S1-hook", "start": 15602457600000, "end": 19025798400000}},
-  {"id": "clip.makeSubclip", "params": {"item": "M3", "name": "S4-proof", "start": 47201000000000, "end": 52113000000000}},
-  {"id": "clip.makeSubclip", "params": {"item": "M1", "name": "S2-setup", "start": 2540160000000, "end": 6350400000000}},
+  {"id": "source.open", "params": {"item": 3}},
+  {"id": "clip.makeSubclip", "params": {"item": 3, "name": "S1-hook", "start": 15602457600000, "end": 19025798400000}},
+  {"id": "clip.makeSubclip", "params": {"item": 3, "name": "S4-proof", "start": 47201000000000, "end": 52113000000000}},
+  {"id": "source.open", "params": {"item": 1}},
+  {"id": "clip.makeSubclip", "params": {"item": 1, "name": "S2-setup", "start": 2540160000000, "end": 6350400000000}},
   {"id": "timeline.place", "params": {"items": ["<S1-hook id>", "<S2-setup id>", "<S4-proof id>"], "track": "V1", "seconds": 0}},
   {"id": "file.save", "params": {}}
 ], "stop_on_error": true}
 ```
 
-`clip.makeSubclip` returns the new item's id; the place step needs those ids, so run the subclip steps as one
+Ids are numbers (`item` from `project_inspect`, clips from `sequence_inspect`), never names like `M3`.
+`clip.makeSubclip` is refused until a clip is open in the Source monitor, hence `source.open` first. It returns the new item's id; the place step needs those ids, so run the subclip steps as one
 batch, read the ids from its results, then the place batch. Alternatively place each range straight from the
 media with `timeline.place {item, sourceIn, duration, seconds}` (each its own undo step), without subclips; the
 subclips are the select record you can see in the project.
@@ -45,7 +48,7 @@ subclips are the select record you can see in the project.
 
 ```json
 {"steps": [
-  {"id": "timeline.place", "params": {"item": "M3", "track": "V1", "seconds": 0}},
+  {"id": "timeline.place", "params": {"item": 3, "track": "V1", "seconds": 0}},
   {"id": "transcript.extract", "params": {"from": "<word id>", "to": "<word id>"}},
   {"id": "transcript.removeFillers", "params": {"fillers": ["ờ", "à", "ừm", "um", "uh"]}},
   {"id": "transcript.removePauses", "params": {"minSeconds": 0.6, "keepSeconds": 0.25}},
