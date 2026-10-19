@@ -66,8 +66,10 @@ from the words in groups. Choose its limits from the measurement, inside these r
 **After every cut, make the captions again from what is heard** (delete the old track: `captions.deleteTrack`).
 Captions made before a cut keep words of lines cut away (one edit showed half a dropped sentence).
 
-Word-by-word highlight (karaoke) has no FilmCraft command yet: use short groups (2–3 words, one line) instead, and
-say so if the user asked for it. One `graphics.newText` per word is possible but heavy; only for a short hook.
+Word-by-word highlight (karaoke): `bashcut.captions.wordStyle {captions, style: {preset: "karaoke" | "pop" | "clean",
+highlight, pop, bold, dim}}` after the cues are final (it turns them into graphic text layers, one per spoken word,
+timed from the transcript; one undo step). Keep such cues to one line of 2–5 words and `pop` ≤ 1.25 (the line reflows).
+Builds without it (`command_list`): short groups (2–3 words, one line) instead, and say so if the user asked for it.
 
 ## 3. Caption look
 

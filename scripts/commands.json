@@ -23,7 +23,7 @@
   "ui_screenshot",
   "ui_type"
  ],
- "count": 714,
+ "count": 715,
  "pending": {
   "note": "bashcut.* ids that skills may name before they are merged, always with a fallback for builds without them (detect with command_list); move each into commands when its issue lands",
   "ids": {
@@ -6391,6 +6391,14 @@
    "shortcut": null,
    "params": "{\"sequence\":id? (default the active sequence)} (tracks and clips with ids; start / end / in / duration in seconds, only fields that differ from a plain clip)",
    "enabled": true
+  },
+  {
+   "id": "bashcut.captions.wordStyle",
+   "label": "Word-by-Word Caption Style",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"captions\":[id]? (default: the selected captions, else every caption of the first track),\"style\":{\"preset\":\"karaoke|pop|clean\"?,\"highlight\":\"#rrggbb\"?,\"pop\":1..1.6?,\"bold\":bool?,\"dim\":0..1? (alpha of the upcoming words; 1 = off)}?,\"useTranscript\":bool=true}",
+   "enabled": false
   }
  ]
 }
