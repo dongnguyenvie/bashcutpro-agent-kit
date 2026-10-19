@@ -71,8 +71,10 @@ to copy a reference video's style first: `bcp:style-study` before stage 2.
    | Feeds (square) | `{"name": "main", "width": 1080, "height": 1080, "fps": 30}` |
 
    Match the footage's frame rate when it is 25 or 29.97 (from `project.items` / `media.status` after import).
-2. Import all footage in one call: MCP `media_import` or `file.import {"paths": ["/abs/path/a.mp4", …]}`.
-   Absolute paths only. Then read what earlier edits taught: `python3 <skill_dir>/../self-learn/knowledge.py intake
+2. Import all footage in one call: `bashcut.media.import {"paths": ["/abs/path/a.mp4", …]}` where the build has it
+   (`file.import` plus the installed plugins' import hooks, e.g. a transcript on import; `bashcut.hooks.list` shows
+   them), else MCP `media_import` or `file.import {paths}`. Absolute paths only. The same recipe over many inputs
+   (a folder, a series) is a batch, not one edit: `bcp:batch`. Then read what earlier edits taught: `python3 <skill_dir>/../self-learn/knowledge.py intake
    --project /abs/film.fcproj --tags <the genre and the stages ahead>` (lessons, the user's preferences, this
    project's facts); follow them, and do not ask what a preference already answers.
 3. **Ask once** (at most 4 questions, REFERENCE "Intake questions"), each led by the choice you would make

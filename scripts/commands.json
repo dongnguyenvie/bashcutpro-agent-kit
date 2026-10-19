@@ -2,7 +2,7 @@
  "source": "filmcraft-cli 0.9.0 mcp --demo, tools/call command_list {} (release build, default features, no whisper)",
  "generated": "2026-10-20",
  "upstream": "FilmCraft 105c09bd",
- "bashcut": "bashcut.* ids added by hand from BashCutPro origin/main 35bd2adb (crates/engine/src/bashcut/: templates #42, profiles #43; looks #47), not yet from a build's command_list; refresh from a build in the build pass",
+ "bashcut": "bashcut.* engine ids read from BashCutPro origin/main 0aeefe21 (crates/engine/src/bashcut/) by scripts/refresh_bashcut.py, not yet from a build's command_list; refresh from a build in the build pass",
  "enabledNote": "enabled is the state in the --demo project with no selection; most false entries need a selection, a transcript or an open caption track",
  "mcpTools": [
   "command_batch",
@@ -23,7 +23,7 @@
   "ui_screenshot",
   "ui_type"
  ],
- "count": 723,
+ "count": 726,
  "pending": {
   "note": "bashcut.* ids that skills may name before they are merged, always with a fallback for builds without them (detect with command_list); move each into commands when its issue lands",
   "ids": {}
@@ -6287,70 +6287,6 @@
    "enabled": true
   },
   {
-   "id": "bashcut.template.save",
-   "label": "Save as Template…",
-   "menu": [],
-   "shortcut": null,
-   "params": "{\"path\":str (bundle folder) | \"name\":str (in <data dir>/bashcut/templates),\"slots\":[id | {\"item\":id,\"name\":str?}],\"title\":str?,\"poster\":bool=true,\"overwrite\":bool=false,\"dir\":str?}",
-   "enabled": true
-  },
-  {
-   "id": "bashcut.template.instantiate",
-   "label": "New Project from Template…",
-   "menu": [],
-   "shortcut": null,
-   "params": "{\"template\":str (folder or name),\"fills\":[{\"slot\":str,\"file\":str}],\"saveAs\":str?,\"dir\":str?}",
-   "enabled": true
-  },
-  {
-   "id": "bashcut.template.list",
-   "label": "List Templates",
-   "menu": [],
-   "shortcut": null,
-   "params": "{\"dir\":str?}",
-   "enabled": true
-  },
-  {
-   "id": "bashcut.profiles.list",
-   "label": "List Output Profiles",
-   "menu": [],
-   "shortcut": null,
-   "params": "{\"seconds\":f64? (estimate; default the active sequence),\"dir\":str?}",
-   "enabled": true
-  },
-  {
-   "id": "bashcut.profiles.get",
-   "label": "Get Output Profile",
-   "menu": [],
-   "shortcut": null,
-   "params": "{\"profile\":str,\"seconds\":f64?,\"dir\":str?}",
-   "enabled": true
-  },
-  {
-   "id": "bashcut.profiles.compile",
-   "label": "Compile Output Profiles to Export Presets",
-   "menu": [],
-   "shortcut": null,
-   "params": "{\"profile\":str? (default every profile),\"dir\":str?}",
-   "enabled": true
-  },
-  {
-   "id": "bashcut.profiles.apply",
-   "label": "Export with Output Profile",
-   "menu": [],
-   "shortcut": null,
-   "params": "{\"profile\":str,\"path\":str?,\"queue\":bool=false,\"wait\":bool=false,\"sequence\":id?,\"range\":str?,\"dir\":str?}  (no path: compile only, for filmcraft-cli export --preset)",
-   "enabled": true
-  },
-  {
-   "id": "bashcut.audio.loudness",
-   "label": "Measure Loudness",
-   "menu": [],
-   "shortcut": null,
-   "params": "{\"clip\":id?,\"track\":id|\"A1\"?,\"range\":{\"start\":seconds?,\"end\":seconds?}?,\"series\":bool?} (no clip / track = the sequence mix; result in LUFS, LU, dBTP, seconds)",
-   "enabled": true
-  },
-  {
    "id": "bashcut.audio.beats",
    "label": "Detect Beats",
    "menu": [],
@@ -6359,11 +6295,11 @@
    "enabled": true
   },
   {
-   "id": "bashcut.review.pictureChecks",
-   "label": "Picture Checks",
+   "id": "bashcut.audio.loudness",
+   "label": "Measure Loudness",
    "menu": [],
    "shortcut": null,
-   "params": "{\"range\":{\"start\":seconds?,\"end\":seconds?}?,\"samplesPerSecond\":0.5..60=5} (black, frozen, long-still and flash stretches; result in seconds)",
+   "params": "{\"clip\":id?,\"track\":id|\"A1\"?,\"range\":{\"start\":seconds?,\"end\":seconds?}?,\"series\":bool?} (no clip / track = the sequence mix; result in LUFS, LU, dBTP, seconds)",
    "enabled": true
   },
   {
@@ -6383,14 +6319,6 @@
    "enabled": true
   },
   {
-   "id": "bashcut.timeline.summary",
-   "label": "Timeline Summary",
-   "menu": [],
-   "shortcut": null,
-   "params": "{\"sequence\":id? (default the active sequence)} (tracks and clips with ids; start / end / in / duration in seconds, only fields that differ from a plain clip)",
-   "enabled": true
-  },
-  {
    "id": "bashcut.captions.wordStyle",
    "label": "Word-by-Word Caption Style",
    "menu": [],
@@ -6399,19 +6327,43 @@
    "enabled": false
   },
   {
-   "id": "bashcut.review.run",
-   "label": "Review Edit",
+   "id": "bashcut.hooks.list",
+   "label": "List Plugin Hooks",
    "menu": [],
    "shortcut": null,
-   "params": "{\"profile\":str? (loudness target from bashcut.profiles.*; default -14 LUFS / -1 dBTP),\"checks\":[\"sound\"|\"picture\"|\"captions\"|\"edit\"]?,\"range\":{\"start\":seconds?,\"end\":seconds?}?,\"writeMarkers\":bool=true,\"samplesPerSecond\":0.5..60=5,\"sequence\":id? (must be the active one)} (findings in seconds; markers replace the previous review's)",
+   "params": "{\"event\":\"batch.beforeItem|batch.afterItem|import.after|export.before\"?,\"pluginsDir\":str?}",
    "enabled": true
   },
   {
-   "id": "bashcut.looks.list",
-   "label": "List Looks",
+   "id": "bashcut.hooks.run",
+   "label": "Run Plugin Hooks",
    "menu": [],
    "shortcut": null,
-   "params": "{\"tags\":[str]|str? (any of; e.g. \"talking-head\",\"travel\",\"food\"),\"query\":str?}",
+   "params": "{\"event\":\"batch.beforeItem|batch.afterItem|import.after|export.before\",\"context\":{}?,\"hooks\":bool=true,\"pluginsDir\":str?}  (the batch runner fires the batch.* events)",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.looks.apply",
+   "label": "Apply Look",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"look\":str,\"intensity\":0..1.5=1? (clamped to the look's safe range),\"clips\":[id]? (default the selection)}",
+   "enabled": false
+  },
+  {
+   "id": "bashcut.looks.check",
+   "label": "Check Looks",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"look\":str? (default every look)}  (clipped highlights, crushed shadows, skin hue shift at min / default / max)",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.looks.export",
+   "label": "Export Looks as LUTs",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"look\":str?,\"path\":str? (.cube, with look),\"dir\":str? (the whole pack + looks.json),\"intensity\":0..1.5=1?,\"size\":2..65=33}",
    "enabled": true
   },
   {
@@ -6423,12 +6375,12 @@
    "enabled": true
   },
   {
-   "id": "bashcut.looks.apply",
-   "label": "Apply Look",
+   "id": "bashcut.looks.list",
+   "label": "List Looks",
    "menu": [],
    "shortcut": null,
-   "params": "{\"look\":str,\"intensity\":0..1.5=1? (clamped to the look's safe range),\"clips\":[id]? (default the selection)}",
-   "enabled": false
+   "params": "{\"tags\":[str]|str? (any of; e.g. \"talking-head\",\"travel\",\"food\"),\"query\":str?}",
+   "enabled": true
   },
   {
    "id": "bashcut.looks.remove",
@@ -6447,20 +6399,413 @@
    "enabled": true
   },
   {
-   "id": "bashcut.looks.export",
-   "label": "Export Looks as LUTs",
+   "id": "bashcut.media.import",
+   "label": "Import (with Plugin Hooks)",
    "menu": [],
    "shortcut": null,
-   "params": "{\"look\":str?,\"path\":str? (.cube, with look),\"dir\":str? (the whole pack + looks.json),\"intensity\":0..1.5=1?,\"size\":2..65=33}",
+   "params": "{\"paths\":[str], …file.import params, \"hooks\":bool=true,\"pluginsDir\":str?}  (file.import, then the import.after hooks)",
    "enabled": true
   },
   {
-   "id": "bashcut.looks.check",
-   "label": "Check Looks",
+   "id": "bashcut.profiles.apply",
+   "label": "Export with Output Profile",
    "menu": [],
    "shortcut": null,
-   "params": "{\"look\":str? (default every look)}  (clipped highlights, crushed shadows, skin hue shift at min / default / max)",
+   "params": "{\"profile\":str,\"path\":str?,\"queue\":bool=false,\"wait\":bool=false,\"sequence\":id?,\"range\":str?,\"hooks\":bool=true,\"dir\":str?}  (no path: compile only, for filmcraft-cli export --preset)",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.profiles.compile",
+   "label": "Compile Output Profiles to Export Presets",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"profile\":str? (default every profile),\"dir\":str?}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.profiles.get",
+   "label": "Get Output Profile",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"profile\":str,\"seconds\":f64?,\"dir\":str?}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.profiles.list",
+   "label": "List Output Profiles",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"seconds\":f64? (estimate; default the active sequence),\"dir\":str?}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.review.pictureChecks",
+   "label": "Picture Checks",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"range\":{\"start\":seconds?,\"end\":seconds?}?,\"samplesPerSecond\":0.5..60=5} (black, frozen, long-still and flash stretches; result in seconds)",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.review.run",
+   "label": "Review Edit",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"profile\":str? (loudness target from bashcut.profiles.*; default -14 LUFS / -1 dBTP),\"checks\":[\"sound\"|\"picture\"|\"captions\"|\"edit\"]?,\"range\":{\"start\":seconds?,\"end\":seconds?}?,\"writeMarkers\":bool=true,\"samplesPerSecond\":0.5..60=5,\"sequence\":id? (must be the active one)} (findings in seconds; markers replace the previous review's)",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.template.instantiate",
+   "label": "New Project from Template…",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"template\":str (folder or name),\"fills\":[{\"slot\":str,\"file\":str}],\"saveAs\":str?,\"dir\":str?}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.template.list",
+   "label": "List Templates",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"dir\":str?}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.template.save",
+   "label": "Save as Template…",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"path\":str (bundle folder) | \"name\":str (in <data dir>/bashcut/templates),\"slots\":[id | {\"item\":id,\"name\":str?}],\"title\":str?,\"poster\":bool=true,\"overwrite\":bool=false,\"dir\":str?}",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.timeline.summary",
+   "label": "Timeline Summary",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"sequence\":id? (default the active sequence)} (tracks and clips with ids; start / end / in / duration in seconds, only fields that differ from a plain clip)",
    "enabled": true
   }
- ]
+ ],
+ "frontend": {
+  "note": "BashCutPro's window commands (bashcut_ui, origin/main 0aeefe21): only the open app has them, through the MCP bridge (command_run in bridge mode, or ui_control engine.execute); a headless command_list does not list them",
+  "ids": [
+   {
+    "id": "bashcut.agent.agents",
+    "label": "List Agents"
+   },
+   {
+    "id": "bashcut.agent.approve",
+    "label": "Approve Gate"
+   },
+   {
+    "id": "bashcut.agent.change",
+    "label": "Request Gate Changes"
+   },
+   {
+    "id": "bashcut.agent.conversations",
+    "label": "Agent Conversations"
+   },
+   {
+    "id": "bashcut.agent.gate",
+    "label": "Pending Gate"
+   },
+   {
+    "id": "bashcut.agent.new",
+    "label": "New Agent Conversation"
+   },
+   {
+    "id": "bashcut.agent.open",
+    "label": "Open Agent Conversation"
+   },
+   {
+    "id": "bashcut.agent.send",
+    "label": "Send to Agent"
+   },
+   {
+    "id": "bashcut.agent.state",
+    "label": "Agent State"
+   },
+   {
+    "id": "bashcut.agent.stop",
+    "label": "Stop Agent"
+   },
+   {
+    "id": "bashcut.agent.transcript",
+    "label": "Agent Transcript"
+   },
+   {
+    "id": "bashcut.agent.use",
+    "label": "Use Agent"
+   },
+   {
+    "id": "bashcut.batch.addInput",
+    "label": "Add Batch Inputs"
+   },
+   {
+    "id": "bashcut.batch.addOutput",
+    "label": "Add Batch Output"
+   },
+   {
+    "id": "bashcut.batch.addStep",
+    "label": "Add Batch Step"
+   },
+   {
+    "id": "bashcut.batch.cancel",
+    "label": "Cancel Batch"
+   },
+   {
+    "id": "bashcut.batch.clear",
+    "label": "Clear Batch Draft"
+   },
+   {
+    "id": "bashcut.batch.deletePreset",
+    "label": "Delete Batch Preset"
+   },
+   {
+    "id": "bashcut.batch.draft",
+    "label": "Batch Draft"
+   },
+   {
+    "id": "bashcut.batch.durations",
+    "label": "Learned Batch Step Times"
+   },
+   {
+    "id": "bashcut.batch.loadPreset",
+    "label": "Load Batch Preset"
+   },
+   {
+    "id": "bashcut.batch.moveStep",
+    "label": "Move Batch Step"
+   },
+   {
+    "id": "bashcut.batch.open",
+    "label": "Open Batch Item"
+   },
+   {
+    "id": "bashcut.batch.openJob",
+    "label": "Open Batch Job"
+   },
+   {
+    "id": "bashcut.batch.prefill",
+    "label": "Run on Many Files"
+   },
+   {
+    "id": "bashcut.batch.presets",
+    "label": "List Batch Presets"
+   },
+   {
+    "id": "bashcut.batch.recent",
+    "label": "Recent Batches"
+   },
+   {
+    "id": "bashcut.batch.removeInput",
+    "label": "Remove Batch Input"
+   },
+   {
+    "id": "bashcut.batch.removeOutput",
+    "label": "Remove Batch Output"
+   },
+   {
+    "id": "bashcut.batch.removeStep",
+    "label": "Remove Batch Step"
+   },
+   {
+    "id": "bashcut.batch.retry",
+    "label": "Retry Batch Items"
+   },
+   {
+    "id": "bashcut.batch.reveal",
+    "label": "Reveal Batch Output"
+   },
+   {
+    "id": "bashcut.batch.run",
+    "label": "Run Batch"
+   },
+   {
+    "id": "bashcut.batch.savePreset",
+    "label": "Save Batch Preset"
+   },
+   {
+    "id": "bashcut.batch.set",
+    "label": "Batch Settings"
+   },
+   {
+    "id": "bashcut.batch.setStep",
+    "label": "Change Batch Step"
+   },
+   {
+    "id": "bashcut.batch.state",
+    "label": "Batch State"
+   },
+   {
+    "id": "bashcut.palette.close",
+    "label": "Close Command Palette"
+   },
+   {
+    "id": "bashcut.palette.open",
+    "label": "Command Palette…"
+   },
+   {
+    "id": "bashcut.palette.recipe",
+    "label": "Start Recipe with the Agent"
+   },
+   {
+    "id": "bashcut.palette.run",
+    "label": "Run from Command Palette"
+   },
+   {
+    "id": "bashcut.palette.search",
+    "label": "Search Command Palette"
+   },
+   {
+    "id": "bashcut.plugins.cancel",
+    "label": "Cancel Run"
+   },
+   {
+    "id": "bashcut.plugins.clear",
+    "label": "Clear Finished Runs"
+   },
+   {
+    "id": "bashcut.plugins.install",
+    "label": "Install Plugin"
+   },
+   {
+    "id": "bashcut.plugins.job",
+    "label": "Run Details"
+   },
+   {
+    "id": "bashcut.plugins.list",
+    "label": "List Plugins"
+   },
+   {
+    "id": "bashcut.plugins.registry",
+    "label": "Check Plugin Registry"
+   },
+   {
+    "id": "bashcut.plugins.remove",
+    "label": "Remove Plugin"
+   },
+   {
+    "id": "bashcut.plugins.run",
+    "label": "Run Plugin Action"
+   },
+   {
+    "id": "bashcut.plugins.runs",
+    "label": "List Runs"
+   },
+   {
+    "id": "bashcut.plugins.sendToAgent",
+    "label": "Send Run to Agent"
+   },
+   {
+    "id": "bashcut.plugins.setSecret",
+    "label": "Store Plugin Secret"
+   },
+   {
+    "id": "bashcut.plugins.settings",
+    "label": "Plugin Settings"
+   },
+   {
+    "id": "bashcut.plugins.update",
+    "label": "Update Plugin"
+   },
+   {
+    "id": "bashcut.ui.closePanel",
+    "label": "Close Side Panel"
+   },
+   {
+    "id": "bashcut.ui.dockBack",
+    "label": "Dock Section Back"
+   },
+   {
+    "id": "bashcut.ui.focusAgent",
+    "label": "Focus Agent"
+   },
+   {
+    "id": "bashcut.ui.library.add",
+    "label": "Add a Library Result to the Bin"
+   },
+   {
+    "id": "bashcut.ui.library.credits",
+    "label": "Library Credit Lines"
+   },
+   {
+    "id": "bashcut.ui.library.place",
+    "label": "Place a Library Result"
+   },
+   {
+    "id": "bashcut.ui.library.results",
+    "label": "Library Results"
+   },
+   {
+    "id": "bashcut.ui.library.search",
+    "label": "Search the Library"
+   },
+   {
+    "id": "bashcut.ui.library.state",
+    "label": "Library State"
+   },
+   {
+    "id": "bashcut.ui.looks.favourite",
+    "label": "Favourite Look"
+   },
+   {
+    "id": "bashcut.ui.looks.previewFrame",
+    "label": "Preview Looks on Current Frame"
+   },
+   {
+    "id": "bashcut.ui.looks.state",
+    "label": "Looks Panel State"
+   },
+   {
+    "id": "bashcut.ui.popOut",
+    "label": "Pop Out Section"
+   },
+   {
+    "id": "bashcut.ui.section",
+    "label": "Toggle Section"
+   },
+   {
+    "id": "bashcut.ui.setLanguage",
+    "label": "BashCutPro Language"
+   },
+   {
+    "id": "bashcut.ui.setWidth",
+    "label": "Side Panel Width"
+   },
+   {
+    "id": "bashcut.ui.show.agent",
+    "label": "Agent"
+   },
+   {
+    "id": "bashcut.ui.show.batch",
+    "label": "Batch"
+   },
+   {
+    "id": "bashcut.ui.show.library",
+    "label": "Library"
+   },
+   {
+    "id": "bashcut.ui.show.looks",
+    "label": "Looks"
+   },
+   {
+    "id": "bashcut.ui.show.plugins",
+    "label": "Plugins"
+   },
+   {
+    "id": "bashcut.ui.show.runs",
+    "label": "Runs"
+   },
+   {
+    "id": "bashcut.ui.state",
+    "label": "Rail State"
+   },
+   {
+    "id": "bashcut.ui.toggleRail",
+    "label": "Show Rail"
+   }
+  ]
+ }
 }

@@ -136,6 +136,7 @@ skills/<name>/agents/openai.yaml  Codex policy, only for a user-only skill (disa
 scripts/bashcutpro-mcp.sh         finds filmcraft-cli and starts `filmcraft-cli mcp` in the configured mode
 scripts/install-codex.sh          Codex setup
 scripts/check.py                  checks skills, links, the Skills table and the packaging files
+scripts/refresh_bashcut.py        refreshes BashCutPro's bashcut.* ids in commands.json from a checkout (engine + window commands)
 ```
 
 ## Writing skills

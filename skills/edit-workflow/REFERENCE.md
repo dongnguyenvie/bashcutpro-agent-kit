@@ -108,6 +108,18 @@ Every call resends the whole context, so cost is roughly calls × context. Measu
 - **Sub-agents read, you decide**: the survey and the critic run as sub-agents that return a short answer.
 - **Wait, don't poll**: long commands take `wait: true`; else `jobs.list` once when you need the result.
 
+## Window commands (bridge mode)
+
+Connected to the open BashCutPro window (`mcp --bridge`), its own panels answer `command_run` too; a headless engine
+does not have them (`scripts/commands.json` lists them under `frontend`):
+
+- Plugins and their runs: `bashcut.plugins.list`, `bashcut.plugins.run` (progress in the Runs section),
+  `bashcut.plugins.job`, `bashcut.plugins.cancel`.
+- The in-app agent's gates: `bashcut.agent.gate`, then `bashcut.agent.approve` or `bashcut.agent.change`.
+- The Batch section: `bashcut.batch.prefill` (files into a new batch), `bashcut.batch.run`, `bashcut.batch.state`;
+  outside the window use `bashcut-batch` (`bcp:batch`).
+- Showing the user something: `bashcut.ui.show.looks`, `bashcut.ui.show.batch`, `bashcut.ui.show.agent`.
+
 ## Limits
 
 - Nothing measures loudness, true peak, black or frozen frames read-only. `file.exportMedia {loudnessLufs}`

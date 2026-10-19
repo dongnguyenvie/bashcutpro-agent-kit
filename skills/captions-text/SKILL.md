@@ -10,6 +10,9 @@ ffmpeg. The numbers below are ranges with their sources (T09 = BashCut's caption
 first, choose a value inside the range for this speaker, genre and frame, and say why. Detail:
 `<skill_dir>/REFERENCE.md` (one section at a time).
 
+A folder of clips that only need captions (an SRT and a styled preview each) is the `captions-draft` batch preset,
+and Vietnamese subtitles for a folder `vietsub-folder` (`bcp:batch`).
+
 ## 1. Words first
 
 Captions come from the words of the **edited** sequence, so make them after the cut (`bcp:rough-cut`) and the

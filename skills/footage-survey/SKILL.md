@@ -14,7 +14,8 @@ transcript yourself. In Codex (no sub-agents), follow that same brief yourself: 
 
 ## 1. Import and inventory
 
-- `file.import {paths}` (or MCP `media_import`) the whole folder's files in one call; importing does not touch a
+- `bashcut.media.import {paths}` (runs the plugins' import hooks; else `file.import {paths}` or MCP `media_import`)
+  the whole folder's files in one call; importing does not touch a
   sequence. `project.items` lists them with their ids.
 - Per file: `media.status` (offline, missing), `media.colorInfo` (transfer: HDR or log), CLI `filmcraft-cli probe
   <file>` (fps, size, rotation, streams, length).
