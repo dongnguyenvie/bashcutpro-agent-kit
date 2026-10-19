@@ -238,7 +238,7 @@ def plan(raw, jobs):
     out = []
     for job in jobs["jobs"]:
         files = sorted({f for pattern in job["inputs"] for f in glob.glob(os.path.join(raw, pattern))})
-        out.append({"job": job["id"], "files": [os.path.relpath(f, raw) for f in files], "missing": not files})
+        out.append({"job": job["id"], "files": [os.path.relpath(f, raw).replace(os.sep, "/") for f in files], "missing": not files})
     return out
 
 
