@@ -110,8 +110,8 @@ def cmd_plan(o):
     if o.at:
         times = [float(t) for t in o.at.split(",")]
     else:
-        if o.seconds is None:
-            sys.exit("plan needs --seconds (with --count) or --at")
+        if o.seconds is None and o.to is None:
+            sys.exit("plan needs --seconds or --to (with --count), or --at")
         start, end = o.start or 0.0, o.to if o.to is not None else o.seconds
         times = [start + (end - start) * (i + 0.5) / o.count for i in range(o.count)]
     name = "program" if o.program else re.sub(r"[^A-Za-z0-9_-]", "_", o.item)
