@@ -1,0 +1,98 @@
+---
+name: batch
+description: Run the same edit over many inputs with BashCutPro's batch runner (bashcut-batch): when a batch is the right tool, the built-in presets (Vietsub a folder, podcast to shorts, every platform, captions draft, clean audio), writing a bashcut-batch/1 pipeline (engine steps, plugin and agent steps, output profiles), running it headless and in parallel, watching the job book, and fixing failed, tripped or needs-fix items with retry. Triggers: "batch", "batch these", "do this for every clip", "a whole folder", "100 videos", "làm hàng loạt", "cả thư mục", "xuất hàng loạt", "vietsub cả thư mục", "chạy batch", "process all".
+---
+
+# Batch runs
+
+Reply in the user's language. `bashcut-batch` runs one pipeline over many inputs: **every input becomes its own
+project** (open and fix any of them later), up to `concurrency` items run at once, each step in its own
+`filmcraft-cli` process, and the job book survives the app, the runner or the machine stopping. The app does not need
+to be open. Format, job book and caps: BashCutPro `bashcut/batch.md`; this skill is how to use it well.
+
+## 1. Batch or not
+
+- **Batch** when the same recipe fits every input and judgement per item is small or can be capped: subtitles for a
+  folder, clean audio, a caption draft, the same exports for many clips, shorts from many recordings.
+- **Not a batch** when each video needs its own plan, gates and taste (`bcp:edit-workflow`), or there are fewer than
+  three inputs: edit them one by one, then reuse the steps that worked as a pipeline next time.
+- Run one item first (`--input` a single file) and look at its project and exports before the whole folder.
+
+## 2. Built-in presets
+
+Install once from the plugins repo: `bashcut-batch presets install <bashcutpro-plugins>/packs/batch`, then
+`bashcut-batch presets list` shows them with a description.
+
+| Preset | Does | Needs |
+|---|---|---|
+| `vietsub-folder` | transcribe, captions, Vietnamese translation (`translate-captions`), burned-in subtitles covered, styled captions, TikTok + YouTube | the plugin; a key, else each item hands off (see 5) |
+| `podcast-shorts` | transcribe, then an agent step (`bcp:rough-cut`) makes 3 vertical word-captioned shorts per recording | an agent (`claude`) with this kit |
+| `every-platform` | captions, then an agent step makes one reframed sequence per aspect and exports every profile | an agent; `bashcut.vision` for face-following reframes |
+| `captions-draft` | captions, clean word style, an SRT and a YouTube preview per clip | – |
+| `clean-audio` | voice polish and loudness on every clip, a WAV each | – |
+
+```sh
+bashcut-batch run --preset vietsub-folder --input ~/clips --projects ~/clips/out
+```
+
+Prefer a preset; copy it into a pipeline file only to change it (`bashcut-batch presets show NAME > my.json`).
+
+## 3. Writing a pipeline
+
+A `bashcut-batch/1` JSON file (full example in <skill_dir>/REFERENCE.md):
+
+- `inputs`: files, folders (media files in them, not recursive), `.fcproj` projects (copied, never edited in place);
+  `projectsFolder` for the item projects, `outputsFolder` for exports (default `<projectsFolder>/exports`).
+- `template`: `{"project": "…fcproj"}` copied per item (made with `bashcut.template.save`), or `{"commands": […]}`;
+  default: import the input and make a sequence from it.
+- `steps`, each exactly one of:
+  - `command` + `params`, or `commands` (several in one process: all saved or none). Use command ids from
+    `command_list`; `{name}`, `{media}`, `{project}`, `{outputs}`, `{itemDir}` are filled in per item.
+  - `plugin` `{argv}`: a plugin action, e.g. `["python3", "{plugins}/bashcut.translate-captions/plugin.py",
+    "translate", "--project", "{project}", "--cli", "{cli}", "--target", "vi"]`.
+  - `agent` `{skill, brief, maxTurns?, maxMinutes?, fixRounds?, review?, reviewProfile?}`: a kit skill run headless on
+    the item, reviewed with `bashcut.review.run`; blocking findings go back to it for at most `fixRounds` rounds.
+    Keep the brief to one task with a measurable end ("3 shorts of 20–60 s, each exported with the shorts profile").
+- `outputs`: `{"name": "{name}-tiktok.mp4", "profile": "tiktok"}` (output profiles: `bashcut.profiles.list`), or
+  `preset` / `format` / `settings` for a plain export preset.
+- `onFailure`: `skip` (default: the item stops, others go on) or `stop`. `concurrency`: start at 2;
+  `agentConcurrency`: 1 unless the user accepts the cost. `resources` caps memory per item.
+
+Check it before running: `bashcut-batch validate my.json --input ~/clips` lists the items and projects it would make.
+A project that already exists is never overwritten: pick another `--projects` folder.
+
+## 4. Running and watching
+
+```sh
+bashcut-batch run my.json --id vietsub-oct --input ~/clips --projects ~/clips/out
+bashcut-batch status ~/clips/out/.bashcut-batch/vietsub-oct --wait     # JSON: items, steps, errors, timings
+bashcut-batch list ~/clips/out                                            # every job in that folder
+bashcut-batch cancel <job>                                                # stops it; running steps are killed
+```
+
+`run` prints a summary (counts, agent turns / tokens / cost, peak memory) and exits 0 only when every item is done.
+Report to the user: items done, which need attention and why, where the projects and exports are. Long batches keep
+the machine awake; after a restart `bashcut-batch resume <job>` goes on where it stopped.
+
+## 5. Fixing what did not finish
+
+Read each item's `error.category` in `status`:
+
+| Category / status | What to do |
+|---|---|
+| `command`, `usage` | the step's command or params are wrong for this input: open `items/<name>/<step>.err`, fix the pipeline, `retry` |
+| `offlineMedia` | the input could not be read: check the file, then `retry --items <name>` |
+| `tripped` | the step was running when the runner stopped; it is never re-run blindly. Open the item's project, check what the step did, then `retry --items <name>` |
+| `handoff` (needs attention) | a plugin needs you, e.g. translation without a key: follow that plugin's skill on the item's project (`export-lines`, translate, `apply`), then `retry` |
+| `needsFix` | review findings the agent did not fix: fix them in the project (`bcp:review`), then `retry` or leave it for the user |
+| `limit`, `timeout` | the agent step ran out of turns or minutes: shorten the brief or raise the cap, `retry` |
+| `resources` | the machine was short of memory or disk; it runs again by itself, or lower `concurrency` |
+
+`bashcut-batch retry <job>` reopens every failed, cancelled, needs-attention and needs-fix item (`--items a,b` for
+some); finished steps are kept.
+
+## 6. Afterwards
+
+Spot-check two exports at phone size and one project in the app before telling the user it is done. A pipeline that
+worked is worth keeping: `bashcut-batch presets save NAME my.json`, and a lesson through `bcp:self-learn` when a step
+needed changing.
