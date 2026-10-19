@@ -39,6 +39,7 @@ tracked in [BashCutPro#24](https://github.com/dongnguyenvie/BashCutPro/issues/24
 | `color-grade` | Grading by measurement: scopes on the brightest, darkest and skin-heavy frames, Lumetri presets and LUTs (`grade.py` generates fitted looks), damage checks and backing off, shot match, one adjustment layer |
 | `footage-survey` | The survey before an edit: inventory, scene detection, contact sheets from rendered frames (`contact_sheet.py`), transcripts (outside words imported with `words_to_transcript.py`), cues and restarts, shot descriptions in metadata, coverage gaps; run by the `surveyor` sub-agent |
 | `review` | The review before export, 1–3 rounds: limits from sourced ranges, cuts against words, black frames from scopes, frames at phone size at every cut and text, loudness from a WAV export, severities by what a viewer sees, fixes re-measured; an independent `critic` sub-agent each round |
+| `beat-cut` | Rhythm by measurement: word edges for speech-led edits, a beat grid from `beats.py` (an out-of-process estimate on a WAV: tempo, beats, downbeats, energy, cut sync) for music-led ones, shot lengths per section, cuts in one batch, punch-ins from zoom headroom |
 
 Claude Code shows them under the plugin name (`/bcp:setup`); Codex as `bcp-<name>`. The editing skills
 (`edit-workflow`, `rough-cut`, `captions-text`, …) follow in BashCutPro#5–#7, once the command catalogue (#3) lands.
