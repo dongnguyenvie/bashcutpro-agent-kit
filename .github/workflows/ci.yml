@@ -1,0 +1,11 @@
+name: CI
+# Manual only, like every BashCutPro workflow.
+on:
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/check.py
+      - run: sh -n scripts/bashcutpro-mcp.sh scripts/install-codex.sh

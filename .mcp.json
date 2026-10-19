@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "bashcutpro": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/scripts/bashcutpro-mcp.sh"
+    }
+  }
+}
