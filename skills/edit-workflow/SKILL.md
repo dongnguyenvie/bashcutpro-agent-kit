@@ -64,7 +64,9 @@ to copy a reference video's style first: `bcp:style-study` before stage 2.
 
    Match the footage's frame rate when it is 25 or 29.97 (from `project.items` / `media.status` after import).
 2. Import all footage in one call: MCP `media_import` or `file.import {"paths": ["/abs/path/a.mp4", …]}`.
-   Absolute paths only.
+   Absolute paths only. Then read what earlier edits taught: `python3 <skill_dir>/../self-learn/knowledge.py intake
+   --project /abs/film.fcproj --tags <the genre and the stages ahead>` (lessons, the user's preferences, this
+   project's facts); follow them, and do not ask what a preference already answers.
 3. **Ask once** (at most 4 questions, REFERENCE "Intake questions"), each led by the choice you would make
    ("AI chọn: …"). User away: take your choices, mark them `inferred`, never ask later.
 4. Write the brief and the plan into the project notes (REFERENCE "Brief and plan in the notes"), then **G1**:
@@ -126,6 +128,9 @@ After G5, one export per output (REFERENCE "Export"): full size, the platform's 
 as a sidecar (`captionSidecar: "srt"`). A cover frame: `file.exportFrame {path, time}` at the hook. YouTube
 chapters: `markers.addChapter` per section, then write the chapter text from the markers. End with the hand-off
 report (REFERENCE "Hand-off report").
+
+At the end of the session (after G5 or the export), `bcp:self-learn`: what failed, was redone or corrected becomes a
+lesson, preference or fact, so the next intake prints it.
 
 ## Revisions
 

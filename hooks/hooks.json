@@ -1,0 +1,20 @@
+{
+  "description": "self-learn (optional): keeps user messages that read like corrections as lesson candidates and puts them back after a compaction. Off unless BASHCUTPRO_SELF_LEARN=1 (environment or ~/.config/bashcutpro/mcp.env).",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {"type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/skills/self-learn/knowledge.py\" hook correction", "timeout": 10}
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {"type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/skills/self-learn/knowledge.py\" hook after-compact", "timeout": 10}
+        ]
+      }
+    ]
+  }
+}

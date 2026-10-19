@@ -42,6 +42,7 @@ tracked in [BashCutPro#24](https://github.com/dongnguyenvie/BashCutPro/issues/24
 | `review` | The review before export, 1–3 rounds: limits from sourced ranges, cuts against words, black frames from scopes, frames at phone size at every cut and text, loudness from a WAV export, severities by what a viewer sees, fixes re-measured; an independent `critic` sub-agent each round |
 | `beat-cut` | Rhythm by measurement: word edges for speech-led edits, a beat grid from `beats.py` (an out-of-process estimate on a WAV: tempo, beats, downbeats, energy, cut sync) for music-led ones, shot lengths per section, cuts in one batch, punch-ins from zoom headroom |
 | `style-study` | Learning a creator's or channel's style by measurement in a study project (pacing from scene detection, shots, hook, speech, music with `beats.py`, sound with `loudness.py`, colour from scopes), a profile with tolerances, deliberate differences, then a look, text presets and the edit plan's bands |
+| `self-learn` | Lessons (symptom, cause, fix), the user's preferences in their own words and project facts kept as plain files by `knowledge.py`, printed at every edit's intake; correction candidates kept by optional Claude Code hooks; proposed kit changes |
 | `voiceover` | Voiceover by measurement: speaking rate and narration windows from the words (`narration.py`), lines sized to them, text prepared for TTS, English with `tts.*`, Vietnamese with the `bashcut.vieneu-tts` plugin, every take checked against its text, fit to picture, re-takes, dubbing; run by the `voice` sub-agent |
 | `stock-images` | Pictures the footage lacks: stock photos and video, emoji, logos, Iconify icons, illustration sets in one style, fetched through the resources plugin with each file's licence recorded, placed with `media_import`, `timeline.place` and Motion keyframes |
 | `motion-graphics` | Graphics over footage: whether a sentence needs one, the cheapest tool (native text, `.fcgt` template cards built once with `graphics.*` and reused with `graphics.template.apply`, or the `bashcut.hyperframes` plugin rendering HTML/GSAP outside and importing it with alpha), timing to the word, facts and Lottie from `bashcut.resources`, frames checked at phone size |
@@ -115,6 +116,8 @@ skills/<name>/SKILL.md            the skills (Agent Skills format, shared by Cla
 skills/<name>/REFERENCE.md        detail a skill reads on demand (keeps SKILL.md under 250 lines)
 scripts/commands.json             FilmCraft command catalogue (copy of BashCutPro bashcut/commands.json); check.py
                                   rejects command ids a skill names that are not in it
+hooks/hooks.json                  optional Claude Code hooks (self-learn's correction candidates; off unless BASHCUTPRO_SELF_LEARN=1)
+tests/                            unit tests of the kit's scripts: python3 -m unittest discover -s tests
 skills/<name>/agents/openai.yaml  Codex policy, only for a user-only skill (disable-model-invocation: true)
 scripts/bashcutpro-mcp.sh         finds filmcraft-cli and starts `filmcraft-cli mcp` in the configured mode
 scripts/install-codex.sh          Codex setup
@@ -128,7 +131,7 @@ scripts/check.py                  checks skills, links, the Skills table and the
   `Triggers: "phrase", "phrase", …`.
 - Use FilmCraft command ids found with `command_list`, never BashCut's commands; say what to do and why.
 - Only rules that were observed (a measurement, an error, a user's correction), with the number that proves it.
-- Run `python3 scripts/check.py` before committing. A change to `skills/` raises `version` in
+- Run `python3 scripts/check.py` and `python3 -m unittest discover -s tests` before committing. A change to `skills/` raises `version` in
   `.claude-plugin/plugin.json`: Claude Code caches an installed plugin per version.
 
 ## License
