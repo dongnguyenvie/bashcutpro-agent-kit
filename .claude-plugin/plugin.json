@@ -1,6 +1,6 @@
 {
   "name": "bcp",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Editing skills for BashCutPro (a FilmCraft fork), driven through its MCP server and command ids. Includes the BashCutPro MCP server.",
   "author": { "name": "BashCutPro" },
   "homepage": "https://github.com/dongnguyenvie/bashcutpro-agent-kit",
