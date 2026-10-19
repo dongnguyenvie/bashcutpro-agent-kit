@@ -105,9 +105,17 @@ It links each skill as `~/.agents/skills/bcp-<name>` and registers the launcher 
 | `BASHCUTPRO_BRIDGE` | `host:port` of the running app: `mcp --bridge` |
 | `BASHCUTPRO_PROJECT` | headless: `mcp --project` this `.fcproj` |
 | `BASHCUTPRO_DEMO` | `1`: headless on the demo project |
-| `BASHCUTPRO_DATA_DIR` | headless: `--data-dir` (user presets) |
+| `BASHCUTPRO_DATA_DIR` | FilmCraft data dir: `--data-dir` (user presets; where `bashcut-mcp` finds the window) |
+| `BASHCUT_MCP` | the `bashcut-mcp` binary (default: next to `filmcraft-cli`, on `PATH`) |
+| `BASHCUTPRO_ROOTS` | more folders agents may write to (path list) |
+| `BASHCUTPRO_NO_LOCK` | `1`: plain `filmcraft-cli mcp`, without `bashcut-mcp` |
 
-With none of the mode names set, the server is headless with an empty project.
+With `bashcut-mcp` installed (BashCutPro, `cargo build -p bashcut-mcp`), the launcher runs it: with no mode set it
+bridges to the open BashCutPro window when that window runs its control channel (`filmcraft --control <port>`), else
+it starts headless. A headless engine holds the project's engine lock, so a second one on the same project is
+refused. Writes outside the project folder and `BASHCUTPRO_ROOTS` come back as tool errors. Without `bashcut-mcp`,
+or for the demo, it runs `filmcraft-cli mcp` directly, and with none of the mode names set the server is headless
+with an empty project.
 
 ## Layout
 

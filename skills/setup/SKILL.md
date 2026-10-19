@@ -83,6 +83,11 @@ keep one: the bridge wins over a project, a project over the demo. `BASHCUTPRO_D
 (`/mcp` › bashcutpro › Reconnect) or restarts Claude Code. With `filmcraft-cli` on `PATH` and an empty
 headless project wanted, no file is needed.
 
+When BashCutPro's `bashcut-mcp` is built (`cargo build --release -p bashcut-mcp`, next to `filmcraft-cli`, or set
+`BASHCUT_MCP`), the launcher runs it instead: with no mode line it reaches the open BashCutPro window by itself (the
+app started with `--control <port>`), else runs headless. A second headless engine on the same project is refused,
+and writes outside the project folder and `BASHCUTPRO_ROOTS` are refused. `BASHCUTPRO_NO_LOCK=1` turns it off.
+
 **Claude Code without the plugin, or on Windows.** Register the binary directly, in the user's scope so every
 project sees it:
 
