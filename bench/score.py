@@ -34,6 +34,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SIDES = ("pro", "bashcut")
 WEIGHTS = {"sound": 20, "captions": 20, "edit": 20, "picture": 15, "review": 15, "length": 10}
 SEVERITY = {"blocker": 25, "major": 10, "minor": 3, "polish": 0}
+# bashcut.review.run (#57) names its own levels; a measured warning is not automatically a blocker (skills/review)
+ENGINE_SEVERITY = {"blocking": "blocker", "warning": "minor", "info": "polish"}
 MARGIN = 3.0  # a job is won by at least this many points of the total; closer is a tie
 
 
@@ -143,6 +145,7 @@ def score_review(m):
     counts = {}
     for f in review.get("findings") or []:
         sev = str(f.get("severity", "minor")).lower()
+        sev = ENGINE_SEVERITY.get(sev, sev)
         counts[sev] = counts.get(sev, 0) + 1
     score = 100.0 - sum(SEVERITY.get(k, 3) * n for k, n in counts.items())
     return max(0.0, score), ", ".join("%d %s" % (n, k) for k, n in sorted(counts.items())) or "no findings"

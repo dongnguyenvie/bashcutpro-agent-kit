@@ -106,6 +106,10 @@ from `transcript.inspect`), the order of sections, the total against the length 
 ```
 
 (`time` / `duration` are ticks: 254 016 000 000 per second; most commands also take `seconds` or `frame`.)
+Footage whose size differs from the sequence's sits small inside black bars: same aspect, `clip.fitToFrame {clips}`
+(720p in a 1080p sequence → 150 %); another aspect (16:9 into 9:16), `fitToFrame` letterboxes, so fill instead: Motion
+`scale` = sequence height / source height × 100 (`effects.setParam`), framed on the subject (`bashcut.vision`
+`subjects --reframe` follows a face). Look at a frame either way.
 **G3**: the cut list from `sequence_inspect` (duration against the plan) and 4–6 frames at section starts.
 
 ## 5–9. Voice, sound, text, colour, effects
