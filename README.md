@@ -14,6 +14,7 @@ tracked in [BashCutPro#24](https://github.com/dongnguyenvie/BashCutPro/issues/24
 
 | Skill | Use it for |
 |---|---|
+| `captions-text` | Captions from speech or imported words (`transcript.createCaptions`), SRT/VTT, fixing and styling captions, titles and cards with `graphics.*` and `.fcgt` templates, Vietnamese fonts (`fetch_font.py`), size, contrast, safe area, sync |
 | `edit-workflow` | The spine of every edit, raw footage to export: intake, brief and plan in the project notes, stages with the one skill to read for each, `command_batch` per stage, the user's gates, draft and export |
 | `rough-cut` | The rough cut by quote: lines found with `transcript.search`, word-exact edges, takes and recording cues, fillers and pauses, selects with reasons, the blind second pass, long → short as one sequence per short |
 | `setup` | Getting `filmcraft-cli` (source build or release, macOS / Windows / Linux), registering its MCP server headless (a project, the demo, or empty) or bridged to the running app, and checking `command_list` answers |
