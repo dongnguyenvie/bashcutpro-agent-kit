@@ -1,0 +1,63 @@
+{
+  "schema": "bashcut-bench/1",
+  "note": "The fixed bench set (BashCutPro#58). Inputs are globs under the raw folder (the workspace's resources/raw/, never committed; licences in its SOURCES.md). Each job runs once with the Pro kit headless (batch runner #45 with an agent step) and once with the Swift BashCut on a mac, from the same brief.",
+  "jobs": [
+    {
+      "id": "talking-head-short",
+      "title": "Talking head to a vertical short",
+      "inputs": ["talking-head/*.mp4"],
+      "brief": "A 45-60 s vertical short from the talking-head take: strongest line first, fillers and long pauses cut, punch-ins, burned-in captions.",
+      "skills": ["edit-workflow", "vlog-talking-head", "rough-cut", "captions-text", "review"],
+      "profile": "tiktok",
+      "target": {"seconds": [45, 60], "lufs": -14, "truePeak": -1.0, "captions": true}
+    },
+    {
+      "id": "vlog-60s",
+      "title": "Daily vlog to 60 s",
+      "inputs": ["vlog/*"],
+      "brief": "A 60 s daily vlog from the clips: moments in order, a diary voice line or captions, one calm music bed.",
+      "skills": ["edit-workflow", "vlog-daily", "beat-cut", "audio-mix", "review"],
+      "profile": "reels",
+      "target": {"seconds": [55, 62], "lufs": -14, "truePeak": -1.0, "captions": true}
+    },
+    {
+      "id": "podcast-3-clips",
+      "title": "Podcast to three clips",
+      "inputs": ["podcast/*"],
+      "brief": "Three standalone 30-60 s clips by quote from the podcast, word-exact edges, one sequence and one export each, captions burned in.",
+      "skills": ["edit-workflow", "vlog-podcast-clips", "rough-cut", "captions-text", "review"],
+      "profile": "shorts",
+      "outputs": 3,
+      "target": {"seconds": [30, 60], "lufs": -14, "truePeak": -1.0, "captions": true}
+    },
+    {
+      "id": "broll-montage",
+      "title": "B-roll montage to music",
+      "inputs": ["broll/*", "music/*"],
+      "brief": "A 30 s montage of the b-roll cut to the music's beat, no voice, a look applied consistently.",
+      "skills": ["edit-workflow", "vlog-promo", "beat-cut", "color-grade", "review"],
+      "profile": "youtube",
+      "target": {"seconds": [28, 32], "lufs": -14, "truePeak": -1.0, "captions": false}
+    },
+    {
+      "id": "tutorial-captions",
+      "title": "Tutorial with captions",
+      "inputs": ["tutorial/*"],
+      "brief": "A tutorial from the screen recording and voice: the result first, step cards, a zoom per narration line, waiting sped up, captions.",
+      "skills": ["edit-workflow", "vlog-tutorial", "effects", "captions-text", "review"],
+      "profile": "youtube",
+      "target": {"seconds": [60, 240], "lufs": -14, "truePeak": -1.0, "captions": true}
+    },
+    {
+      "id": "vietnamese-subtitles",
+      "title": "Vietnamese subtitles",
+      "inputs": ["talking-head-en/*"],
+      "brief": "The English talk with Vietnamese subtitles: transcribe, translate keeping timing (translate-captions plugin), a Vietnamese font, burned in.",
+      "skills": ["edit-workflow", "captions-text", "review"],
+      "plugins": ["bashcut.translate-captions", "bashcut.align"],
+      "profile": "youtube",
+      "language": "vi",
+      "target": {"seconds": null, "lufs": -14, "truePeak": -1.0, "captions": true}
+    }
+  ]
+}
