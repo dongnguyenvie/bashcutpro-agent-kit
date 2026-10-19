@@ -1,0 +1,11 @@
+{
+ "scores": {
+  "sound": 85,
+  "captions": 90
+ },
+ "findings": [
+  {
+   "severity": "polish"
+  }
+ ]
+}

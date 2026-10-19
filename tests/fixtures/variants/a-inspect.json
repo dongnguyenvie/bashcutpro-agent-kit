@@ -1,0 +1,139 @@
+{
+ "id": 10,
+ "name": "main",
+ "settings": {
+  "fps": 30
+ },
+ "duration": 5080320000000,
+ "markers": [],
+ "video": [
+  {
+   "id": 1,
+   "name": "V1",
+   "items": [
+    {
+     "clip": 1,
+     "item": 100,
+     "name": "talk.mp4",
+     "start": 0,
+     "end": 1524096000000,
+     "duration": 1524096000000,
+     "sourceIn": 0,
+     "speed": 1.0,
+     "reverse": false,
+     "link": 1,
+     "enabled": true,
+     "effects": [
+      {
+       "effect": "lumetri",
+       "enabled": true,
+       "masks": 0,
+       "params": {}
+      }
+     ]
+    },
+    {
+     "clip": 2,
+     "item": 101,
+     "name": "broll-city.mp4",
+     "start": 1524096000000,
+     "end": 2540160000000,
+     "duration": 1016064000000,
+     "sourceIn": 508032000000,
+     "speed": 1.0,
+     "reverse": false,
+     "link": null,
+     "enabled": true,
+     "effects": [
+      {
+       "effect": "lumetri",
+       "enabled": true,
+       "masks": 0,
+       "params": {}
+      }
+     ]
+    },
+    {
+     "clip": 3,
+     "item": 100,
+     "name": "talk.mp4",
+     "start": 2540160000000,
+     "end": 5080320000000,
+     "duration": 2540160000000,
+     "sourceIn": 2032128000000,
+     "speed": 1.0,
+     "reverse": false,
+     "link": 3,
+     "enabled": true,
+     "effects": [
+      {
+       "effect": "lumetri",
+       "enabled": true,
+       "masks": 0,
+       "params": {}
+      }
+     ]
+    }
+   ],
+   "transitions": []
+  }
+ ],
+ "audio": [
+  {
+   "id": 2,
+   "name": "A1",
+   "items": [
+    {
+     "clip": 11,
+     "item": 100,
+     "name": "talk.mp4",
+     "start": 0,
+     "end": 1524096000000,
+     "duration": 1524096000000,
+     "sourceIn": 0,
+     "speed": 1.0,
+     "reverse": false,
+     "link": 1,
+     "enabled": true,
+     "effects": []
+    },
+    {
+     "clip": 13,
+     "item": 100,
+     "name": "talk.mp4",
+     "start": 2540160000000,
+     "end": 5080320000000,
+     "duration": 2540160000000,
+     "sourceIn": 2032128000000,
+     "speed": 1.0,
+     "reverse": false,
+     "link": 3,
+     "enabled": true,
+     "effects": []
+    }
+   ],
+   "transitions": []
+  },
+  {
+   "id": 3,
+   "name": "A2",
+   "items": [
+    {
+     "clip": 21,
+     "item": 200,
+     "name": "bed-calm.wav",
+     "start": 0,
+     "end": 5080320000000,
+     "duration": 5080320000000,
+     "sourceIn": 0,
+     "speed": 1.0,
+     "reverse": false,
+     "link": null,
+     "enabled": true,
+     "effects": []
+    }
+   ],
+   "transitions": []
+  }
+ ]
+}

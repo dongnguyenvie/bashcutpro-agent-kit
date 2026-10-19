@@ -1,0 +1,14 @@
+{
+ "scores": {
+  "sound": 80,
+  "captions": 90
+ },
+ "findings": [
+  {
+   "severity": "blocker"
+  },
+  {
+   "severity": "polish"
+  }
+ ]
+}
