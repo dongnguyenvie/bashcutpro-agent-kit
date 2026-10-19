@@ -127,7 +127,9 @@ A setup worth reusing: `presets.save {"clip", "effects", "name", "keyframes": "s
 A crop decides what the viewer loses. Look first, never crop blind.
 
 1. **Look** at the start, middle, end and action peaks of each shot with `render_frame`. FilmCraft has no face or
-   subject boxes; you read the subject's place off the frames.
+   subject boxes; the `bashcut.vision` plugin finds them (`subjects`, into `<project>.vision.json`), and
+   `subjects --clip <id> --reframe` writes Motion scale and position keyframes that follow the main face in the
+   sequence's shape. Without the plugin, read the subject's place off the frames. Check the result either way.
 2. **Auto Reframe** (`effects.apply`) when one subject moves through the shot and the frames show it stays
    inside the new shape; check the result at the same frames.
 3. **Fixed crop when what matters fits**: Motion scale and position, locked for the shot ("don't move unless you
@@ -168,8 +170,9 @@ refused, `command_list {"filter": "<id>"}` shows its params.
 
 ## Not possible yet: say so and offer the alternative
 
-Typewriter text and counting numbers outside a template, text behind a person (segmentation), face or subject
-detection, beat detection, AI-generated transitions. Note it as a feature request (BashCutPro or a plugin); never
+Typewriter text and counting numbers outside a template, beat detection, AI-generated transitions. (Text behind
+a person and face detection need the `bashcut.vision` plugin: `cutout` puts the person on the track above, the text
+goes between.) Note it as a feature request (BashCutPro or a plugin); never
 fake it with a pre-rendered file without telling the user.
 
 ## Verify

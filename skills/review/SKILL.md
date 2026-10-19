@@ -82,7 +82,7 @@ loudness, safe zones) come from the brief's outputs (`bcp:edit-workflow` REFEREN
 | black, frozen picture, gap, long static shot | `render_frame`, `scopes.read`, the clip list | `bcp:beat-cut`, `bcp:effects`; a gap: `sequence.closeGap` |
 | jump cut, repeated framing, cut inside a word | frames around the cut, cut times vs words | `bcp:rough-cut`, `bcp:beat-cut` |
 | cut or text off the beat or the word | cut and text times vs beats (`bcp:beat-cut` `beats.py`) and words | `bcp:beat-cut`, `bcp:captions-text` |
-| text in a safe zone, too small, overlapping, low contrast | `render_frame {max_side: 400}` at the text | `bcp:captions-text` |
+| text in a safe zone, too small, overlapping, low contrast, over a face or burned-in text | `render_frame {max_side: 400}` at the text; face and text boxes from the `bashcut.vision` sidecar when there is one | `bcp:captions-text` |
 | no hook, slow opening | the first 3 s: frames, words, first text | story (`bcp:edit-workflow`), `bcp:captions-text` |
 | dead air, music gaps, voice drowned, one SFX repeated like a machine gun | `loudness.py` on the mix and stems | `bcp:audio-mix` |
 | live speech and voiceover at different levels | each speech stem within ~2 LU, music 15–20 LU under | `bcp:audio-mix` |

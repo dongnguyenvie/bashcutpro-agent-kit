@@ -123,7 +123,8 @@ on its line. In and Out animation: `bcp:effects`; animated graphics: `bcp:motion
   outputs) and use the strictest zone of the outputs that share a shape. Vertical caption height is the biggest contradiction in T09 (from 55–60 % of the
   height down to near the bottom bar): decide from faces, a picture-in-picture camera and cards on this frame, and
   keep one zone per sequence (`captions.setStyle {anchor, margin}`; `margin` is a fraction of frame height).
-- Keep text off faces (look at the frames; nothing detects faces) and labels clear of each other (a top-left step
+- Keep text off faces (the `bashcut.vision` plugin's `subjects` writes face boxes per clip to
+  `<project>.vision.json`; without it, look at the frames) and labels clear of each other (a top-left step
   label and a top-right tag collided in one project).
 - **Sync** (T09 §3): captions start 0–0.15 s before the word; cards and graphics lead by 0.15–0.6 s
   (`captions.move`, `captions.setTimes`; a word's time from `transcript.search`).
