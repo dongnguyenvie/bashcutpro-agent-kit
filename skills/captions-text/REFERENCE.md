@@ -42,12 +42,13 @@ Each `captions.setText` is its own undo step (a batch of 40 is 40 undo steps).
 
 ## A captions batch
 
-After `captions_fit.py group … --out /abs/project/captions/cues.srt` (SKILL.md §2), one `bashcut.batch`:
+One `bashcut.batch` (SKILL.md §2; on a build without `bashcut.captions.create`, `captions_fit.py group` and a
+`captions.import {path, name}` in its place):
 
 ```json
 {"id": "bashcut.batch", "params": {"label": "Captions", "commands": [
   {"id": "captions.deleteTrack", "params": {}},
-  {"id": "captions.import", "params": {"path": "/abs/project/captions/cues.srt", "name": "Captions"}},
+  {"id": "bashcut.captions.create", "params": {"maxChars": 32, "lines": 2, "maxCps": 20}},
   {"id": "captions.setStyle", "params": {"font": "Be Vietnam Pro", "size": 64, "color": "#ffffff",
    "outline": 4, "outlineColor": "#000000", "anchor": "bottom", "margin": 0.28, "align": "center"}}
 ]}}

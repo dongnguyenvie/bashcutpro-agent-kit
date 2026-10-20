@@ -25,10 +25,10 @@ Install once from the plugins repo: `bashcut-batch presets install <bashcutpro-p
 
 | Preset | Steps | Needs | Before you rely on it |
 |---|---|---|---|
-| `vietsub-folder` | transcribe, `transcript.createCaptions` 42 × 2, translate (`translate-captions`), cover burned-in subtitles, caption style; `tiktok` + `youtube` | the plugin; a key, else each item hands off (see 5) | Vietnamese cues keep the English timing: run `captions_fit.py plan` on one item and look at `left` |
+| `vietsub-folder` | transcribe, `bashcut.captions.create` 42 × 2, translate (`translate-captions`), cover burned-in subtitles, caption style; `tiktok` + `youtube` | the plugin; a key, else each item hands off (see 5) | Vietnamese cues keep the English timing: run `captions_fit.py plan` on one item and look at `left` |
 | `podcast-shorts` | transcribe, then an agent step (`bcp:rough-cut`): 3 vertical 20–60 s shorts, word captions, `shorts` exports | an agent (`claude`) with this kit | its brief makes captions with `createCaptions` and word style, without the speed fix or an SRT: copy it and use the brief in 3 |
 | `every-platform` | transcribe, captions 42 × 2, an agent step makes one reframed sequence per aspect and exports every profile | an agent; `bashcut.vision` for face-following reframes | – |
-| `captions-draft` | transcribe, captions 42 × 2, SRT, `clean` word style, a `youtube` preview | – | captions straight from `createCaptions` (37–56 % at or under 20 cps on fast speech); the `captions_fit.py apply` step in REFERENCE.md reached 92 % |
+| `captions-draft` | transcribe, `bashcut.captions.create` 42 × 2, caption review, SRT, `clean` word style, a `youtube` preview | – | measured on 2 clips: 90 % and 100 % of cues at or under 20 cps, 0 over 25 |
 | `clean-audio` | `bashcut.audio.polish {amount: 0.5, target: -16}` on every clip, a loudness reading, a WAV each | – | – |
 
 ```sh
@@ -58,16 +58,16 @@ A `bashcut-batch/1` JSON file (full example in <skill_dir>/REFERENCE.md):
     Keep the brief to one task with a measurable end, and name the numbers the review and the bench check:
 
     > 3 standalone 30–60 s clips by quote from {name}, one 1080×1920 sequence each named short-1..3. Cuts in pauses
-    > between phrases, never inside a word. Captions per clip with bcp:captions-text (`captions_fit.py`, 26–32 × 2,
+    > between phrases, never inside a word. Captions per clip with bcp:captions-text (`bashcut.captions.create`, 26–32 × 2,
     > ≥ 90 % of cues ≤ 20 cps), reviewed, an SRT per clip in {outputs} before any word style. Voice with
     > `bashcut.audio.polish {profile: "shorts"}`. Review every clip with bcp:review, then one `bashcut.profiles.apply
     > {profile: "shorts", path: "{outputs}/{name}-short-N.mp4", wait: true}` each. Save the project.
 
-  - **The agent gets only the MCP tools** (`--allowedTools mcp__bashcutpro`) and the kit only if the `bcp` plugin is
-    installed, so the kit's scripts (`captions_fit.py`, `loudness.py`, `contact_sheet.py`) cannot run inside it
-    (BashCutPro#204). Run them as plugin steps around the agent (REFERENCE.md), or give the step its own `argv` with
-    `--plugin-dir` and `Bash(python3:*)` (REFERENCE.md "Agent with the kit's scripts"; fix rounds then start a fresh
-    session).
+  - **Give agents the kit**: `bashcut-batch run --kit /abs/bashcutpro-agent-kit` (or `BASHCUT_KIT`, or a copy in
+    `<data dir>/bashcut-kit`). Claude Code then gets it as `--plugin-dir` with the tools its scripts need (`Skill`,
+    `Read`, `Write`, `Bash(python3:*)`, ffmpeg), and every agent a prompt line with the skills path (BashCutPro#204).
+    Without it the agent has only the MCP tools and cannot run `loudness.py` or `contact_sheet.py`. `"kit": false`
+    opts a step out; `"allowedTools": [...]` adds tools. `{kit}` is a placeholder for plugin steps.
   - A command step runs no review: end a pipeline without an agent with a `bashcut.review.run {profile}` step (before
     any word style), and read its verdict in the step's `.out`.
 - `outputs`: `{"name": "{name}-tiktok.mp4", "profile": "tiktok"}` (output profiles: `bashcut.profiles.list`), or
