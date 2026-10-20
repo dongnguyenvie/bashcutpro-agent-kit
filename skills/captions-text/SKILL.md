@@ -1,6 +1,6 @@
 ---
 name: captions-text
-description: Captions and on-screen text in BashCutPro: captions from speech (transcript.generate or imported words, then transcript.createCaptions), SRT/VTT import and export, fixing text and times with captions.*, the caption look per track, titles, place and chapter cards with graphics.* and .fcgt templates, Vietnamese fonts (fetch_font.py), size, contrast, safe area and sync. Triggers: "phụ đề", "sub", "caption", "chữ trên hình", "tiêu đề", "thẻ chương", "nhãn địa điểm", "font", "lỗi font tiếng Việt", "add subtitles".
+description: Captions and on-screen text in BashCutPro: captions from speech (transcript.generate or imported words), cues grouped from the words at ≤ 20 characters a second with captions_fit.py (or transcript.createCaptions) and fast cues fixed, word-by-word styles, SRT/VTT import and export, fixing text and times with captions.*, the caption look per track, titles, place and chapter cards with graphics.* and .fcgt templates, Vietnamese fonts (fetch_font.py), size, contrast, safe area and sync. Triggers: "phụ đề", "sub", "caption", "chữ trên hình", "tiêu đề", "thẻ chương", "nhãn địa điểm", "font", "lỗi font tiếng Việt", "add subtitles".
 ---
 
 # Captions and on-screen text
@@ -46,36 +46,62 @@ between words and the speech rate (words per second).
 
 ## 2. Group cues
 
-`transcript.createCaptions {maxChars, lines, minSeconds, maxSeconds, gapFrames, name}` makes a captions track
-from the words in groups. Choose its limits from the measurement, inside these ranges (T09 §3, §7):
+The targets (the bench rubric and `bashcut.review.run`): **at least 90 % of cues at or under 20 characters a second
+and none over 25** (spaces count; T09 §3: 15–20 comfortable, above ~25 hard; review blocks over 25), at most 42
+characters a line and 2 lines, every cue starting and ending on a word edge. Rendered width matters more than the
+count: check the longest line on a frame. A cue's speed is its characters over its time on screen, and the words fix
+most of that time: fast cues are fixed by where the cues break (at pauses, so a cue can hold into the silence
+after it), not by the font.
 
-| Delivery | Words per cue | Pause that breaks a cue | Characters per line |
+**Group from the words with `captions_fit.py`** (it breaks at sentence ends, at commas once a cue is half full and at
+pauses, never after "the" or "and", puts a lone last word back with its sentence, drops "um" / "uh" and stuttered
+repeats from the text, holds each cue into the silence after it until it reads under the limit and merges what is
+still fast with a slow neighbour):
+
+```sh
+# transcript.inspect saved to words.json (the edited sequence's words), sequence length from bashcut.timeline.summary
+python3 <skill_dir>/captions_fit.py group words.json --out /abs/project/captions/cues.srt \
+  --max-chars 32 --lines 2 --max-cps 20 --fps 30 --end 58.4 [--trim-hedges]
+```
+
+then `captions.deleteTrack` (the old track) and `captions.import {path: "/abs/…/cues.srt", name: "Captions"}`. It
+prints `after` (cues, % at or under the limit, % over 25) and `left`, the cues still over. Measured on a 190 wpm
+voice with no hesitations (28 s): `transcript.createCaptions` 37–56 % at or under 20 cps; `group` 90 % (42 × 2),
+92 % (32 × 2 with `--trim-hedges`), 65 % (32 × 1: one line leaves no room on fast speech).
+
+| Delivery | `--max-chars` × `--lines` | `--break-gap` | Notes |
 |---|---|---|---|
-| Energetic vertical (hooks, reactions) | 2–4 | 0.15–0.3 s | vertical: 15–32 Latin |
-| Conversational (vlog, review, talking head) | 3–6 | 0.25–0.5 s | vertical: 15–32 Latin |
-| Landscape subtitles (tutorial, interview) | 6–8, or full lines | 0.5–0.6 s | 32–42, two lines |
+| Vertical social (talking head, podcast clip, vlog) | 26–32 × 2 | 0.3–0.5 s | one line only for 2–5-word word-style groups on a slow speaker (check `after`) |
+| Energetic vertical hook | 15–24 × 1–2 | 0.15–0.3 s | the hook's first cue may be faster; keep it at or under 25 |
+| Landscape subtitles (tutorial, interview, Vietsub) | 37–42 × 2 | 0.5–0.6 s | `--max-seconds 7` |
 
-- `gapFrames` is the pause in frames (0.3 s at 30 fps = 9). Fast talkers need the low end; set the break near the
-  speaker's own typical gap, not a house number. Cue length 0.5–5 s for social (`minSeconds`, `maxSeconds`), up to
-  ~7 s for subtitles; one cue on screen at a time.
-- Character limits depend on font width and size: CJK counts double, and rendered width matters more than the
-  count (T09 §3). `lines`: 1 for punchy vertical styles, 2 for subtitles.
-- No single number is "right": the sources contradict each other on words per cue (always 3 vs never fixed), the
-  pause (250 vs 500 ms) and vertical line length (~28–30 vs 32) (T09 §3, §5).
-- Reading speed: about 15–20 Latin characters per second is comfortable, above ~25 is hard (T09 §3). Captions of
-  real speech follow the speech; look again at cues above ~20 cps and split (`captions.split`) or merge
-  (`captions.merge`) them, but do not paraphrase.
-- Break at meaning (phrase ends, commas), not only at the limit: after the rule pass, merge or split the cues that
-  break a phrase (`captions.list` to read them with ids and times).
+- Cue length 0.7–5 s social (`--min-seconds`, `--max-seconds`), up to 7 s subtitles; one cue on screen at a time
+  (`--gap-frames 2` between cues). CJK counts double: halve `--max-chars`.
+- `left` not empty: the speaker is faster than 20 cps there. Shorten that cue's text yourself (drop a hedge or a word
+  the picture shows), never change what is claimed; `--trim-hedges` drops "just", "actually", "you know"… from
+  those cues only. Interview subtitles and Vietsub stay verbatim: keep them and say how many are over.
+- **A track that already exists** (translated, imported, edited by hand): `captions.list` to a file, then
+  `captions_fit.py plan caps.json --max-cps 20 --end S` prints `commands` (`captions.setText`, `captions.setTimes`,
+  `captions.merge`) for one `bashcut.batch {commands, label: "Caption reading speed"}`: one undo step.
+- Without the script: `transcript.createCaptions {maxChars, lines, minSeconds, maxSeconds, gapFrames}`. It breaks
+  only at the character limit, a sentence end once half full and pauses of 1 s or more; `gapFrames` is the empty
+  frames left **between** cues, not the pause that breaks one. Then fix speed with `captions_fit.py plan`.
+- Speech recognition timings: a cue starts 0–0.15 s before its first word (`--lead`), ends on its last word or later
+  in the silence, never inside a word.
 
-**After every cut, make the captions again from what is heard** (delete the old track: `captions.deleteTrack`).
-Captions made before a cut keep words of lines cut away (one edit showed half a dropped sentence).
+**After every cut, make the captions again from what is heard** (save `transcript.inspect` again, `group`, delete
+the old track, import). Captions made before a cut keep words of lines cut away (one edit showed half a dropped
+sentence).
 
-Word-by-word highlight (karaoke): `bashcut.captions.wordStyle {captions, style: {preset: "karaoke" | "pop" | "clean",
-highlight, pop, bold, dim}}` after the cues are final (it turns them into graphic text layers, one per spoken word,
-timed from the transcript; one undo step). The caption track is empty afterwards, so write any sidecar first
-(`captions.export {path}` before it, else the .srt has 0 cues). Keep such cues to one line of 2–5 words and `pop` ≤ 1.25 (the line reflows).
-Builds without it (`command_list`): short groups (2–3 words, one line) instead, and say so if the user asked for it.
+**Word-by-word highlight** (karaoke): `bashcut.captions.wordStyle {captions, style: {preset: "karaoke" | "pop" |
+"clean", highlight, pop, bold, dim}}`, last, after the cues are final and measured. It turns the cues into graphic
+text layers (one per spoken word, timed from the transcript; one undo step) and **empties the caption track**, so
+in this order: review the captions (`bashcut.review.run {checks: ["captions"]}`: afterwards it has none to read),
+then `captions.export {path: "<output name>.srt"}` next to every output that has captions (the bench and the
+platforms read it; a `burn` profile writes none, and a `srt` profile has no captions left to write after it), then
+the word style. Keep such cues to 2–5 words and `pop` ≤ 1.25 (the line reflows). A one-word cue is left as a plain
+caption by this build: `group` avoids them inside a sentence. Builds without the id (`command_list`): short groups
+instead, and say so if the user asked for it.
 
 ## 3. Caption look
 
@@ -149,7 +175,10 @@ on its line. In and Out animation: `bcp:effects`; animated graphics: `bcp:motion
 
 ## 7. Verify
 
-`captions.list` (or `captions.export` to an SRT) for cps, gaps and overlaps; `render_frame` at phone size on the
-longest-line cue, every title and the opening: readable, off faces, inside the safe area, no collision with
-another text? Fix in one batch, look again. Stop after about three rounds of fixes and show the user what is left
-(T09 §7).
+- **Reading speed**: `captions_fit.py report` on the exported SRT (or `captions.list` saved to a file): `atOrUnder` ≥ 90,
+  `over25` 0, `longLines` empty. `bashcut.review.run {checks: ["captions"]}` gives the same as findings
+  (`readingSpeed` warning over 20, blocking over 25; `lineLength`, `lines`, `overlap`) while the cues are captions.
+- `render_frame` at phone size on the longest-line cue, every title and the opening: readable, off faces, inside the
+  safe area, no collision with another text? Fix in one batch, look again. Stop after about three rounds of fixes and
+  show the user what is left (T09 §7).
+- Report: cues, % at or under 20 cps, % over 25, cues left over with the reason, where the SRT is.
