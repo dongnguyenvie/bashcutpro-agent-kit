@@ -17,8 +17,12 @@ quotes, times and what is on screen must be in it.
    Without, an outside transcriber and `words_to_transcript.py`, then `transcript.set`. Read every transcript
    yourself with `transcript.inspect`, in pieces when it is long. Note suspect words (the script's stderr) and
    re-transcribe those windows.
-2. **Shots.** Put the items on a scratch sequence (`file.newSequence {name: "Survey", fromItems}`), then
-   `clip.sceneEditDetection {applyCuts: false, generateMarkers: true, wait: true}` for the camera's own cuts.
+2. **Shots and measurements.** Put the items on a scratch sequence (`file.newSequence {name: "Survey", fromItems}`;
+   `bashcut.timeline.summary` gives each clip's id and seconds), then
+   `clip.sceneEditDetection {applyCuts: false, generateMarkers: true, wait: true}` for the camera's own cuts,
+   `bashcut.audio.loudness {clip}` per clip with sound (LUFS, `silent`), `bashcut.review.pictureChecks {}` once
+   (frozen, black, long-still stretches) and `bashcut.audio.beats {clip}` on music. No exports: these read the
+   sequence directly.
 3. **Look in sheets, at most six**: `contact_sheet.py plan` with about one frame per (length / 36) seconds, run
    the steps in one `command_batch`, `contact_sheet.py sheet`, then open the image. Zoom into every stretch you will
    propose, the hook candidates first (`--from A --to B --count 12`). Never describe shots you did not see.
@@ -26,7 +30,9 @@ quotes, times and what is on screen must be in it.
    one line per shot (`start–end size angle move: subjects; best S (looked a, b, c)`, sizes ECU…EWS, insert).
    Describe the stretches you looked at, not the whole file.
 5. **Check every quote you propose** with `transcript.search {query}`: copy the words as the transcript has them
-   (its spelling, even when it misheard); drop or fix a quote that is not found.
+   (its spelling, even when it misheard); drop or fix a quote that is not found. Give its from–to from the match
+   (ticks ÷ 254 016 000 000 = seconds): the first word's start and the last word's end, so the editor cuts on word
+   edges, never inside a word.
 6. **Answer in under 450 words**, nothing else:
    - what the footage is: who speaks, where, what happens; names, handles and prices exactly as said (or "not said");
    - 3–5 **hook candidates**, the strongest first: exact quote, item and from–to seconds, what is on screen then
@@ -37,5 +43,7 @@ quotes, times and what is on screen must be in it.
    - **recording cues**, one line each: item, from–to seconds, the words, the kind (start / end of take, "cut that"
      / "take two" / "làm lại" throwing away the phrase before it, clap or slate) and, for a retake, which take to
      use and why; never propose a quote that holds a cue;
+   - the measurements in one line per clip: LUFS (or silent), frozen or black stretches with seconds, BPM of music,
+     speech rate in characters a second per speaker (over 20: the captions need short cues);
    - the hygiene checklist's findings (broken, silent, HDR or log, mixed orientation, VFR) and missing coverage,
      risks: retakes, shaky starts, no usable sound, unsure names.

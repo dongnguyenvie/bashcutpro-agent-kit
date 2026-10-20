@@ -41,8 +41,9 @@ file's `commands`, else `command_batch`: `markers.add`, red for drops, green for
 ## 3. Explain
 
 For each drop, look before you conclude: `render_frame` just before and after the time, and read the words there
-(`transcript.search` or the captions). `bashcut.review.run {range: {start, end}, writeMarkers: false}` over the 5 s
-before a drop says what a measurement sees there (a still picture, a long silence, a caption over 20 characters a
+(`transcript.search` or the captions). `bashcut.review.run {range: {start, end}, checks: ["picture", "captions", "edit"],
+writeMarkers: false}` over the 5 s before a drop (leave `sound` out: a short range is judged against the whole
+video's loudness target) says what a measurement sees there (a still picture, a long silence, a caption over 20 characters a
 second, a cut inside a word). Usual causes, in the order to check:
 
 | On screen at the drop | Likely cause |

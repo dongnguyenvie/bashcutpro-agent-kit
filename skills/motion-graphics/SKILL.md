@@ -59,7 +59,8 @@ the plugin for most sentences.
 Taste stated as law ("never linear", "no bounce") is not a rule: linear suits constant pans and counters; overshoot
 1.05–1.12 suits playful, none calm or premium (shotcraft, saas).
 
-Steps: the payoff word's time W (`transcript.search {query}` gives each match's start in seconds) → entrance length
+Steps: the payoff word's time W (`transcript.search {query}` gives each match's `start` in ticks: ÷ 254 016 000 000
+for seconds) → entrance length
 E → the graphic starts at W − E (its entrance takes E) → hold until the narration it illustrates ends + 0.5–1 s.
 Times inside a rendered graphic (a counter's `at`, each row's `at`) are seconds from the graphic's start:
 word time − (W − E).

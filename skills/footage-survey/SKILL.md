@@ -20,7 +20,21 @@ transcript yourself. In Codex (no sub-agents), follow that same brief yourself: 
 - Per file: `media.status` (offline, missing), `media.colorInfo` (transfer: HDR or log), CLI `bashcutpro probe
   <file>` (fps, size, rotation, streams, length).
 - A scratch sequence holds the clips for the commands that need clips: `file.newSequence {name: "Survey",
-  fromItems: [...]}` (back to back). Survey there; never in the edit sequence.
+  fromItems: [...]}` (back to back). Survey there; never in the edit sequence. `bashcut.timeline.summary` lists each
+  clip's id, item and start / end in seconds on it.
+
+## 1b. Measure (no export, no render)
+
+On the survey sequence, in one pass, before looking:
+
+| What | Command | Read |
+|---|---|---|
+| Sound per clip | `bashcut.audio.loudness {clip}` | `integratedLufs`, `truePeakDbtp`, `silent`; speech clips sit around −24 to −16 LUFS, a clip under about −35 LUFS has room tone or wind only (a noise-only test clip read −38) |
+| Stuck, black, still | `bashcut.review.pictureChecks {}` | `frozen` (≥ 1 s unchanged), `longStill` (≥ 5 s), `black`, `flash` stretches in sequence seconds: a frozen stretch inside a video file is a decode fault or a phone pause; a locked-off shot shows as `longStill` |
+| Music files | `bashcut.audio.beats {clip}` | `bpm` and beats in sequence seconds, for bcp:beat-cut |
+| Camera cuts | `clip.sceneEditDetection` (below) | cuts per file |
+
+These cost seconds; a WAV export and an outside script only when a number is missing here (`bcp:audio-mix`).
 
 ## 2. Look
 
@@ -46,7 +60,9 @@ a cut it missed. Numbers only point; the frame confirms.
 
 ## 3. Words
 
-`transcript.models` says whether the build has Whisper. With it: `bashcut.transcript.generate {items, language}` (a clip with only music or ambience reports `noSpeech`). Without:
+`transcript.models` says whether the build has Whisper. With it: `bashcut.transcript.generate {items, language, wait:
+true}` for every clip with sound in one call (a clip with only music or ambience reports `noSpeech` or 0 words).
+Without:
 an outside transcriber on the clip's sound (export it: `file.exportMedia {format: "wav", range: "custom",
 startSeconds, endSeconds}` over the clip on the survey sequence), then
 
@@ -55,8 +71,13 @@ python3 "<skill_dir>/words_to_transcript.py" whisper.json --item ITEM --language
 ```
 
 and `command_run transcript.set` with that params object. It lists suspect words on stderr (REFERENCE.md has the
-transcriber commands). Read with `transcript.inspect`, find with `transcript.search {query}`; never print a long
-transcript twice.
+transcriber commands). Read with `transcript.inspect`, find with `transcript.search {query}` (its `start` and `end`
+are ticks: ÷ 254 016 000 000 for seconds, and they are the first word's start and the last word's end, so a cut
+there sits on a word edge); never print a long transcript twice.
+
+**Speech rate**, per speaker: characters (Vietnamese: syllables) a second over the spoken stretches. Captions are
+held to 20 characters a second: a speaker at 15–17 cps fits one 2-line cue per phrase, one at 20+ needs shorter cues
+cut at word gaps (bcp:captions-text). Write the rate into the survey notes.
 
 ## Honesty and hygiene checklist
 
@@ -68,9 +89,12 @@ Say each of these plainly before planning; each one has spoiled a real edit some
   by arithmetic.
 - **HDR or log** (`media.colorInfo`): tell `bcp:color-grade` before anyone judges the colour.
 - **Truncated audio** (the sound stream shorter than the picture in `probe`): cut before the sound ends.
-- **Silent clips**: no audio stream, or `clip.audioPeak` near the floor. Speech sits 10–15 dB over a clip's own
-  floor (more margin in a quiet room, less on a street): a clip that never gets that far above its floor has no
-  usable sound (`bcp:audio-mix`'s `loudness.py` on its WAV gives the floor and the peaks). Plan voiceover or music.
+- **Silent clips**: no audio stream, `bashcut.audio.loudness {clip}` reports `silent`, or it stays under about −35
+  LUFS. Speech sits 10–15 dB over a clip's own floor (more margin in a quiet room, less on a street): a clip that
+  never gets that far above its floor has no usable sound (`{clip, series: true}` gives the short-term curve). Plan
+  voiceover or music.
+- **Frozen inside a file** (`pictureChecks` `frozen` on a video clip): cut around it; it renders frozen in every
+  output.
 - **Portrait and landscape mixed**: phones often store 1920×1080 with a −90 rotation, which is portrait. Check it
   before choosing the sequence size.
 - **fps**: other rates play fine, but true slow motion needs 50/60/120 fps sources.
