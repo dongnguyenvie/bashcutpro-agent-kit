@@ -23,13 +23,13 @@ to be open. Format, job book and caps: BashCutPro `bashcut/batch.md`; this skill
 Install once from the plugins repo: `bashcut-batch presets install <bashcutpro-plugins>/packs/batch`, then
 `bashcut-batch presets list` shows them with a description.
 
-| Preset | Does | Needs |
-|---|---|---|
-| `vietsub-folder` | transcribe, captions, Vietnamese translation (`translate-captions`), burned-in subtitles covered, styled captions, TikTok + YouTube | the plugin; a key, else each item hands off (see 5) |
-| `podcast-shorts` | transcribe, then an agent step (`bcp:rough-cut`) makes 3 vertical word-captioned shorts per recording | an agent (`claude`) with this kit |
-| `every-platform` | captions, then an agent step makes one reframed sequence per aspect and exports every profile | an agent; `bashcut.vision` for face-following reframes |
-| `captions-draft` | captions, clean word style, an SRT and a YouTube preview per clip | – |
-| `clean-audio` | voice polish and loudness on every clip, a WAV each | – |
+| Preset | Steps | Needs | Before you rely on it |
+|---|---|---|---|
+| `vietsub-folder` | transcribe, `transcript.createCaptions` 42 × 2, translate (`translate-captions`), cover burned-in subtitles, caption style; `tiktok` + `youtube` | the plugin; a key, else each item hands off (see 5) | Vietnamese cues keep the English timing: run `captions_fit.py plan` on one item and look at `left` |
+| `podcast-shorts` | transcribe, then an agent step (`bcp:rough-cut`): 3 vertical 20–60 s shorts, word captions, `shorts` exports | an agent (`claude`) with this kit | its brief makes captions with `createCaptions` and word style, without the speed fix or an SRT: copy it and use the brief in 3 |
+| `every-platform` | transcribe, captions 42 × 2, an agent step makes one reframed sequence per aspect and exports every profile | an agent; `bashcut.vision` for face-following reframes | – |
+| `captions-draft` | transcribe, captions 42 × 2, SRT, `clean` word style, a `youtube` preview | – | captions straight from `createCaptions` (37–56 % at or under 20 cps on fast speech); the `captions_fit.py apply` step in REFERENCE.md reached 92 % |
+| `clean-audio` | `bashcut.audio.polish {amount: 0.5, target: -16}` on every clip, a loudness reading, a WAV each | – | – |
 
 ```sh
 bashcut-batch run --preset vietsub-folder --input ~/clips --projects ~/clips/out
@@ -50,9 +50,26 @@ A `bashcut-batch/1` JSON file (full example in <skill_dir>/REFERENCE.md):
     `command_list`; `{name}`, `{media}`, `{project}`, `{outputs}`, `{itemDir}` are filled in per item.
   - `plugin` `{argv}`: a plugin action, e.g. `["python3", "{plugins}/bashcut.translate-captions/plugin.py",
     "translate", "--project", "{project}", "--cli", "{cli}", "--target", "vi"]`.
-  - `agent` `{skill, brief, maxTurns?, maxMinutes?, fixRounds?, review?, reviewProfile?}`: a kit skill run headless on
-    the item, reviewed with `bashcut.review.run`; blocking findings go back to it for at most `fixRounds` rounds.
-    Keep the brief to one task with a measurable end ("3 shorts of 20–60 s, each exported with the shorts profile").
+  - `agent` `{skill, brief, agent?: "claude" | "codex", maxTurns? (40), maxMinutes? (30), fixRounds? (2, at most
+    5), review? (true), reviewProfile?}`: a kit skill run headless on the item. Afterwards the runner opens and
+    reviews **every sequence the agent made** with `bashcut.review.run` (`reviewProfile` as its profile, BashCutPro#195)
+    and sends the blocking findings, each naming its sequence, back for at most `fixRounds` rounds; findings left end
+    the item `needsFix`. Set `reviewProfile` to the outputs' profile, else the review judges loudness at −14 LUFS.
+    Keep the brief to one task with a measurable end, and name the numbers the review and the bench check:
+
+    > 3 standalone 30–60 s clips by quote from {name}, one 1080×1920 sequence each named short-1..3. Cuts in pauses
+    > between phrases, never inside a word. Captions per clip with bcp:captions-text (`captions_fit.py`, 26–32 × 2,
+    > ≥ 90 % of cues ≤ 20 cps), reviewed, an SRT per clip in {outputs} before any word style. Voice with
+    > `bashcut.audio.polish {profile: "shorts"}`. Review every clip with bcp:review, then one `bashcut.profiles.apply
+    > {profile: "shorts", path: "{outputs}/{name}-short-N.mp4", wait: true}` each. Save the project.
+
+  - **The agent gets only the MCP tools** (`--allowedTools mcp__bashcutpro`) and the kit only if the `bcp` plugin is
+    installed, so the kit's scripts (`captions_fit.py`, `loudness.py`, `contact_sheet.py`) cannot run inside it
+    (BashCutPro#204). Run them as plugin steps around the agent (REFERENCE.md), or give the step its own `argv` with
+    `--plugin-dir` and `Bash(python3:*)` (REFERENCE.md "Agent with the kit's scripts"; fix rounds then start a fresh
+    session).
+  - A command step runs no review: end a pipeline without an agent with a `bashcut.review.run {profile}` step (before
+    any word style), and read its verdict in the step's `.out`.
 - `outputs`: `{"name": "{name}-tiktok.mp4", "profile": "tiktok"}` (output profiles: `bashcut.profiles.list`), or
   `preset` / `format` / `settings` for a plain export preset.
 - `onFailure`: `skip` (default: the item stops, others go on) or `stop`. `concurrency`: start at 2;

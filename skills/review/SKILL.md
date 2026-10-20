@@ -103,12 +103,12 @@ the draft (below).
 | `check` (category) | Severity in review.run | Fix |
 |---|---|---|
 | `readingSpeed`, `lineLength`, `lines`, `overlap` (captions) | warning over 20 cps, blocking over 25 / overlap | `captions_fit.py plan` → one `bashcut.batch` (`bcp:captions-text` §2); after a word style, undo it, fix, style again |
-| `cutInWord` (edit) | blocking | move the cut into the nearest real pause (≥ 0.1 s between words, usually a phrase end), not to the word's edge: `timeline.trim {clip, edge, mode: "ripple", delta}` (REFERENCE "Cut into a pause") |
+| `cutInWord` (edit) | blocking | move the cut into the nearest real pause (≥ 0.15 s, usually a phrase end), not to the word's edge: `timeline.trim {clip, edge, mode: "ripple", delta}` (REFERENCE "Cut into a pause"). A cut inside a measured silence is Whisper stretching the next word over the pause (BashCutPro#203): keep it with that reason |
 | `gap` (edit), `black` inside the edit (picture) | blocking | `sequence.closeGap {track: "V1", time}` or fill it |
 | `shortClip`, `shortGap` (picture) | warning | delete the sliver or `timeline.roll` the cut; `sequence.closeGap` |
 | `offline` (edit) | blocking | relink or replace the clip |
 | `frozen` (picture) | warning | a stuck video source or a frame hold: cut it or cover it (`bcp:beat-cut`). A still screen or a locked-off speaker **under speech** is not a fault (BashCutPro#193/#196): keep it with a reason |
-| `longStill` (picture) | info | the genre's limit: a punch-in or zoom (`bcp:effects`), or keep it |
+| `longStill` (picture) | info (silent in a short-form edit: see Severity, #185) | the genre's limit: a punch-in or zoom (`bcp:effects`), or keep it |
 | `flash` (picture) | warning | a dissolve or cut it |
 | `loudness`, `loudSegment`, `silence` (sound) | blocking past 2 × tolerance, else warning | `bcp:audio-mix`: `bashcut.audio.polish {clips, profile}` on the voice, the bed's gain; the export by profile normalizes the mix |
 | `truePeak`, `clipping` (sound) | blocking over 0 dBTP / ≥ 48 clipped samples, else warning | lower that clip's gain (`clip.audioGain`); the export's `peakCheck` re-exports when the file is over |

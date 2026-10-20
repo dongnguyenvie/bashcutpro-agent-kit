@@ -6,6 +6,7 @@ cue on its last word, so cues end mid-phrase and fast ones have no silence to ho
   captions_fit.py group words.json --out cues.srt [--max-chars 42] [--lines 2] [--max-cps 20]   # then captions.import
   captions_fit.py plan caps.json [--max-cps 20] [--jsonl]       # fix an existing track (translated, imported, edited)
   captions_fit.py report caps.json|cues.srt [--max-cps 20]      # cues, % at or under the limit, % over 25, worst
+  captions_fit.py apply --cli filmcraft-cli --project p.fcproj [group options]   # group the active sequence and import
 
 `group` reads `transcript.inspect` output (the edited sequence's words, ticks) or any JSON of {text|word, start, end}
 words (seconds) and breaks a cue at a sentence end, at a comma once the cue is half full (--fill), at a pause of
@@ -18,8 +19,11 @@ cue with a neighbour when the pair reads under the limit and fits the lines; --t
 "actually", "you know"… from the cues still over. `plan` prints `commands` for
 `bashcut.batch {commands, label}` (`--jsonl`: one per line for `filmcraft-cli run`). Every mode prints `before` /
 `after` stats and `left`: cues still over the limit (shorten them yourself, or keep them when the speech is that
-fast). Standard library only (Python 3.9+)."""
-import argparse, json, re, sys
+fast). `apply` does `group` through the engine's CLI on a saved project (a `bashcut-batch` plugin step, or any shell):
+reads the active sequence's words, length and frame rate, writes the SRT (--out, default `<project folder>/captions/
+<project>.srt`), replaces the first caption track with it (`captions.import`) and saves. Standard library only
+(Python 3.9+)."""
+import argparse, json, os, re, subprocess, sys, tempfile
 
 TICKS = 254016000000  # per second
 FILLERS = {"um", "umm", "uh", "uhh", "uhm", "erm", "er", "ah", "eh", "hmm", "mm", "mhm"}
@@ -303,11 +307,55 @@ def commands(work):
     return out
 
 
+def cli_json(cli, project, cid):
+    out = subprocess.run([cli, "--project", project, "exec", cid], capture_output=True, text=True, check=True).stdout
+    return json.loads(out)
+
+
+def apply(a, r):
+    """Group the active sequence of a saved project and replace its first caption track, through the CLI."""
+    summary = cli_json(a.cli, a.project, "bashcut.timeline.summary")
+    r.fps = float(summary.get("fps") or r.fps)
+    if r.end is None:
+        r.end = float(summary.get("duration") or 0) or None
+    doc = cli_json(a.cli, a.project, "transcript.inspect")
+    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
+        json.dump(doc, f)
+    words = load_words(f.name)
+    os.unlink(f.name)
+    if not words:
+        return {"error": "no words in the active sequence: transcribe it first"}
+    cues = group(words, r)
+    work = fit(cues, r)
+    out = a.out or os.path.join(os.path.dirname(os.path.abspath(a.project)), "captions",
+                                os.path.splitext(os.path.basename(a.project))[0] + ".srt")
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    with open(out, "w", encoding="utf-8") as fh:
+        fh.write(to_srt(work))
+    steps = []
+    if cli_json(a.cli, a.project, "captions.list").get("tracks"):
+        steps.append({"id": "captions.deleteTrack", "params": {}})
+    steps += [{"id": "captions.import", "params": {"path": os.path.abspath(out), "name": a.name}},
+              {"id": "file.save", "params": {}}]
+    with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False) as fh:
+        fh.write("".join(json.dumps(x) + "\n" for x in steps))
+    run = subprocess.run([a.cli, "--project", a.project, "run", fh.name], capture_output=True, text=True)
+    os.unlink(fh.name)
+    failed = [json.loads(l) for l in run.stdout.splitlines() if l.strip() and not json.loads(l).get("ok")]
+    result = {"out": out, "before": stats(cues, r.limit), "after": stats(work, r.limit), "left": left(work, r.limit)}
+    if run.returncode or failed:
+        result["error"] = failed or run.stderr.strip()
+    return result
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("mode", choices=["group", "plan", "report"])
-    ap.add_argument("path", help="group: words JSON; plan, report: captions.list JSON (ticks) or an SRT / VTT")
-    ap.add_argument("--out", help="group: the SRT to write")
+    ap.add_argument("mode", choices=["group", "plan", "report", "apply"])
+    ap.add_argument("path", nargs="?", help="group: words JSON; plan, report: captions.list JSON (ticks) or an SRT / VTT")
+    ap.add_argument("--cli", default=os.environ.get("BASHCUTPRO_CLI") or "filmcraft-cli", help="apply: the engine")
+    ap.add_argument("--project", default=os.environ.get("BASHCUT_PROJECT"), help="apply: the saved project")
+    ap.add_argument("--name", default="Captions", help="apply: the caption track's name")
+    ap.add_argument("--out", help="group, apply: the SRT to write")
     ap.add_argument("--track", help="caption track id (default the first)")
     ap.add_argument("--max-cps", type=float, default=20.0)
     ap.add_argument("--max-chars", type=int, default=42, help="characters a line")
@@ -326,6 +374,14 @@ def main(argv=None):
     ap.add_argument("--jsonl", action="store_true", help="plan: print only the commands, one per line")
     a = ap.parse_args(argv)
     r = Rules(a)
+    if a.mode == "apply":
+        if not a.project:
+            ap.error("apply needs --project (or BASHCUT_PROJECT)")
+        result = apply(a, r)
+        print(json.dumps(result, ensure_ascii=False, indent=1))
+        return 1 if "error" in result else 0
+    if not a.path:
+        ap.error("%s needs a path" % a.mode)
     if a.mode == "report":
         cues = load(a.path, a.track)
         out = stats(cues, a.max_cps)

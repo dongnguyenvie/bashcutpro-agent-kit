@@ -1,6 +1,6 @@
 ---
 name: vlog-tutorial
-description: Recipe for a tutorial or tool demo: the result first, numbered steps with step cards, one zoom per narration line onto what is clicked, waiting sped up, presenter levelled to the voiceover, limits and next steps; landscape plus a vertical cut. Use after bcp:vlog-plan picks tutorial. Triggers: "tutorial", "how to", "software demo", "screen recording", "video hướng dẫn", "demo phần mềm", "cách làm", "từng bước", "quay màn hình".
+description: Recipe for a tutorial or tool demo: the result first, dead air cut from measured silences (loudness.py --tighten) and silent waiting sped up, numbered steps with step cards, one zoom per narration line onto what is clicked, presenter levelled to the voiceover, limits and next steps; landscape plus a vertical cut. Use after bcp:vlog-plan picks tutorial. Triggers: "tutorial", "how to", "software demo", "screen recording", "video hướng dẫn", "demo phần mềm", "cách làm", "từng bước", "quay màn hình".
 ---
 
 # Tutorial and tool demo
@@ -39,6 +39,38 @@ Sample lengths, not slots: the plan gives each section its own range and a named
 Step cards and stickers: bcp:captions-text / bcp:motion-graphics (an installed `.fcgt` via
 `graphics.template.apply`, else `graphics.newText`; the vlog library looks are not ported yet).
 
+## Pace: tighten first (bench numbers)
+
+The bench tutorial lost on pace: Pro kept 191.6 of 192 s with 4 cuts, BashCut cut 171 s from the same recording
+with 58 (about 20 a minute). Whisper hides pauses inside the next word ("Now" 1.90–5.34 s over a 3.2 s silence,
+BashCutPro#203), so `transcript.removePauses` finds none: measure silence from the sound.
+
+1. **Find the silences**: export the sequence mix as WAV (`file.exportMedia {path: "/abs/tmp/mix.wav", format:
+   "wav", wait: true}`, audio only: 0.02 s for 24 s), then `python3 <skill_dir>/../audio-mix/loudness.py
+   /abs/tmp/mix.wav --min-silence 0.8 --tighten 0.4`: `silences` in sequence seconds and `tighten.commands`.
+2. **Look inside every silence of 2 s or more** (frames at its start, middle and end, `contact_sheet.py plan
+   --program`): a still screen is dead air, cut it; a screen that changes (loading, a render, typing) is the step's
+   action, speed it up instead.
+3. **Cut dead air** in one `bashcut.batch {commands: tighten.commands, label: "Tighten pauses"}` (mark in, mark out,
+   `sequence.extract` per silence, last first; one undo step). Drop the commands of the silences you speed up.
+   Measured: 24.4 s → 15.5 s, no silence of 0.3 s or more left.
+4. **Speed up the action**: `sequence.addEditAllTracks {time}` at both ends of the stretch, then `clip.speedDuration
+   {clips: [the video and audio pieces], speed: 400–2000, ripple: true}` (measured: a 3.8 s wait at 800 % played
+   0.48 s), and mute that piece's sound when it is only room tone (`clipMixer.set` level).
+
+| Pace check | Target | Why it varies |
+|---|---|---|
+| Pause inside narration | at most 0.4–0.6 s kept (`--tighten 0.4`) | a pause before a result or a key line may stay 0.8–1 s |
+| Dead air (no speech, still screen) | none over 0.8 s | a dialog to read holds its reading time (below) |
+| Silent action (loading, rendering, typing) | sped 4–20×, or cut to its result | narrated action 1.5–2× |
+| A visual change (cut, zoom, card) | every 5–15 s landscape, 2–5 s vertical | a zoom inside one screen shot counts |
+| Cuts a minute after tightening | 10–20 landscape (BashCut's tutorial: ~20) | a dense screen holds longer |
+
+Review afterwards: `cutInWord` findings at these cuts are Whisper's stretched words (#203). Keep them with that
+reason when the cut sits inside a measured silence (`silences` above); every other `cutInWord` is real
+(`bcp:review` "Cut into a pause"). Or correct those words' start times to the silence's end with `transcript.set`
+(one end-to-end run did: review then passed). A still screen flagged `frozen` under narration is not a fault (#193).
+
 ## Cuts and motion
 
 - Zoom onto the part of the screen each line talks about: one framing per narration line, aimed at the panel the
@@ -46,8 +78,13 @@ Step cards and stickers: bcp:captions-text / bcp:motion-graphics (an installed `
   Build it with Motion scale and position keyframes (`effects.setParam`, bcp:effects) and check each with
   `render_frame` at the line's key word. Never one framing reused across the screen shots: one edit kept the same
   zoom 1.9 on every screen and missed each line's panel. Back out between steps.
-- Speed up typing, loading and waiting (`clip.speedDuration`) at the speed below, or cut it; a frozen screen holds
-  only while there is something to read.
+- One `bashcut.batch` per step (one undo step): its zoom keyframes (`effects.setParam {clip, effect: "motion",
+  param: "scale" | "position", value, time, keyframe: true}`, eased in 0.3–0.6 s) and its card (`graphics.newText
+  {text: "STEP 2", size, position, seconds: 2.5, time, track: 1}` or the template). At the key word,
+  `render_frame {max_side: 400}`: the scaled screen must still cover the frame (a position past the headroom showed
+  a black edge at 180 %), the card clear of the panel in use.
+- Speed up typing, loading and waiting (above), or cut it; a frozen screen holds only while there is something to
+  read.
 - Presenter on an upper track at the bottom centre (landscape: a corner), captions between screen and face, never
   over the part being clicked.
 
@@ -66,7 +103,11 @@ Step cards and stickers: bcp:captions-text / bcp:motion-graphics (an installed `
 
 ## Text, sound, look
 
-- Captions from the presenter (bcp:captions-text); every shortcut, menu path and value on screen ("⌘K → Export").
+- Captions from the presenter after the tightening (bcp:captions-text §2): `transcript.inspect` saved to words.json,
+  `python3 <skill_dir>/../captions-text/captions_fit.py group words.json --out /abs/captions.srt --max-chars 42
+  --lines 2 --break-gap 0.5 --end <length>`, then `captions.import` (not `transcript.createCaptions`: it ignores
+  reading speed) for landscape (the `youtube` profile writes the SRT sidecar), 26–32 × 2 for the
+  vertical cut; target 90 % of cues at or under 20 cps. Every shortcut, menu path and value on screen ("⌘K → Export").
 - Sound: the presenter's voice; mute the screen recording unless its sound is the result; a quiet bed or none.
   With a voiceover beside the presenter, level each camera clip to the voiceover (about 2 LU), set the bed 15–20 LU
   under the quieter voice and keep true peak under the ceiling (bcp:audio-mix).
@@ -88,7 +129,7 @@ For the Shorts output, a vertical sequence of the hook and one step (bcp:vlog-pu
 ## Plan data
 
 - `stages`: `{"effects": {"required": true, "why": "one zoom per narration line onto the panel it names, fast-forward waiting"}, "sound": {"required": true, "why": "camera speech levelled to the voiceover, music 15-20 LU under both"}, "colour": {"rules": ["leave the screen recording ungraded; grade only the presenter"]}, "visuals": {"skill": "bcp:visual-plan", "after": "voiceover", "required": true, "why": "each step gets the screen, a zoom or a step card"}}`
-- `checks`: `result-first` the hook shows the output; `screen-readable` screen text reads at phone width;
+- `checks`: `paced` no dead air over 0.8 s and silent waiting sped up (loudness.py `silences` after the edit), 10–20 cuts a minute; `result-first` the hook shows the output; `screen-readable` screen text reads at phone width;
   `zoom-on-click` each line's zoom lands on the panel or click it names, one framing per line; `presenter-clear` the
   presenter never covers the part in use; `private-hidden` no email, key or name on screen; `shortcuts-shown` every
   shortcut and menu path on screen; `voice-match` live speech within about 2 LU of the voiceover, music 15–20 LU
