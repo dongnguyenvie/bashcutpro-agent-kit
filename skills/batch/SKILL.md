@@ -50,11 +50,13 @@ A `bashcut-batch/1` JSON file (full example in <skill_dir>/REFERENCE.md):
     `command_list`; `{name}`, `{media}`, `{project}`, `{outputs}`, `{itemDir}` are filled in per item.
   - `plugin` `{argv}`: a plugin action, e.g. `["python3", "{plugins}/bashcut.translate-captions/plugin.py",
     "translate", "--project", "{project}", "--cli", "{cli}", "--target", "vi"]`.
-  - `agent` `{skill, brief, agent?: "claude" | "codex", maxTurns? (40), maxMinutes? (30), fixRounds? (2, at most
+  - `agent` `{skill, brief, agent?: "claude" | "codex", maxTurns? (120), maxMinutes? (30), fixRounds? (2, at most
     5), review? (true), reviewProfile?}`: a kit skill run headless on the item. Afterwards the runner opens and
     reviews **every sequence the agent made** with `bashcut.review.run` (`reviewProfile` as its profile, BashCutPro#195)
     and sends the blocking findings, each naming its sequence, back for at most `fixRounds` rounds; findings left end
-    the item `needsFix`. Set `reviewProfile` to the outputs' profile, else the review judges loudness at −14 LUFS.
+    the item `needsFix`. An agent out of turns does not lose the item: the rest of it (exports included) runs on
+    its last save and the item ends `needsAttention` (BashCutPro#219); `retry` runs the agent again, `retry --done`
+    keeps the result. A multi-skill brief (a tutorial: cut, cards, zooms, captions) sets `maxTurns` 150. Set `reviewProfile` to the outputs' profile, else the review judges loudness at −14 LUFS.
     Keep the brief to one task with a measurable end, and name the numbers the review and the bench check:
 
     > 3 standalone 30–60 s clips by quote from {name}, one 1080×1920 sequence each named short-1..3. Cuts in pauses

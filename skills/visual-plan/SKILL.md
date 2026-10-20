@@ -30,7 +30,8 @@ video"}`.
 - **No script**: split the transcript (`transcript.inspect`) into lines at sentence or idea boundaries, with each
   line's first and last word times. No transcript: bcp:footage-survey first (`transcript.set` imports outside words).
 - What exists: the described shots (item Descriptions from bcp:footage-survey, `project.items`), what is on screen
-  now (`sequence_inspect` for the clips, `render_frame {seconds, max_side: 540}` at the cuts and text).
+  now (`sequence_inspect` for the clips; the cuts and text on one contact sheet, bcp:edit-workflow "Look in
+  batches").
 - Targets, each with its source: a reference's measured profile (bcp:style-study), else the recipe's ranges, else
   the kit's (bcp:motion-graphics, bcp:effects).
 
@@ -64,7 +65,8 @@ Guides, not rules:
   unless it is an accent.
 - **Screen lines**: one `screen` row per narration line, `show` naming the panel the line names; a new row where
   the screen changes inside a line (scene cuts: `clip.sceneEditDetection`, frames from `render_frame`). Never one
-  framing for every screen row. Check each row at phone size (`render_frame {seconds: at, max_side: 540}`).
+  framing for every screen row. Check the rows at phone size on one contact sheet of their `at` times (`sheet --width 400`), not one
+  `render_frame` per row (BashCutPro#219).
 - Text and captions never say the same thing twice: decide the caption mode here (full, keywords only, none) and
   write it into `plan.stages.captions.rules`.
 
@@ -76,8 +78,8 @@ Check the rows end to end against the targets before researching:
 - **Variety**: one treatment on three lines in a row reads as a template unless the reference does exactly that;
   vary the device within it too.
 - **Presence**: speaker screen share within target; keep the face on emotion, the hook's promise and the payoff.
-- **Faces**: nothing covers the face while it speaks the point. No face detection exists: look at the frame at the
-  row's `at` (`render_frame`) and say where the face is.
+- **Faces**: nothing covers the face while it speaks the point. No face detection exists: look at the rows' `at` frames (one
+  contact sheet) and say where the face is.
 
 Change rows until it fits; mark targets left on purpose `"deliberate": true` with the reason.
 
@@ -86,7 +88,7 @@ Change rows until it fits; mark targets left on purpose `"deliberate": true` wit
 Rows that need what the project lacks:
 - `stock`, `icon`: 3–6 candidates per row (bcp:stock-images), a batch on one contact sheet
   (bcp:footage-survey's `contact_sheet.py`); look, pick, import.
-- `own-broll`: matching described shots; check the frame (`render_frame` at the shot's best moment).
+- `own-broll`: matching described shots; check them together on one contact sheet of each shot's best moment.
 - `graphic`: note each row's starting example (an installed template, `graphics.template.list`, or a hyperframes
   catalog example when that plugin is installed), or new; design happens at build.
 - `generated`: the prompt idea and the look shared by every generated row (one style sentence, the reference
@@ -135,7 +137,7 @@ bcp:audio-mix's, at the row's `at`.
    127.0.0.1:<port>`): one batch in one locked style, imported with `media_import`, each item labelled
    AI-generated (`metadata.set`), placed on V2 with `timeline.place`. Refused rows come back in `data.failed`:
    rewrite and run those again, or change treatment.
-4. Look at each at its `at` (`render_frame`); motion on a still with bcp:effects. A real person's likeness, a logo
+4. Look at them all at their `at` times on one contact sheet; motion on a still with bcp:effects. A real person's likeness, a logo
    or a product shown as real is never generated.
 
 Record the stage in `plan.log` (`{"stage": "visuals", "did": "<row count by treatment>", "evidence": "<contact

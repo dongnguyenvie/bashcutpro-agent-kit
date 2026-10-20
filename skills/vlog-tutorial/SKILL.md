@@ -39,6 +39,16 @@ Sample lengths, not slots: the plan gives each section its own range and a named
 Step cards and stickers: bcp:captions-text / bcp:motion-graphics (an installed `.fcgt` via
 `graphics.template.apply`, else `graphics.newText`; the vlog library looks are not ported yet).
 
+## Turn budget (BashCutPro#219)
+
+A tutorial is the longest recipe (tighten, cards, zooms, captions, presenter, Shorts cut). In a batch it ran out of
+turns at 80 by checking each card and zoom with its own `render_frame` (34 calls) and listing commands again and
+again (14 `command_list`). Keep it well under 100 turns: the ids and params of `effects.setParam`,
+`graphics.newText`, `bashcut.captions.create`, `clip.speedDuration` and `sequence.addEditAllTracks` looked up once
+(`<kit>/scripts/commands.json`), one `bashcut.batch` per stage (all steps' zooms and cards together is fine), one
+contact sheet per look, one `bashcut.captions.create {dryRun: true}` before the real one, and `file.save` after
+every stage. A batch pipeline running this recipe sets `maxTurns` 150.
+
 ## Pace: tighten first (bench numbers)
 
 The bench tutorial lost on pace: Pro kept 191.6 of 192 s with 4 cuts, BashCut cut 171 s from the same recording
@@ -75,14 +85,16 @@ reason when the cut sits inside a measured silence (`silences` above); every oth
 
 - Zoom onto the part of the screen each line talks about: one framing per narration line, aimed at the panel the
   line names, a new one where the screen changes (find changes with `clip.sceneEditDetection` and a look at frames).
-  Build it with Motion scale and position keyframes (`effects.setParam`, bcp:effects) and check each with
-  `render_frame` at the line's key word. Never one framing reused across the screen shots: one edit kept the same
+  Build it with Motion scale and position keyframes (`effects.setParam`, bcp:effects) and check them all on one
+  contact sheet at the lines' key words (below). Never one framing reused across the screen shots: one edit kept the same
   zoom 1.9 on every screen and missed each line's panel. Back out between steps.
 - One `bashcut.batch` per step (one undo step): its zoom keyframes (`effects.setParam {clip, effect: "motion",
   param: "scale" | "position", value, time, keyframe: true}`, eased in 0.3–0.6 s) and its card (`graphics.newText
-  {text: "STEP 2", size, position, seconds: 2.5, time, track: 1}` or the template). At the key word,
-  `render_frame {max_side: 400}`: the scaled screen must still cover the frame (a position past the headroom showed
-  a black edge at 180 %), the card clear of the panel in use.
+  {text: "STEP 2", size, position, seconds: 2.5, time, track: 1}` or the template). Then **one contact sheet for
+  all steps** (`contact_sheet.py plan --program --at <every key word and card>` → one `command_batch` → `sheet
+  --width 400`, bcp:edit-workflow "Look in batches"): on each cell the scaled screen must still cover the frame (a
+  position past the headroom showed a black edge at 180 %) and the card stay clear of the panel in use. Fix the
+  cells that fail in one more batch and one more sheet of just those times.
 - Speed up typing, loading and waiting (above), or cut it; a frozen screen holds only while there is something to
   read.
 - Presenter on an upper track at the bottom centre (landscape: a corner), captions between screen and face, never
