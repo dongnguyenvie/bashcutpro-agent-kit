@@ -65,9 +65,9 @@ Made with Motion keyframes: `effects.setParam {"clip", "effect": "motion", "para
 | Beat pulse | 2 % or less as texture; full-frame impacts at most 3 per film, 16+ beats apart | bestagentkits, guizang |
 
 - **No frozen picture.** A photo, a screenshot or a locked-off shot held over 1.5 s with nothing said over it reads
-  as a stuck video (the review's `frozen` finding): give it a drift of at least 1 %/s (1–1.5 %/s; 4 s: 100 to
-  105 %) from its first frame to its last. Measured: a flat 1080p still at 0.8 %/s was still `frozen` for 1 s, at
-  1.4 %/s it passed (`bashcut.review.pictureChecks`). Under a voice the slower 0.3–1 %/s drift below is fine.
+  as a stuck video (the review's `frozen` finding): give it a drift from its first frame to its last at the rate
+  in the table (0.3–1.5 %/s; 4 s at 0.5 %/s: 100 to 102 %). Any steady drift counts as motion: a flat 1080p still
+  at 0.3 and 0.5 %/s measured clean with `bashcut.review.pictureChecks`; the same still unmoved is `frozen`.
 - State drift as a rate so short and long shots feel alike: end scale = 100 x (1 + rate x seconds); 0.5 %/s over
   8 s is about 104 %.
 - **The ceiling is resolution, not taste.** Source size over the sequence frame size (both in `doc_inspect`) is
