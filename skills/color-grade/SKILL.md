@@ -96,10 +96,11 @@ per band; see REFERENCE.md).
 | `faded-memory` | hook, flashback or emotional low point, then back to colour | near black-and-white, lifted blacks |
 | `teal-orange`, `clean-bright`, `moody-green`, `bw`, `film-print` | blockbuster / travel; food, product, tutorial; forest, rain, night; drama; narrative | set by hand, not fitted (`grade.py looks`) |
 
-Apply the pick once over the edit: an adjustment layer as long as the sequence on a new top video track (one
-`bashcut.batch`: `file.newAdjustmentLayer {seconds}`, `timeline.place {item, track: "new", time: 0, duration}`,
-then `bashcut.looks.apply` or `lumetri.setLook {clip: <adjustment clip>, lut: "lib:<id>"}`). One clip only: the
-same on that clip.
+Apply the pick once over the edit: an adjustment layer as long as the sequence on a new top video track.
+`file.newAdjustmentLayer {seconds: <sequence length>}` answers `{item}`; then one `bashcut.batch {label: "Grade",
+commands: [timeline.place {item, track: "new", time: 0}, bashcut.looks.apply {look, intensity: 0.8}]}`: the placed
+clip is selected, so the look needs no clip id (a LUT instead: `lumetri.setLook {clip, lut: "lib:<id>"}` with the id
+from the batch's `createdId`). One clip only: `bashcut.looks.apply {look, intensity, clips: [id]}`.
 
 - **Strength** 0.5–1.0; 0.6–0.8 is typical (openmontage); a pack look's `intensity` 0.6–1.0. Lower for log-like or already saturated footage,
   skin-heavy shots and mixed light.
