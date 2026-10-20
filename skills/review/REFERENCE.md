@@ -10,6 +10,24 @@ falls inside the clip. A cut is inside a word when it falls strictly between a p
 cut off at a clip edge by less than its full length is a clipped word. Captions: `captions.list` gives each
 caption's times; compare its start with its first word's start (word-landing limit).
 
+## Cut into a pause
+
+`bashcut.review.run` reports `cutInWord` with the word and its span on the timeline (`start`, `end`, seconds) and
+the clip in the message. Whisper's word times touch inside a phrase (0 s between words), and the bench checks cuts
+against the audio's own voice activity, so a cut on a word's edge can still land in sound. Move it into a real
+pause instead:
+
+1. From `transcript.inspect` (the sequence's words, ticks), the pauses next to the word: the gap before its phrase
+   and after it (≥ 0.1 s; at 190 words a minute they sat at commas and full stops, 0.15–0.9 s).
+2. Keep the word (cut later) or drop it (cut earlier), whichever keeps the line whole; the new cut is the middle of
+   that pause.
+3. `timeline.trim {clip, edge: "out", mode: "ripple", delta}` on the clip before the cut (`edge: "in"` on the one
+   after), `delta` in ticks = new cut − old cut (positive extends; it needs source handles). Trimming the video
+   clip moves its linked audio. Then `bashcut.review.run {checks: ["edit"], writeMarkers: false}`: `cutInWord`
+   gone. Measured: a cut at 5.05 s inside "pause" (4.96–5.20 s) moved to 5.57 s (the comma pause 5.49–5.65 s) passed.
+
+A rolling edit between two clips: `timeline.roll {left, right, delta}`.
+
 ## Black and frozen picture
 
 ```json
@@ -32,6 +50,10 @@ max_side: 400}`.
 
 ## Loudness
 
+`bashcut.audio.loudness {series: true}` measures the mix on the timeline (integrated, short-term per second, true
+peak, clipped samples): no export. Export only for what it cannot give: the music bed under the voice (stems) and
+silences in a curve.
+
 ```json
 {"id": "file.exportMedia", "params": {"path": "/abs/tmp/review-mix.wav", "format": "wav", "wait": true}}
 ```
@@ -41,8 +63,8 @@ python3 "<skill_dir>/../audio-mix/loudness.py" /abs/tmp/review-mix.wav --curve -
 ```
 
 Stems (mute the other tracks with `mixer.setStrip {muted: true}`, export, unmute) for the bed under the voice:
-`loudness.py music.wav --speech voice.wav`. The delivery check: a WAV export with the same `loudnessLufs` as the
-output; its `integratedLufs` within the tolerance and `truePeakDbtp` under the ceiling.
+`loudness.py music.wav --speech voice.wav`. The delivery check is the export itself: `bashcut.profiles.apply` returns
+`peakCheck` measured on the file (SKILL.md "The draft").
 
 ## What changed
 
