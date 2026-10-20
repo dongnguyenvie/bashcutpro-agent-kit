@@ -27,8 +27,10 @@ limits (similarity) and the target length. Read the plan once with `project.note
    seconds plus pauses land inside the editor's target, in one `project.setNotes`; a line over its window:
    shorten it first, speed (`tts.edit {pace}` or `clip.speedDuration` 92–108 %) only after. Re-read
    `sequence_inspect`: no line over real speech or the next spoken clip.
-7. Never touch captions, music or picture: those stages are the editor's.
+7. Level the kept takes in one `bashcut.audio.polish {clips: [takes], amount: 0.2, profile}` (the editor's output
+   profile; without one, `target: -16`), then `bashcut.audio.loudness {clip}` on one take: report its LUFS.
+8. Never touch captions, music or picture: those stages are the editor's.
 
 Answer in under 200 words, nothing else: a table of line id, seconds, similarity, take; total voiced seconds
-against the target; lines reworded (old → new words); lines still failing and why; what you could not check (you
+against the target; the takes' measured LUFS; lines reworded (old → new words); lines still failing and why; what you could not check (you
 cannot hear: tone, pronunciation of names).

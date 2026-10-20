@@ -1,6 +1,6 @@
 ---
 name: audio-mix
-description: Balance sound in a BashCutPro edit by measurement: voice levelled with Essential Sound auto match, a fixed music bed under the voice (ducking only for long silences), fades, volume keyframes, SFX at cuts, music retimed with remix, licensed music and SFX found with fetch_audio.py, loudness measured from WAV exports with loudness.py and set per output. Triggers: "trộn âm thanh", "cân âm lượng", "nhạc to quá", "thêm sfx", "tìm nhạc", "nhạc không bản quyền", "meme sound", "audio mix", "ducking", "loudness".
+description: Balance sound in a BashCutPro edit by measurement: voice cleaned and levelled to the output profile with bashcut.audio.polish, a fixed music bed under the voice (ducking only for long silences), fades, volume keyframes, SFX at cuts, music retimed with remix, licensed music and SFX found with fetch_audio.py, loudness measured on the timeline with bashcut.audio.loudness, one export per output profile with its true peak (≤ −1 dBTP) checked on the file, loudness.py for stems. Triggers: "trộn âm thanh", "cân âm lượng", "nhạc to quá", "thêm sfx", "tìm nhạc", "nhạc không bản quyền", "meme sound", "audio mix", "ducking", "loudness".
 ---
 
 # Audio mix
@@ -17,12 +17,12 @@ You cannot listen: measure, change, measure again, and report the numbers. Lock 
 | Fades and joins | `sequence.applyAudioTransition {clip, effect: "constant_power", frames, edge: "in" \| "out"}` |
 | Roles | `essentialSound.setType {clips, type: "dialogue" \| "music" \| "sfx" \| "ambience"}`; `essentialSound.inspect` |
 | Dialogue clean-up + loudness (default for speech) | `bashcut.audio.polish {clips, amount: 0.5, target}` (or `profile` for the output's target): highpass, noise reduction, de-esser, compressor and limiter scaled by one `amount`, then Auto-Match, as one undo step; `amount: 0` changes nothing. Builds without it (`command_list`): `effects.apply` of `highpass`, `denoise`, `deesser`, `single_band_compressor`, `hard_limiter`, then Auto-Match |
-| Voice to a loudness | `essentialSound.autoMatch {clips, target}` (dialogue clips): applies gain and reports the measured LUFS |
+| Voice to a loudness, no processing | `essentialSound.autoMatch {clips, target}` (dialogue clips): applies gain and reports the measured LUFS |
 | Ducking | `essentialSound.set {clips: [music], key: "ducking.reduceDb", value}` (other `ducking.*` keys in `essentialSound.inspect`), then `essentialSound.generateDucking {clips: [music]}` writes volume keyframes under the dialogue |
 | Music to a length | `clip.remix {clip, seconds}` (rebuilds the song at that length on its own phrase joins) |
 | Peaks, sync | `clip.audioPeak {clips}`; a second camera by sound `clip.synchronize {method: "audio", clips, reference}` |
 | Place a sound | `file.import {paths}` (or MCP `media_import`), `timeline.place {item, track: "A3", time}`; more tracks `sequence.addTracks {audio: 1}` |
-| Final loudness | `bashcut.profiles.apply {profile, path}` (the platform's loudness, size, bitrate and captions); by hand `file.exportMedia {loudnessLufs}` |
+| Final loudness | `bashcut.profiles.apply {profile, path, wait: true}` (the platform's loudness, size, bitrate and captions; `peakCheck` measures the file and re-exports when its true peak is over); by hand `file.exportMedia {loudnessLufs}` |
 
 Clip ids and cut times: `sequence_inspect`. Times are ticks (254 016 000 000 per second) unless a param says
 `seconds`. Many edits at once go in one `bashcut.batch` (one undo step; `command_batch` without it).
@@ -54,7 +54,7 @@ again after each change.
 
 | Stem | Range | Moves it |
 |---|---|---|
-| Voice (real speech or voiceover), per stem before the mix | −16 to −20 LUFS | Level each speaking clip first: cameras can differ by 15–20 dB. `essentialSound.autoMatch` does it per clip. |
+| Voice (real speech or voiceover), per stem before the mix | −16 to −20 LUFS | Level each speaking clip first: cameras can differ by 15–20 dB. `bashcut.audio.polish {clips, profile}` levels every clip to the output's target (`essentialSound.autoMatch` for gain only). |
 | Real speech beside a voiceover | each live-speech clip within ~2 LU of the voiceover | One tutorial left the presenter's camera at −31 LUFS against a −17.5 LUFS voiceover: it sounded like another room. |
 | Music under speech | 5–18 dB under the voice | Less when the music carries the piece (montage-like vlog, sparse speech); more for dense information, a soft voice, music with vocals or strong 1–4 kHz energy, accessibility. Sources: ~5 dB, with ~10 dB reported by viewers as "there is no music" (bestagentkits); 10–14 (reelmimic); 18–20 (openmontage). |
 | Music under continuous voiceover | one fixed level 14–18 dB under the voice (default 16) | No level change between lines (owner's correction). |
@@ -125,13 +125,39 @@ clip and fade out), leave the most honest line with no music. Keep the music con
 
 ## Loudness per output
 
-- **Each export is normalized to its own target** with `file.exportMedia {loudnessLufs}`. Values seen: −14 LUFS
-  short-form, −16 podcast, web or voice-only, broadcast −23/−24; true peak −1 to −1.5 dBTP, lower when the
-  platform re-encodes. Override only for a reason the user gave.
-- Before export: `loudness.py --curve` on the mix for silences and jumps between sections (one source keeps
-  chapters within 2 LU, another warns at ±1 LU).
-- **Camera-mic speech with short peaks** (laughs, plosives, bangs) can cap normalization at the true-peak ceiling:
-  one BashCut edit stayed at −16 LUFS against −14. Lower the gain (or a volume keyframe) on each loud line until its
-  peaks sit with the rest, then export again.
-- Trust the delivered file, not the setting: export the same settings as WAV and run `loudness.py` on it.
-- Report the numbers and list the joins and voiceover windows for the user to play.
+Targets come from the output's profile (`bashcut.profiles.get {profile}`: `loudnessLufs`, `truePeakDbtp`), never from
+memory. The built-ins:
+
+| Profile | Integrated | True peak |
+|---|---|---|
+| `tiktok`, `reels`, `shorts`, `youtube`, `youtube-4k` | −14 LUFS | −1 dBTP |
+| `facebook-square` | −16 LUFS | −1 dBTP |
+| podcast, web or voice-only; broadcast (a profile of your own, `bashcut.profiles.compile`) | −16; −23/−24 LUFS | −1 to −1.5 dBTP |
+
+The bench scores sound 100 only with the file within ±1 LU of the target and its true peak at or under −1 dBTP (it
+loses 30 points over the ceiling). In this order, measuring on the timeline (no export until the last step):
+
+1. **Voice to the profile**: one `bashcut.audio.polish {clips: [every dialogue clip], amount: 0.5, profile}` (0.2
+   for clean TTS or studio takes, 0.6–0.8 for a noisy room). Measured on a mono voice clip with `profile: "shorts"`:
+   the clip at −17.0 LUFS, the mix at −14.0 LUFS and −1.8 dBTP (a mono clip plays on both channels, +3 LU in the
+   mix). Judge by the mix, not the clip.
+2. **Music and SFX** relative to that voice (the ranges above), never by raising the master.
+3. **The mix**: `bashcut.audio.loudness {series: true}`: integrated within 1 LU of the target, true peak at or under
+   the ceiling, no loud second 6 LU over the target (review's `loudSegment`). `bashcut.review.run {profile, checks:
+   ["sound"]}` gives the same as findings.
+4. **Camera-mic speech with short peaks** (laughs, plosives, bangs) can cap normalization at the true-peak ceiling:
+   one BashCut edit stayed at −16 LUFS against −14. Find the loud seconds in the series, lower the gain (or a volume
+   keyframe) on each loud line until its peaks sit with the rest, then measure again.
+5. **Export once per output**: `bashcut.profiles.apply {profile, path, wait: true}` normalizes to the profile and
+   measures the **file**: AAC overshoots the limiter (the bench vlog measured −0.4 dBTP before this check), so when
+   `peakCheck.truePeakDbtp` is over the ceiling it exports again with a lower limit (`peakCheck.reexported: true`).
+   Report `peakCheck.truePeakDbtp`. Still over after the re-export: lower the peaking clip 1–2 dB and export again.
+   Where ffmpeg is installed, `ffmpeg -i out.mp4 -af ebur128=peak=true -f null -` reads the file as the bench does
+   (measured −14.0 LUFS, −1.7 dBTP on a `shorts` export of the clip above).
+
+- Override a profile's target only for a reason the user gave. One export per output at its own target: a vertical
+  and a landscape cut are two exports, never one file reused.
+- `loudness.py --curve` on a WAV export only for what the meter does not give: silences and jumps between sections
+  (one source keeps chapters within 2 LU, another warns at ±1 LU), and the bed under the voice (stems).
+- Report per output: integrated LUFS and true peak of the file, the polish amount, the bed under the voice, and the
+  joins and voiceover windows for the user to play.

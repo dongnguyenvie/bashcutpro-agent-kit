@@ -133,8 +133,12 @@ as each line's `pause` in the plan.
   `sequence_inspect` after placing: a line that runs into the next spoken clip is a blocker for `bcp:review`.
 - Give each voiceover section b-roll longer than the line: a too-short clip made the voiceover run into the next
   spoken cut.
-- Captions come from your `caption` text, timed by the take (`bcp:captions-text`). Level: against the music, not
-  one number (`bcp:audio-mix`: `bashcut.audio.loudness {clip}`, or `loudness.py` on a WAV export).
+- Captions come from your `caption` text, timed by the take (`bcp:captions-text`).
+- **Level** every kept take in one `bashcut.audio.polish {clips: [the takes], amount: 0.2, profile}` (synthesized
+  takes are clean: light compression and the output profile's level; a recorded voice 0.5, below). Polish the
+  live-speech clips with the same `profile` so both voices land on one target: the review limit is each live-speech
+  clip within ~2 LU of the voiceover. Then `bashcut.audio.loudness {clip}` per voice and the music against them
+  (`bcp:audio-mix`).
 
 ## 6. Re-take one line
 
