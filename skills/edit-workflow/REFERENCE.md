@@ -76,7 +76,7 @@ their source; choose within them for this footage and say why in `decisions`.
 | "người nói ở trên video", "khung mặt" | presenter camera on V2 in front of the screen, Motion scale ~37 % (a 9:16 camera becomes ~400 px wide), bottom centre; captions between screen and face. "Ở trên" can mean the track order or the top of the frame: bottom centre was kept without complaint; ask when unsure |
 | "ẩn giọng desktop", "tắt tiếng màn hình" | mute the screen clips; speech comes from the camera (`bcp:audio-mix`) |
 | (unsaid, always) | one zoom per narration line onto the panel it names, changing when the screen changes; fast-forward waiting and typing (`bcp:effects`) |
-| (unsaid, with a voiceover) | live speech levelled to the voiceover, music well under both (`bcp:audio-mix`); no voiceover line repeating the presenter |
+| (unsaid, with a voiceover) | live speech within ~2 LU of the voiceover, music 15–20 LU under both (`bcp:audio-mix`); no voiceover line repeating the presenter |
 
 Real case: a 5 min session (camera + screen) became a 2:00 intro, speech over 92% of it; dropped: fillers, muddled
 lines, reactions to bugs, sentences where the camera mic heard the laptop playing the output. The first cut opened
@@ -88,9 +88,9 @@ on the presenter's "hello"; the user sent it back: "end user muốn biết outpu
 |---|---|---|
 | G1 brief | after intake | the brief in 4–6 lines, `inferred` fields marked |
 | G2 strategy | after story | 4–8 sentences + the section table, a frame of the hook shot |
-| G3 rough cut | after the cut | the cut list from `sequence_inspect`, duration against the plan, 4–6 frames |
+| G3 rough cut | after the cut | the cut list from `bashcut.timeline.summary`, duration and cuts a minute against the plan, 4–6 frames |
 | G4 script | before any speech is synthesized | the lines with their timing windows |
-| G5 draft | after review | the draft export path, length, fixed and kept issues, what was not checked |
+| G5 draft | after review | per output: the `bashcut.review.run` verdict, blocking and warnings left, fixed and kept issues, 4–6 frames, what was not checked |
 
 `approved`: go on. Changes: apply the note, show again. Rejected: stop and ask. The user may say up front "no gates"
 or "only the draft": then G1–G4 become a one-line notice and you go on, but G5 is always shown. Never render an
@@ -107,6 +107,11 @@ Every call resends the whole context, so cost is roughly calls × context. Measu
   paid again by 25 later turns.
 - **Sub-agents read, you decide**: the survey and the critic run as sub-agents that return a short answer.
 - **Wait, don't poll**: long commands take `wait: true`; else `jobs.list` once when you need the result.
+- **Look in sheets**: a contact sheet of 12–24 frames (`skills/footage-survey/contact_sheet.py`) costs about 1/15 of
+  the same frames one by one; one frame every 2 s judges pace.
+- **Render once per output**: the bench measured Pro's render time at 5–10× BashCut's from draft exports and
+  re-exports. Frames and `bashcut.review.run` replace the draft; `file.exportMedia {format: "wav"}` (audio only,
+  ~0.02 s for 24 s) when a script needs the sound; one `bashcut.profiles.apply` per output at the end.
 
 ## Window commands (bridge mode)
 
@@ -122,9 +127,9 @@ does not have them (`scripts/commands.json` lists them under `frontend`):
 
 ## Limits
 
-- Nothing measures loudness, true peak, black or frozen frames read-only. `file.exportMedia {loudnessLufs}`
-  normalizes each export; `essentialSound.autoMatch` reports LUFS only while applying gain. Say in the hand-off what
-  was not measured.
+- Loudness and true peak are measured on the timeline (`bashcut.audio.loudness`, `bashcut.review.run`) and on the
+  exported file (`bashcut.profiles.apply` `peakCheck`); what the review cannot judge is taste: a cut that feels
+  late, music that fights the voice. Say in the hand-off what was not listened to.
 - No revision guard: if the user edits in the app meanwhile (bridge mode), `doc_inspect` before the next batch.
 - Speech needs a Whisper build for `transcript.generate`; otherwise words come from an outside transcriber and
   `transcript.set` (`bcp:footage-survey`).
@@ -141,11 +146,12 @@ replaces a built-in). `bashcut.profiles.get {"profile"}` gives its `loudnessLufs
 another sequence (a variant), `queue: true` adds to the export queue instead. For `bashcutpro export --preset`,
 `bashcut.profiles.compile` writes the presets (`BashCut TikTok`, …).
 
-Builds without them (no `bashcut.profiles.*` in `command_list`), or the draft and the master, use `file.exportMedia`:
+Builds without them (no `bashcut.profiles.*` in `command_list`), a watch copy the user asks for, or the master, use
+`file.exportMedia`:
 
 | Output | `file.exportMedia` params |
 |---|---|
-| Draft | `format: "h264"`, `height: 960` (portrait) or `540` (landscape), `loudnessLufs: -14`, `burnCaptions: true`, `wait: true` |
+| Watch copy (asked for) | `format: "h264"`, `height: 960` (portrait) or `540` (landscape), `loudnessLufs: -14`, `burnCaptions: true`, `wait: true` |
 | TikTok, Reels, Shorts | 1080×1920, `format: "h264"`, `loudnessLufs: -14`, captions burned in |
 | YouTube | 1920×1080 (or source size), `format: "h264"`, `loudnessLufs: -14`, `captionSidecar: "srt"` |
 | Master / archive | `format: "prores"`, `proresProfile: "hq"`, no loudness change |
@@ -157,6 +163,6 @@ Builds without them (no `bashcut.profiles.*` in `command_list`), or the draft an
 
 From the plan's `log` and `skipped`, not chat memory: stages run and skipped (with the reason), each gate with the
 user's answer, review rounds (fixed, kept), what was measured and what was not (sound not listened to, loudness not
-measured), every kept issue with its reason, the export paths. Example: "Review: 2 rounds. Closed a 1.2 s gap at
+measured), the review verdict per output, every kept issue with its reason, the export paths. Example: "Review: 2 rounds. Closed a 1.2 s gap at
 0:41, raised the caption out of the Reels bar. Kept: the 9 s shot at 0:12, the hook you chose. Not listened to: the
 music under your voice."

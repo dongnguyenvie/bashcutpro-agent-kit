@@ -44,7 +44,7 @@ keyword alone on one) and, if someone speaks, the same idea said. Write **3–5 
 
 | Check | Sample range | Why it varies |
 |---|---|---|
-| Hook window | short-form 1–3 s; long-form up to about 15 s (T02 §3, sources contradict) | platform, length, whether the viewer chose to watch |
+| Hook window | short-form 1–3 s; long-form up to about 15 s (T02 §3, sources contradict); a tool demo opens on the output for 5–7 s with its own sound | platform, length, whether the viewer chose to watch |
 | Hook text | about 6 words or fewer per frame; at most about 60 characters in 9:16 (T14 §3) | font size, hold |
 
 - **Text and speech in the opening say the same thing.** A title asking one question while the voice says another
@@ -99,11 +99,13 @@ update `promise` with a reason.
 Write `beats` [{id, section, text, job, onScreen, source}] (text = the exact words heard) and the `promise` into the
 plan; bcp:visual-plan turns beats into pictures. Show hook options, story options and script, and ask for G4
 before any voice is made. After voiceover and editing, compare each beat with the words heard
-(`transcript.inspect`): fix the beats or the edit, not the measurement.
+(`transcript.inspect`): a beat with under about 0.6 of its words heard is rewritten or cut; fix the beats or the
+edit, not the measurement. Lines of real speech and voiceover chain with about 0.14 s between them.
 
 ## On-screen text and CTA
 
-- Captions per the recipe's range (bcp:captions-text); titles and cards as bcp:vlog-plan says (the vlog library
+- Captions from the words with `bashcut.captions.create` (≤ 20 cps, 2 lines, ≤ 42 characters a line; 20 on
+  vertical) per bcp:captions-text; hook text inside the profile's safe area (`bashcut.review.run` checks it); titles and cards as bcp:vlog-plan says (the vlog library
   looks wait for `.fcgt` templates).
 - CTA: one action (save, follow, comment a question, buy), held 1–6 s by platform and CTA (T07 §3). Examples, not
   rules: Shorts and TikTok often "follow", Reels "lưu lại", YouTube "xem video tiếp theo".

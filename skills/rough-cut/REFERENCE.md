@@ -22,47 +22,69 @@ that gives word times), convert to ticks and import per media item:
 
 Every other `transcript.*` command then works on these words.
 
-## Two ways to cut
+## tighten.py
 
-### Additive: subclips in story order
+```
+python3 <skill_dir>/tighten.py --words words.json --item 3 --keep 117-124,103-116,125-171 --fps 30
+    [--min-pause 0.35] [--keep-pause 0.12] [--lang en|vi] [--fillers "um,uh,you know"] [--protect 40,41]
+    [--wav scratch.wav [--wav-start 0]] [--track V1] [--label "short-01 tighten"]
+```
+
+| Flag | Default | What |
+|---|---|---|
+| `--words` | | `transcript.inspect` of a scratch sequence holding the whole item at 0 (word times on the item's clock) |
+| `--keep` | | word-index ranges in story order (`from`-`to` of a `transcript.search` hit) |
+| `--fps` | 30 | the output sequence's rate: `25`, `30000/1001` |
+| `--min-pause` | 0.35 | a pause this long between kept words is cut |
+| `--keep-pause` | 0.12 | quiet kept on each side of a cut pause (at most half the gap) |
+| `--lang`, `--fillers` | en | en: um uh umm uhm erm er ah ahm hmm mm mhm; vi: ờ ừm ơ ờm hừm. Phrases allowed ("you know") |
+| `--protect` | | word indices never dropped (a filler that is the content, a repeat on purpose) |
+| `--wav` | | the scratch sequence exported as WAV: an edge the energy says is still in speech moves into quiet in the gap |
+
+Output: `{"command": <bashcut.batch>, "report": {...}}`. The report's `edgesMovedBySound` stays 0 on words already
+refined by `bashcut.transcript.generate`; `--wav` is for words imported with `transcript.set` when
+`refineEdges` cannot run. Measured on a 167 s two-voice test (30 fps): three clips 22–34 s from 41–49 s of
+selects, 11–20 cuts each, every filler and false start out, 0 `cutInWord` in `bashcut.review.run`.
+
+The batch places from the media item (`timeline.place {item, track, frame, sourceIn, duration}`), back to back from
+frame 0 of the active sequence: run it on an empty sequence, or shift `frame` by hand to append.
+
+## Other ways to cut
+
+### Subclips in story order
+
+For a select record you can see in the project:
 
 ```json
-{"steps": [
+{"id": "bashcut.batch", "params": {"label": "selects", "commands": [
   {"id": "source.open", "params": {"item": 3}},
   {"id": "clip.makeSubclip", "params": {"item": 3, "name": "S1-hook", "start": 15602457600000, "end": 19025798400000}},
-  {"id": "clip.makeSubclip", "params": {"item": 3, "name": "S4-proof", "start": 47201000000000, "end": 52113000000000}},
-  {"id": "source.open", "params": {"item": 1}},
-  {"id": "clip.makeSubclip", "params": {"item": 1, "name": "S2-setup", "start": 2540160000000, "end": 6350400000000}},
-  {"id": "timeline.place", "params": {"items": ["<S1-hook id>", "<S2-setup id>", "<S4-proof id>"], "track": "V1", "seconds": 0}},
-  {"id": "file.save", "params": {}}
-], "stop_on_error": true}
+  {"id": "clip.makeSubclip", "params": {"item": 3, "name": "S4-proof", "start": 47201000000000, "end": 52113000000000}}]}}
 ```
 
 Ids are numbers (`item` from `project_inspect`, clips from `sequence_inspect`), never names like `M3`.
-`clip.makeSubclip` is refused until a clip is open in the Source monitor, hence `source.open` first. It returns the new item's id; the place step needs those ids, so run the subclip steps as one
-batch, read the ids from its results, then the place batch. Alternatively place each range straight from the
-media with `timeline.place {item, sourceIn, duration, seconds}` (each its own undo step), without subclips; the
-subclips are the select record you can see in the project.
+`clip.makeSubclip` is refused until a clip is open in the Source monitor, hence `source.open` first. It returns the
+new item's id; read the ids from the batch's results, then `timeline.place {items: [...], track: "V1", seconds:
+0}` puts them back to back. Subclips are not tightened: fillers and pauses inside them stay.
 
-### Subtractive: remove by text on a placed take
+### Remove by text on a placed take
+
+One clean take, mostly kept: place it, then remove what is not wanted, **last range first** so earlier word ids
+keep their place:
 
 ```json
-{"steps": [
+{"id": "bashcut.batch", "params": {"label": "trim take", "commands": [
   {"id": "timeline.place", "params": {"item": 3, "track": "V1", "seconds": 0}},
-  {"id": "transcript.extract", "params": {"from": "<word id>", "to": "<word id>"}},
-  {"id": "transcript.removeFillers", "params": {"fillers": ["ờ", "à", "ừm", "um", "uh"]}},
-  {"id": "transcript.removePauses", "params": {"minSeconds": 0.6, "keepSeconds": 0.25}},
-  {"id": "file.save", "params": {}}
-], "stop_on_error": true}
+  {"id": "transcript.extract", "params": {"from": 412, "to": 431}},
+  {"id": "transcript.extract", "params": {"from": 88, "to": 97}}]}}
 ```
 
 - `transcript.extract` removes and closes the gap (ripple); `transcript.lift` leaves the gap (for cover footage
-  dropped in later). Work from the **end of the take backwards**, so earlier word ids keep their place.
-- `removePauses`: `keepSeconds` 0.2–0.3 keeps speech breathing; tighter reads as a jump-cut machine. A pause with
-  a reaction or a look in it is content: check it with `render_frame` before removing pauses wholesale on a
-  reactions source.
-- `removeFillers`: give the fillers of the language spoken. In Vietnamese "à", "ừ" can be meaningful answers:
-  read the hits (`transcript.search`) before a wholesale removal.
+  dropped in later).
+- `transcript.removeFillers {fillers}` and `transcript.removePauses {minSeconds, keepSeconds}` work on the placed
+  words, without the false-start pass or the frame-exact edges of tighten.py. `keepSeconds` 0.2–0.3 keeps speech
+  breathing.
+- In Vietnamese "à", "ừ" can be meaningful answers: read the hits (`transcript.search`) before removing them.
 
 `transcript.select {from, to}` selects the clip range of those words on the timeline, for a command that works on
 the selection (`sequence.lift`, `sequence.extract`, `edit.rippleDelete`).
@@ -77,7 +99,8 @@ For each planned edge, compare with the words from `transcript.inspect`:
   unsafe (T06 §3);
 - no recording cue ("cắt đoạn này", "take two", "làm lại", a clap) inside the range.
 
-A cut inside a word is a review error later (`bcp:review`); finding it now costs nothing.
+A cut inside a word is a blocking `cutInWord` in `bashcut.review.run` later (`bcp:review`); finding it now costs
+nothing. tighten.py's edges pass this by construction; check the ones you place by hand.
 
 ## Selects record
 

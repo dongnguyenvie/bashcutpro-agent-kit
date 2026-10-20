@@ -25,7 +25,8 @@ video"}`.
   and how much of the text was really said). A beat with an `onScreen` note is a draft row: `line` = text,
   `from`/`to` = its first and last word, `beat` = id, `show` = the note, `treatment` = its `treatment` or the
   table's name for what the note asks. Only check them (§2–§3) and fill gaps: a beat without a note, a long beat
-  needing two rows, a beat whose words were mostly not said (re-worded or cut: take its words from what is heard).
+  needing two rows, a beat whose words were mostly not said (under about 0.6 of its words heard: re-worded or cut,
+  take its words from what is heard).
 - **No script**: split the transcript (`transcript.inspect`) into lines at sentence or idea boundaries, with each
   line's first and last word times. No transcript: bcp:footage-survey first (`transcript.set` imports outside words).
 - What exists: the described shots (item Descriptions from bcp:footage-survey, `project.items`), what is on screen
@@ -138,8 +139,9 @@ bcp:audio-mix's, at the row's `at`.
    or a product shown as real is never generated.
 
 Record the stage in `plan.log` (`{"stage": "visuals", "did": "<row count by treatment>", "evidence": "<contact
-sheet path>"}`) and `file.save`. The draft review checks every row against the timeline (bcp:review: each row's
-`at` against `sequence_inspect` and a frame).
+sheet path>"}`) and `file.save`. The review checks every row against the timeline (bcp:review: each row's `at`
+against `bashcut.timeline.summary` and a frame) and runs `bashcut.review.run` on every output sequence, so a
+picture over a caption or a frozen still is caught before the export.
 
 ## Report
 

@@ -1,6 +1,6 @@
 ---
 name: vlog-podcast-clips
-description: Recipe for shorts cut from a long podcast, interview, livestream or talk: clips proposed by quote with word-exact edges, the standalone test, a blind second pass, the user picks, one sequence per clip edited as a talking head. Use after bcp:vlog-plan picks podcast-clips. Triggers: "podcast clips", "long to short", "clips from a livestream", "cắt podcast", "cắt clip ngắn từ video dài", "cắt shorts từ livestream".
+description: Recipe for shorts cut from a long podcast, interview, livestream or talk: clips proposed by quote, the standalone test, a blind second pass, the user picks; one sequence per clip with its hook first, tightened on word edges with tighten.py (dead air, fillers, false starts: 8–15 cuts in a 40 s clip), captions from bashcut.captions.create inside the safe area, bashcut.review.run on every clip, one profile export each. Use after bcp:vlog-plan picks podcast-clips. Triggers: "podcast clips", "long to short", "clips from a livestream", "cắt podcast", "cắt clip ngắn từ video dài", "cắt shorts từ livestream".
 ---
 
 # Podcast clips (long → short)
@@ -27,7 +27,9 @@ Outputs per clip: vertical → Shorts, TikTok, Reels; a topic clip for YouTube �
 | Cut edges | on word or sentence edges from `transcript.inspect`, no hand padding: a 0.1 s pad pulls in the next word in connected speech | a trailing reaction or laugh: take a wider quote |
 | Clean cut points | gaps of 400 ms or more are clean; 150–400 ms need a look; under 150 ms are unsafe (T06 §3) | music or room noise under the gap |
 | Length vs target | within ±10–15 % of the planned length (T06 §3) | a clip that needs its full payoff runs over; say so |
-| Pauses, framing, captions | as bcp:vlog-talking-head | — |
+| Tightening | 8–15 cuts in a 40 s clip (12–25 a minute), every filler and false start out, pauses ≥ 0.35 s cut to 0.12 s each side (bcp:rough-cut `tighten.py`) | a story told slowly keeps its breaths: `--min-pause` 0.5–0.8 |
+| Tightened length | 60–80 % of the selected source (one test: 41 s of selects → 29 s) | how much dead air the talk has |
+| Captions (vertical) | ≤ 20 cps, 2 lines, `maxChars` 20 at `size` 40, `margin` ≥ the review's `marginAtLeast` (0.22 on Shorts) | the platform's safe area (`bashcut.profiles.get`) |
 | Two cameras: shot dwell | 3–12 s, varied with energy, never random; listener cutaways 2–4 s (T19 §3, §7) | a fast debate cuts sooner; a long answer holds |
 
 ## 1. Read and classify the source
@@ -63,15 +65,45 @@ conversation: "N clips proposed, M recommended", and wait. Mark the chosen ones 
 
 ## 5. One sequence per clip
 
-Per kept clip, a new sequence of the output shape (`file.newSequence`, named for the clip) holding only that range;
-for separate deliveries, a project copy per clip (`file.saveCopy`). Edit each as a short:
+Per kept clip, a new sequence of the output shape, named for the clip, holding only that clip:
 
-- Hook: the strongest complete sentence first (the cold-open rule above), then the clip in order.
-- Tighten pauses, punch-ins at word boundaries, short caption groups: bcp:vlog-talking-head.
-- A landscape source in a vertical output: reframe each shot on the speaker with Motion scale and position
-  (bcp:effects) and check it with `render_frame`. Never trust a blind centre crop of a two-shot; when nobody fits,
-  use a fitted frame instead (T19 §4).
-- A title card or chapter label only when the clip needs context the first sentence does not give.
+1. `file.newSequence {name: "clip-02-pricing", width: 1080, height: 1920, fps: 30}` (the profile's size and rate:
+   `bashcut.profiles.get {profile}`).
+2. **Hook first, then tighten**: the clip's word ranges in story order, the hook range first when the cold-open rule
+   above applies, through bcp:rough-cut `tighten.py --keep <hook>,<rest> --fps 30`; read its report (`cuts`,
+   `cutsPerMinute`, `removed`, `connectedSpeech`), then `command_run` the printed `bashcut.batch`. Under 8 cuts in a
+   40 s clip on a talk with fillers: check that the ranges hold the fillers (`removed`) before loosening anything.
+3. A landscape source in a vertical output: reframe each shot on the speaker with Motion scale and position
+   (bcp:effects) and check it with `render_frame`. Never trust a blind centre crop of a two-shot; when nobody fits,
+   use a fitted frame instead (T19 §4).
+4. Punch-ins at word boundaries on jump cuts (bcp:vlog-talking-head); a title card or chapter label only when the
+   clip needs context the first sentence does not give.
+
+For separate deliveries, a project copy per clip (`file.saveCopy`) after the review.
+
+## 6. Captions, sound, review, export (every clip)
+
+```json
+{"id": "bashcut.captions.create", "params": {"maxChars": 20, "lines": 2, "maxCps": 20, "breakSeconds": 0.4}}
+{"id": "captions.setStyle", "params": {"track": "C1", "size": 40, "margin": 0.23, "outline": 4, "outlineColor": "#000000"}}
+{"id": "bashcut.audio.polish", "params": {"clips": [101, 104, 107], "profile": "shorts"}}
+{"id": "bashcut.review.run", "params": {"profile": "shorts", "sequence": "<clip sequence id>"}}
+```
+
+- `bashcut.audio.polish` levels the voice to the profile: `clips` are the ids the tighten batch returned
+  (`changed.added`).
+- `bashcut.captions.create` groups cues on word edges at ≤ 20 cps and reports `after.atOrUnder` (aim 100 %).
+  Centred captions must clear the profile's right band (130 px on Shorts): on 1080×1920, 20 characters at `size` 40
+  did; 24 at the default size drew into it.
+- `bashcut.review.run` on **every** clip sequence (`sequence.open` it first). Blocking `safeArea` / `lines`: the
+  finding's `limit` (`marginAtLeast`, `sizeAtMost`) goes into `captions.setStyle`, or a smaller `maxChars` into
+  `bashcut.captions.create`; `cutInWord`: the range edge (bcp:rough-cut). At most 2 fix rounds per clip, then report
+  what is left.
+- One export per clip and profile: `bashcut.profiles.apply {profile, path, wait: true}` (loudness −14 LUFS, true
+  peak ≤ −1 dBTP checked on the file). Check with frames (`render_frame`), never a draft export.
+
+Measured on a 167 s two-voice test through these steps: three clips of 22–34 s with 11–20 cuts each, captions
+100 % at or under 20 cps, review `pass` with 0 blocking on all three (one true-peak warning the export fixes).
 
 ## Rhythm, transitions and graphics
 
@@ -88,8 +120,8 @@ looks are not ported yet).
 ## Review notes
 
 - One camera repeats its framing by nature; jump cuts are still fixed with punch-ins.
-- Blockers: a clip that starts mid-thought, a cut inside a word, a laugh with its joke cut off. A slightly long
-  pause is not.
+- Blockers: a clip that starts mid-thought, a cut inside a word, a laugh with its joke cut off, a blocking
+  `bashcut.review.run` finding. A slightly long pause is not.
 - `needs_user`: which clips to keep, the speakers' names and titles, permission to post a guest's words, the outputs
   per clip.
 
@@ -97,5 +129,6 @@ looks are not ported yet).
 
 - `stages`: `{"voiceover": {"required": false, "why": "the source's own speech"}, "rough-cut": {"rules": ["blind second pass; every clip passes the standalone test"]}, "visuals": {"skill": "bcp:visual-plan", "after": "voiceover", "required": true, "why": "each line gets the speaker, a keyword or a picture"}}`
 - `checks`: `clean-start` no clip starts mid-thought; `standalone` the clip makes sense without the source;
-  `joke-kept` a laugh keeps its joke; `no-cut-in-word` no cut inside a word.
+  `joke-kept` a laugh keeps its joke; `no-cut-in-word` no cut inside a word; `tight` 8–15 cuts in a 40 s clip and no
+  filler left; `review-pass` 0 blocking findings on every clip.
 - `askAtIntake`: `["guestPermission", "outputsPerClip"]`.
