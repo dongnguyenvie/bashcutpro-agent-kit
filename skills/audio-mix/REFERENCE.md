@@ -2,21 +2,24 @@
 
 ## Finding music and SFX online
 
-Policy (decided in BashCut): download what fits and record nothing: the user handles rights. Dead ends: Bensound,
-BBC SFX, ProductionCrate.
+Policy (#220): music and Openverse SFX are searched only under CC0, CC BY and CC BY-SA, which a monetised edit may
+use (BY and BY-SA with the credit line); never NonCommercial or NoDerivatives unless the user asks for every licence
+(`--any-licence`). Every row shows its licence and every file gets `<file>.licence.json` next to it. Dead ends:
+Bensound, BBC SFX, ProductionCrate.
 
 | Source | How | Licence |
 |---|---|---|
 | **Freesound API** (SFX) | `FREESOUND_API_KEY` (free, freesound.org/apiv2/apply), through `fetch_audio.py` | CC0 taken first, then CC BY (credit line); NonCommercial never |
-| **Openverse API** (Jamendo, ccMixter, Freesound, Wikimedia) | `curl`, no key, searchable, gives licence and duration | per file: CC0 free; CC BY needs the credit line |
+| **Openverse API** (Jamendo, ccMixter, Freesound, Wikimedia) | `curl`, no key, searchable, gives licence and duration | `fetch_audio.py` takes CC0, CC BY, CC BY-SA only (BY / BY-SA: credit line); NC and ND only with `--any-licence` |
 | **Pixabay Music / Sound Effects** | no API, blocks `curl`: a browser on `pixabay.com/music/search/<q>/` or `/sound-effects/search/<q>/` (Vietnamese under `/vi/`), else Mixkit or Openverse | Pixabay Content License: commercial use, no credit; some tracks are registered in Content ID, so keep the page URL as proof |
 | **Mixkit** (music and SFX) | no API: the file URL on `mixkit.co/free-stock-music/tag/<lo-fi\|chill\|upbeat\|cinematic>/` or `/free-sound-effects/<whoosh\|pop\|ding\|click>/` | Mixkit free licences: commercial use, no credit; not resold or shared as stand-alone sound |
 | **tiengdong.com** (Vietnamese meme sounds: "ting ting", "bụp bụp", "oh nooo") | download the one that fits | "All rights reserved", many clipped from shows: organic posts only, never ads or monetised YouTube |
 
 ### `fetch_audio.py`
 
-Carried over unchanged from BashCut's Online Resources plugin, with `fetch_stock.py` (its download helper:
-`curl` with retries). Standard library and `curl`; runs with `python3` or `uv run`.
+Carried over from BashCut's Online Resources plugin (plus the licence filter, as in BashCutPro's), with
+`fetch_stock.py` (its download helper: `curl` with retries). Standard library and `curl`; runs with `python3` or `uv
+run`.
 
 ```sh
 python3 "<skill_dir>/fetch_audio.py" --dest /abs/project/media/audio --music "lofi chill" --sfx whoosh,pop --no-library
@@ -24,8 +27,12 @@ python3 "<skill_dir>/fetch_audio.py" --dest /abs/project/media/audio --slots slo
 ```
 
 Music comes from Openverse; SFX from Freesound with a key, else Mixkit, else Openverse. It prints one JSON line per
-file (`--slots`: a table and `candidates.json`). Then bring them in with `file.import {paths}` (or MCP
-`media_import`) and place them with `timeline.place`.
+file (`--slots`: a table and `candidates.json`), each with its `license` (the table's `licence` column), and writes
+`<file>.licence.json` beside each file. A BY or BY-SA file needs its credit line (title, author, licence, source
+page) wherever the user credits. Openverse's music category is mostly Jamendo, largely NonCommercial: when it runs
+short, long uncategorised Openverse audio (Freesound loops and beds) fills up. NC and ND tracks appear only with
+`--any-licence`, and only when the user asked. Then bring them in with `file.import {paths}` (or MCP `media_import`)
+and place them with `timeline.place`.
 
 Always pass `--no-library`, and never `--import` or `--pick`: those call the `bashcut` CLI (BashCut's library,
 media import and placing), which does not exist here. Without the library there is no LUFS, onset or BPM column:
@@ -36,7 +43,7 @@ export that range) and `bcp:beat-cut`'s `beats.py`.
   "whoosh", "count": 10}, {"slot": "bed", "music": "lofi chill", "count": 6}]`). Ranges (tune; SFX slots from the
   plan's cuts, transitions, graphic entrances, keyword pops): ≤ 30 s 4–8 kinds × 6–10, 1 bed × 4–6; 30–90 s 8–15 ×
   8–12, 1–2 × 5–8; 1.5–5 min 15–30 × 8–12, 2–4 × 5–8; cap ~150 MB a minute (`--max-mb`).
-- **Openverse** by hand: `curl "https://api.openverse.org/v1/audio/?q=lofi&license=cc0,by&category=music"` (SFX:
+- **Openverse** by hand: `curl "https://api.openverse.org/v1/audio/?q=lofi&license=cc0,by,by-sa&category=music"` (SFX:
   drop `category`; `duration` in ms). Freesound's CDN is slow (~12 s a MB); the script fetches in parallel.
 - Good keywords: "lofi chill", "upbeat corporate", "cinematic ambient", "meme". Download into the project's
   `media/audio/`; nothing goes on the video or in its description unless the user asks.

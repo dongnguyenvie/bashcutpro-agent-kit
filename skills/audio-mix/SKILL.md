@@ -98,6 +98,9 @@ clip and fade out), leave the most honest line with no music. Keep the music con
 - Under speech use instrumental music; lyrics mask the words. Never use songs from a platform's library (TikTok
   and CapCut trending sounds): they are muted when posted on another platform or run as an ad.
 - Never generate music. Finding and downloading it: REFERENCE.md (`fetch_audio.py`, sources and licences).
+- Licence: only CC0, CC BY or CC BY-SA music (what `fetch_audio.py` searches by default), never NonCommercial or
+  NoDerivatives: a CC BY-NC-ND bed was placed in a vlog meant for monetising (#220). Say the licence of the track you
+  place; BY / BY-SA need the credit line from its `<file>.licence.json`. `--any-licence` only when the user asks.
 
 ## Real speech, voiceover, screen recordings
 
