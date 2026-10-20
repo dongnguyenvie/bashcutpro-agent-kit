@@ -18,8 +18,10 @@ and Vietnamese subtitles for a folder `vietsub-folder` (`bcp:batch`).
 Captions come from the words of the **edited** sequence, so make them after the cut (`bcp:rough-cut`) and the
 voiceover are locked.
 
-- **Whisper build** (`transcript.models` says `"available": true`): `transcript.generate {items, language}`
-  (or `sequence.transcribe {track: "mix", language}`), `wait` on the job.
+- **Whisper build** (`transcript.models` says `"available": true`): `bashcut.transcript.generate {items, language}`
+  (or `sequence.transcribe {track: "mix", language}` then `bashcut.transcript.clean`), `wait` on the job. On music or
+  ambience with no speech Whisper can loop one sentence; the clean drops it and the item reports `noSpeech` (no
+  captions from it). `keepDoubtful: true` keeps the text.
 - **Default build**: transcribe outside, then `transcript.set {item, transcript}` per media item
   (`bcp:footage-survey`). The outside Whisper takes a vocabulary (REFERENCE "Vocabulary and Whisper").
 - **A script or voiceover text exists**: show the script's exact words, never the recogniser's paraphrase (T09

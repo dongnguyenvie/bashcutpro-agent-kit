@@ -102,7 +102,7 @@ in one `media_import` + one `command_batch` of `timeline.place {item, track: "A2
 ## 4. Check every kept take
 
 The model misreads, drops or repeats words, mostly **at the start** of a line. Transcribe the take
-(`transcript.generate {items: [take]}` in a Whisper build, then `transcript.inspect`; else an outside transcriber
+(`bashcut.transcript.generate {items: [take]}` in a Whisper build, then `transcript.inspect`; else an outside transcriber
 on the wav) and compare: `narration.py check take.json --text "line" --min-similarity 0.9`. Read `unmatched`,
 `extra` and `atStart`, not only `similarity`: a repeated word barely moves it. The threshold is your call (one kit
 gates at 0.92 for Chinese, T10 §3). Recognition also mishears some regional accents (s→x, final n→ng): count only

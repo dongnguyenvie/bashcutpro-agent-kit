@@ -13,7 +13,7 @@ editor's message gives the goal (length, shape, platform, language, any angle) a
 The editor never opens the transcript or a frame before the build, and writes the cut from your answer alone: exact
 quotes, times and what is on screen must be in it.
 
-1. **Words first.** `transcript.models`; with Whisper, `transcript.generate {items, language}` with `wait`.
+1. **Words first.** `transcript.models`; with Whisper, `bashcut.transcript.generate {items, language}` with `wait` (drops Whisper's repeated-text loops on clips with no speech; `noSpeech` items have none).
    Without, an outside transcriber and `words_to_transcript.py`, then `transcript.set`. Read every transcript
    yourself with `transcript.inspect`, in pieces when it is long. Note suspect words (the script's stderr) and
    re-transcribe those windows.

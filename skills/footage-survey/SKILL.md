@@ -46,7 +46,7 @@ a cut it missed. Numbers only point; the frame confirms.
 
 ## 3. Words
 
-`transcript.models` says whether the build has Whisper. With it: `transcript.generate {items, language}`. Without:
+`transcript.models` says whether the build has Whisper. With it: `bashcut.transcript.generate {items, language}` (a clip with only music or ambience reports `noSpeech`). Without:
 an outside transcriber on the clip's sound (export it: `file.exportMedia {format: "wav", range: "custom",
 startSeconds, endSeconds}` over the clip on the survey sequence), then
 
