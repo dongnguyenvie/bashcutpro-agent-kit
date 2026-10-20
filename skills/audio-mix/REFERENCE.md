@@ -2,15 +2,15 @@
 
 ## Finding music and SFX online
 
-Policy (#220): music and Openverse SFX are searched only under CC0, CC BY and CC BY-SA, which a monetised edit may
-use (BY and BY-SA with the credit line); never NonCommercial or NoDerivatives unless the user asks for every licence
-(`--any-licence`). Every row shows its licence and every file gets `<file>.licence.json` next to it. Dead ends:
+Policy: music and Openverse SFX are searched under every licence by default; `--safe-licence` keeps to CC0, CC BY
+and CC BY-SA, which a monetised edit or an ad may use (BY and BY-SA with the credit line). Every row shows its
+licence and every file gets `<file>.licence.json` next to it. Dead ends:
 Bensound, BBC SFX, ProductionCrate.
 
 | Source | How | Licence |
 |---|---|---|
 | **Freesound API** (SFX) | `FREESOUND_API_KEY` (free, freesound.org/apiv2/apply), through `fetch_audio.py` | CC0 taken first, then CC BY (credit line); NonCommercial never |
-| **Openverse API** (Jamendo, ccMixter, Freesound, Wikimedia) | `curl`, no key, searchable, gives licence and duration | `fetch_audio.py` takes CC0, CC BY, CC BY-SA only (BY / BY-SA: credit line); NC and ND only with `--any-licence` |
+| **Openverse API** (Jamendo, ccMixter, Freesound, Wikimedia) | `curl`, no key, searchable, gives licence and duration | `fetch_audio.py` takes every licence; `--safe-licence`: CC0, CC BY, CC BY-SA only (BY / BY-SA: credit line) |
 | **Pixabay Music / Sound Effects** | no API, blocks `curl`: a browser on `pixabay.com/music/search/<q>/` or `/sound-effects/search/<q>/` (Vietnamese under `/vi/`), else Mixkit or Openverse | Pixabay Content License: commercial use, no credit; some tracks are registered in Content ID, so keep the page URL as proof |
 | **Mixkit** (music and SFX) | no API: the file URL on `mixkit.co/free-stock-music/tag/<lo-fi\|chill\|upbeat\|cinematic>/` or `/free-sound-effects/<whoosh\|pop\|ding\|click>/` | Mixkit free licences: commercial use, no credit; not resold or shared as stand-alone sound |
 | **tiengdong.com** (Vietnamese meme sounds: "ting ting", "bụp bụp", "oh nooo") | download the one that fits | "All rights reserved", many clipped from shows: organic posts only, never ads or monetised YouTube |
@@ -29,9 +29,8 @@ run`.
 Music comes from Openverse; SFX from Freesound with a key, else Mixkit, else Openverse. It prints one JSON line per
 file (`--slots`: a table and `candidates.json`), each with its `license` (the table's `licence` column), and writes
 `<file>.licence.json` beside each file. A BY or BY-SA file needs its credit line (title, author, licence, source
-page) wherever the user credits. Openverse's music category is mostly Jamendo, largely NonCommercial: when it runs
-short, long uncategorised Openverse audio (Freesound loops and beds) fills up. NC and ND tracks appear only with
-`--any-licence`, and only when the user asked. Then bring them in with `file.import {paths}` (or MCP `media_import`)
+page) wherever the user credits. Openverse's music category is mostly Jamendo, largely NonCommercial: with `--safe-licence`,
+when it runs short, long uncategorised Openverse audio (Freesound loops and beds) fills up. Then bring them in with `file.import {paths}` (or MCP `media_import`)
 and place them with `timeline.place`.
 
 Always pass `--no-library`, and never `--import` or `--pick`: those call the `bashcut` CLI (BashCut's library,
