@@ -33,7 +33,7 @@ well under 100 turns: one lookup per command, one `bashcut.batch` per stage, one
   Errors start with a code: `notFound` (re-read, fix the id), `badParams` (fix the params), `refused` (change the
   state or ask), `busy` (wait, retry), `offline` (relink or tell the user). Never print a whole transcript: search it (`transcript.search`) or read a range.
 - **Look in batches: one contact sheet per pass.** List the times that matter (hook, each section start, every
-  card, zoom and text), then `python3 <kit>/skills/footage-survey/contact_sheet.py plan --program --at t1,t2,…
+  card, zoom and text), then `"${BASHCUT_PYTHON:-python3}" <kit>/skills/footage-survey/contact_sheet.py plan --program --at t1,t2,…
   --dir /abs/tmp/look-N` → one `command_batch {steps}` → `contact_sheet.py sheet "/abs/tmp/look-N/*.png" -o
   /abs/tmp/look-N.png --width 400` (phone size) → look at that one image. Never one `render_frame` per card or
   zoom; a single `render_frame {seconds, max_side: 540}` only for one frame in doubt.
@@ -89,7 +89,7 @@ to copy a reference video's style first: `bcp:style-study` before stage 2.
 2. Import all footage in one call: `bashcut.media.import {"paths": ["/abs/path/a.mp4", …]}` where the build has it
    (`file.import` plus the installed plugins' import hooks, e.g. a transcript on import; `bashcut.hooks.list` shows
    them), else MCP `media_import` or `file.import {paths}`. Absolute paths only. The same recipe over many inputs
-   (a folder, a series) is a batch, not one edit: `bcp:batch`. Then read what earlier edits taught: `python3 <skill_dir>/../self-learn/knowledge.py intake
+   (a folder, a series) is a batch, not one edit: `bcp:batch`. Then read what earlier edits taught: `"${BASHCUT_PYTHON:-python3}" <skill_dir>/../self-learn/knowledge.py intake
    --project /abs/film.fcproj --tags <the genre and the stages ahead>` (lessons, the user's preferences, this
    project's facts); follow them, and do not ask what a preference already answers.
 3. **Ask once** (at most 4 questions, REFERENCE "Intake questions"), each led by the choice you would make

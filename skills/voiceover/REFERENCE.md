@@ -9,9 +9,9 @@ Save the words to a file first, then measure outside (read-only, standard librar
 
 ```sh
 # words.json = the result of command_run transcript.inspect, saved as is
-python3 "<skill_dir>/narration.py" rate words.json --speaker 0          # overall, articulation, p10/p50/p90
-python3 "<skill_dir>/narration.py" windows words.json --rate 4.2 --min-seconds 1.5 --from 0 --to 95
-python3 "<skill_dir>/narration.py" check take.json --text "Quán này mở từ bảy giờ sáng" --min-similarity 0.9
+"${BASHCUT_PYTHON:-python3}" "<skill_dir>/narration.py" rate words.json --speaker 0          # overall, articulation, p10/p50/p90
+"${BASHCUT_PYTHON:-python3}" "<skill_dir>/narration.py" windows words.json --rate 4.2 --min-seconds 1.5 --from 0 --to 95
+"${BASHCUT_PYTHON:-python3}" "<skill_dir>/narration.py" check take.json --text "Quán này mở từ bảy giờ sáng" --min-similarity 0.9
 ```
 
 - `rate`: `overall` keeps pauses inside phrases (a gap of `--phrase-gap` 0.5 s or more ends a phrase),
@@ -53,7 +53,7 @@ it, then `edit.undo`. A whole script, each line at its start (ticks), on A2:
 ## VieNeu
 
 The plugin lives in `bashcutpro-plugins` (`plugins/vieneu-tts`, its own skill `vieneu-tts` has the full command
-list). `VN` = `python3 <plugin dir>/plugin.py` (`py -3 …` on Windows). Every command prints one JSON object
+list). `VN` = `"${BASHCUT_PYTHON:-python3}" <plugin dir>/plugin.py`. Every command prints one JSON object
 (`ok`, `message`, `data` or `error`).
 
 ```sh

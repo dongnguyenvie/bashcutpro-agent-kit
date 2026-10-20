@@ -24,7 +24,7 @@ you (an analytics export they downloaded); never log in, scrape or fetch from th
 ## 2. Map
 
 ```sh
-python3 <skill_dir>/outcomes.py retention.csv --sequence seq.json --project /abs/film.fcproj \
+"${BASHCUT_PYTHON:-python3}" <skill_dir>/outcomes.py retention.csv --sequence seq.json --project /abs/film.fcproj \
   --video "launch-v1" --markers-out /abs/outcome-markers.json --text
 ```
 

@@ -112,7 +112,7 @@ words of the whole item and the selects as word ranges in story order, and print
    '{"id":"sequence.open","params":{"item":<scratch>}}\n{"id":"transcript.inspect","params":{}}\n' | <cli>
    --compact --project <project.fcproj> run - | tail -1 > words.json`. It only reads the saved file (no save, no
    lock), so it runs while the editor holds the project.
-2. `python3 <skill_dir>/tighten.py --words words.json --item <id> --keep 117-124,103-116,125-171 --fps 30`: a hook
+2. `"${BASHCUT_PYTHON:-python3}" <skill_dir>/tighten.py --words words.json --item <id> --keep 117-124,103-116,125-171 --fps 30`: a hook
    moved first is just the first range. Inside each range it drops fillers (`--lang en|vi`, `--fillers`, `--protect`
    for a filler that is content) and false starts (a 1–3 word phrase said twice in a row keeps the later; a first
    copy ending a sentence is emphasis and stays), and cuts every pause ≥ `--min-pause` (0.35 s) down to

@@ -25,7 +25,7 @@ Every other `transcript.*` command then works on these words.
 ## tighten.py
 
 ```
-python3 <skill_dir>/tighten.py --words words.json --item 3 --keep 117-124,103-116,125-171 --fps 30
+"${BASHCUT_PYTHON:-python3}" <skill_dir>/tighten.py --words words.json --item 3 --keep 117-124,103-116,125-171 --fps 30
     [--min-pause 0.35] [--keep-pause 0.12] [--lang en|vi] [--fillers "um,uh,you know"] [--protect 40,41]
     [--wav scratch.wav [--wav-start 0]] [--track V1] [--label "short-01 tighten"]
 ```

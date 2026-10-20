@@ -51,9 +51,13 @@ same server without BashCutPro's own additions; tell the user which one they get
 | Linux (deb, rpm) | `/usr/bin/bashcutpro` (FilmCraft: `/usr/bin/filmcraft-cli`) |
 | macOS | the separate `bashcutpro-cli-<version>-macos-<arch>.zip` asset (FilmCraft: `filmcraft-cli-…`; the `.app` holds the desktop app); unzip it to `~/.local/bin` or another folder on `PATH`, keeping `bashcutpro` and `filmcraft-cli` together |
 
-If macOS refuses to open a downloaded binary, the user can allow it in System Settings › Privacy & Security. On
-Windows the kit's scripts run with `python` (or `py -3`), not `python3`; set `PYTHONUTF8=1` so Vietnamese text
-prints.
+If macOS refuses to open a downloaded binary, the user can allow it in System Settings › Privacy & Security. 
+
+**Python for the kit's scripts.** The skills write `"${BASHCUT_PYTHON:-python3}" <script>`: `BASHCUT_PYTHON` names
+the interpreter when it is set (bashcut-batch sets it for every agent step and names it in the prompt,
+BashCutPro#223). In a headless agent, type that name itself (`python <script>`): allow rules such as
+`Bash(python:*)` match the command's first word, so a variable needs approval. Unset on Windows: use `python` (or
+`py`), never `python3`, which is usually the Microsoft Store stub; set `PYTHONUTF8=1` so Vietnamese text prints.
 
 ## 3. Pick the mode
 

@@ -22,8 +22,8 @@ Carried over from BashCut's Online Resources plugin (plus the licence filter, as
 run`.
 
 ```sh
-python3 "<skill_dir>/fetch_audio.py" --dest /abs/project/media/audio --music "lofi chill" --sfx whoosh,pop --no-library
-python3 "<skill_dir>/fetch_audio.py" --dest /abs/project/media/audio --slots slots.json --no-library --max-mb 150
+"${BASHCUT_PYTHON:-python3}" "<skill_dir>/fetch_audio.py" --dest /abs/project/media/audio --music "lofi chill" --sfx whoosh,pop --no-library
+"${BASHCUT_PYTHON:-python3}" "<skill_dir>/fetch_audio.py" --dest /abs/project/media/audio --slots slots.json --no-library --max-mb 150
 ```
 
 Music comes from Openverse; SFX from Freesound with a key, else Mixkit, else Openverse. It prints one JSON line per

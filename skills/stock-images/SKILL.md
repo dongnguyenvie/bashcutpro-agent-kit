@@ -9,7 +9,7 @@ The fetch scripts next to this skill (`fetch_stock.py`, `fetch_emoji.py`, `fetch
 `fetch_illustrations.py`) run BashCut's scripts through the `bashcut.resources` plugin of bashcutpro-plugins: same
 flags (`--help`), same output lines, then one summary line with `files` (each saved file, its licence, author,
 source and the `<file>.licence.json` record beside it) and `pending` (picks to place). Run them with
-`python3 <skill_dir>/fetch_stock.py …` (`py -3` on Windows). No plugin found: they say how to get it. Contact
+`"${BASHCUT_PYTHON:-python3}" <skill_dir>/fetch_stock.py …`. No plugin found: they say how to get it. Contact
 sheets need Pillow: the plugin's `setup` installs it once (ask first, about 65 MB). Sources, keys, slot sizing and
 the Iconify recipe: `<skill_dir>/REFERENCE.md`.
 
@@ -62,7 +62,7 @@ Never place a Pixabay URL: download first (Pixabay asks that files are cached, n
 - Every file the scripts saved has `<file>.licence.json`. A file with no licence (shown without one in `files`):
   check it before the video is published, or drop it.
 - **No credits on the video** or in its description unless the user asks. Then:
-  `python3 <skill_dir>/resources.py credits <folder>` prints the credit lines; put them in the description, an end
+  `"${BASHCUT_PYTHON:-python3}" <skill_dir>/resources.py credits <folder>` prints the credit lines; put them in the description, an end
   card (`bcp:captions-text`), or the project notes with `project.setNotes` (it replaces the whole text: read
   `project.notes` first and keep it).
 

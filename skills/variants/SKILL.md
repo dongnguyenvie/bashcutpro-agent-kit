@@ -33,7 +33,7 @@ For each sequence, with it open (`sequence.open {item}`): save `bashcut.timeline
 to a file, and `bashcut.review.run {profile: "<its profile>"}` to another, then:
 
 ```sh
-python3 <skill_dir>/diff.py base.json variant.json [--review-a rb.json --review-b rv.json] --text [--one-change]
+"${BASHCUT_PYTHON:-python3}" <skill_dir>/diff.py base.json variant.json [--review-a rb.json --review-b rv.json] --text [--one-change]
 ```
 
 It reports the length change, cuts added and removed (one frame tolerance), shots added and removed, what plays in

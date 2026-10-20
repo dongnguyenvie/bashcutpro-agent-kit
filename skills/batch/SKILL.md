@@ -67,7 +67,8 @@ A `bashcut-batch/1` JSON file (full example in <skill_dir>/REFERENCE.md):
 
   - **Give agents the kit**: `bashcut-batch run --kit /abs/bashcutpro-agent-kit` (or `BASHCUT_KIT`, or a copy in
     `<data dir>/bashcut-kit`). Claude Code then gets it as `--plugin-dir` with the tools its scripts need (`Skill`,
-    `Read`, `Write`, `Bash(python3:*)`, ffmpeg), and every agent a prompt line with the skills path (BashCutPro#204).
+    `Read`, `Write`, `Bash(python3:*)`, ffmpeg), and every agent a prompt line with the skills path (BashCutPro#204) and the interpreter to type for its
+    scripts (`BASHCUT_PYTHON`, `{python}` in a pipeline: `python` on Windows, BashCutPro#223).
     Without it the agent has only the MCP tools and cannot run `loudness.py` or `contact_sheet.py`. `"kit": false`
     opts a step out; `"allowedTools": [...]` adds tools. `{kit}` is a placeholder for plugin steps.
   - A command step runs no review: end a pipeline without an agent with a `bashcut.review.run {profile}` step (before

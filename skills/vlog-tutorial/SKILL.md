@@ -56,7 +56,7 @@ with 58 (about 20 a minute). Whisper hides pauses inside the next word ("Now" 1.
 BashCutPro#203), so `transcript.removePauses` finds none: measure silence from the sound.
 
 1. **Find the silences**: export the sequence mix as WAV (`file.exportMedia {path: "/abs/tmp/mix.wav", format:
-   "wav", wait: true}`, audio only: 0.02 s for 24 s), then `python3 <skill_dir>/../audio-mix/loudness.py
+   "wav", wait: true}`, audio only: 0.02 s for 24 s), then `"${BASHCUT_PYTHON:-python3}" <skill_dir>/../audio-mix/loudness.py
    /abs/tmp/mix.wav --min-silence 0.8 --tighten 0.4`: `silences` in sequence seconds and `tighten.commands`.
 2. **Look inside every silence of 2 s or more** (frames at its start, middle and end, `contact_sheet.py plan
    --program`): a still screen is dead air, cut it; a screen that changes (loading, a render, typing) is the step's
