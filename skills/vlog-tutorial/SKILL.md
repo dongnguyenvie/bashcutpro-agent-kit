@@ -103,10 +103,9 @@ reason when the cut sits inside a measured silence (`silences` above); every oth
 
 ## Text, sound, look
 
-- Captions from the presenter after the tightening (bcp:captions-text §2): `transcript.inspect` saved to words.json,
-  `python3 <skill_dir>/../captions-text/captions_fit.py group words.json --out /abs/captions.srt --max-chars 42
-  --lines 2 --break-gap 0.5 --end <length>`, then `captions.import` (not `transcript.createCaptions`: it ignores
-  reading speed) for landscape (the `youtube` profile writes the SRT sidecar), 26–32 × 2 for the
+- Captions from the presenter after the tightening (bcp:captions-text §2): `bashcut.captions.create {maxChars: 42, lines: 2,
+  breakSeconds: 0.5}` (not `transcript.createCaptions`: it ignores reading speed; builds without it: `captions_fit.py
+  group`) for landscape (the `youtube` profile writes the SRT sidecar), 26–32 × 2 for the
   vertical cut; target 90 % of cues at or under 20 cps. Every shortcut, menu path and value on screen ("⌘K → Export").
 - Sound: the presenter's voice; mute the screen recording unless its sound is the result; a quiet bed or none.
   With a voiceover beside the presenter, level each camera clip to the voiceover (about 2 LU), set the bed 15–20 LU

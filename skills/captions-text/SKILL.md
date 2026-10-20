@@ -53,21 +53,26 @@ count: check the longest line on a frame. A cue's speed is its characters over i
 most of that time: fast cues are fixed by where the cues break (at pauses, so a cue can hold into the silence
 after it), not by the font.
 
-**Group from the words with `captions_fit.py`** (it breaks at sentence ends, at commas once a cue is half full and at
-pauses, never after "the" or "and", puts a lone last word back with its sentence, drops "um" / "uh" and stuttered
-repeats from the text, holds each cue into the silence after it until it reads under the limit and merges what is
-still fast with a slow neighbour):
+**Group from the words with `bashcut.captions.create`** (BashCutPro#200): one undo step that breaks at sentence ends,
+at commas once a cue is half full and at pauses, never after "the" or "and", puts a lone last word back with its
+sentence, drops "um" / "uh" and stuttered repeats, holds each cue into the silence after it until it reads under
+the limit and merges what is still fast with a slow neighbour. It adds a new first caption track
+(`captions.deleteTrack` the old one first, else two tracks show):
 
-```sh
-# transcript.inspect saved to words.json (the edited sequence's words), sequence length from bashcut.timeline.summary
-python3 <skill_dir>/captions_fit.py group words.json --out /abs/project/captions/cues.srt \
-  --max-chars 32 --lines 2 --max-cps 20 --fps 30 --end 58.4 [--trim-hedges]
+```json
+{"id": "bashcut.captions.create", "params": {"maxChars": 32, "lines": 2, "maxCps": 20, "breakSeconds": 0.5,
+ "trimHedges": false, "name": "Captions"}}
 ```
 
-then `captions.deleteTrack` (the old track) and `captions.import {path: "/abs/…/cues.srt", name: "Captions"}`. It
-prints `after` (cues, % at or under the limit, % over 25) and `left`, the cues still over. Measured on a 190 wpm
-voice with no hesitations (28 s): `transcript.createCaptions` 37–56 % at or under 20 cps; `group` 90 % (42 × 2),
-92 % (32 × 2 with `--trim-hedges`), 65 % (32 × 1: one line leaves no room on fast speech).
+It returns `before` / `after` (cues, % at or under the limit, % over 25) and `left`, the cues still over;
+`dryRun: true` measures without adding the track. Measured on a 190 wpm voice with no hesitations (28 s):
+`transcript.createCaptions` 37–62 % at or under 20 cps; `bashcut.captions.create` 32 × 2 84.6 %, 0 over 25; in a
+2-clip batch 90 % and 100 %. **Builds without it** (`command_list`): the same rules out of process,
+`python3 <skill_dir>/captions_fit.py group words.json --out /abs/project/captions/cues.srt --max-chars 32 --lines 2
+--max-cps 20 --fps 30 --end 58.4` (`transcript.inspect` saved to words.json, the length from
+`bashcut.timeline.summary`), then `captions.deleteTrack` and `captions.import {path, name: "Captions"}`.
+
+The table gives `maxChars` × `lines` and `breakSeconds` (the script's `--max-chars`, `--lines`, `--break-gap`):
 
 | Delivery | `--max-chars` × `--lines` | `--break-gap` | Notes |
 |---|---|---|---|
@@ -78,12 +83,12 @@ voice with no hesitations (28 s): `transcript.createCaptions` 37–56 % at or un
 - Cue length 0.7–5 s social (`--min-seconds`, `--max-seconds`), up to 7 s subtitles; one cue on screen at a time
   (`--gap-frames 2` between cues). CJK counts double: halve `--max-chars`.
 - `left` not empty: the speaker is faster than 20 cps there. Shorten that cue's text yourself (drop a hedge or a word
-  the picture shows), never change what is claimed; `--trim-hedges` drops "just", "actually", "you know"… from
+  the picture shows), never change what is claimed; `trimHedges: true` (`--trim-hedges`) drops "just", "actually", "you know"… from
   those cues only. Interview subtitles and Vietsub stay verbatim: keep them and say how many are over.
 - **A track that already exists** (translated, imported, edited by hand): `captions.list` to a file, then
   `captions_fit.py plan caps.json --max-cps 20 --end S` prints `commands` (`captions.setText`, `captions.setTimes`,
   `captions.merge`) for one `bashcut.batch {commands, label: "Caption reading speed"}`: one undo step.
-- **In a batch or a shell** (no MCP): `captions_fit.py apply --cli <filmcraft-cli> --project p.fcproj --max-chars 32
+- **In a batch or a shell** (no MCP): a `bashcut.captions.create` command step; on a build without it `captions_fit.py apply --cli <filmcraft-cli> --project p.fcproj --max-chars 32
   --lines 2` does `group` on the saved project's active sequence, imports the SRT over the first caption track and
   saves (`bcp:batch` uses it as a plugin step).
 - Without the script: `transcript.createCaptions {maxChars, lines, minSeconds, maxSeconds, gapFrames}`. It breaks
@@ -92,8 +97,8 @@ voice with no hesitations (28 s): `transcript.createCaptions` 37–56 % at or un
 - Speech recognition timings: a cue starts 0–0.15 s before its first word (`--lead`), ends on its last word or later
   in the silence, never inside a word.
 
-**After every cut, make the captions again from what is heard** (save `transcript.inspect` again, `group`, delete
-the old track, import). Captions made before a cut keep words of lines cut away (one edit showed half a dropped
+**After every cut, make the captions again from what is heard** (`captions.deleteTrack`, then `bashcut.captions.create`
+again). Captions made before a cut keep words of lines cut away (one edit showed half a dropped
 sentence).
 
 **Word-by-word highlight** (karaoke): `bashcut.captions.wordStyle {captions, style: {preset: "karaoke" | "pop" |

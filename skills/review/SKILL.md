@@ -102,7 +102,7 @@ the draft (below).
 
 | `check` (category) | Severity in review.run | Fix |
 |---|---|---|
-| `readingSpeed`, `lineLength`, `lines`, `overlap` (captions) | warning over 20 cps, blocking over 25 / overlap | `captions_fit.py plan` → one `bashcut.batch` (`bcp:captions-text` §2); after a word style, undo it, fix, style again |
+| `readingSpeed`, `lineLength`, `lines`, `overlap` (captions) | warning over 20 cps, blocking over 25 / overlap | `captions.deleteTrack` + `bashcut.captions.create` again, or `captions_fit.py plan` → one `bashcut.batch` for a translated or hand-edited track (`bcp:captions-text` §2); after a word style, undo it, fix, style again |
 | `cutInWord` (edit) | blocking | move the cut into the nearest real pause (≥ 0.15 s, usually a phrase end), not to the word's edge: `timeline.trim {clip, edge, mode: "ripple", delta}` (REFERENCE "Cut into a pause"). A cut inside a measured silence is Whisper stretching the next word over the pause (BashCutPro#203): keep it with that reason |
 | `gap` (edit), `black` inside the edit (picture) | blocking | `sequence.closeGap {track: "V1", time}` or fill it |
 | `shortClip`, `shortGap` (picture) | warning | delete the sliver or `timeline.roll` the cut; `sequence.closeGap` |
