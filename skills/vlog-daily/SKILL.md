@@ -30,7 +30,7 @@ Sample lengths, not slots: the plan gives each section its own range and a named
 |---|---|---|
 | Hook | 2–3 s | the most interesting moment of the day, or a question or number ("5H SÁNG THỨC DẬY ĐỂ LÀM GÌ?") |
 | Moments ×5–10 | 4–10 s each | in time order; a time stamp ("07:30 · SÁNG") at each new part of the day |
-| Close | 3–5 s | the end of the day, a thought in one line |
+| Close | 3–5 s | the end of the day, a thought in one line, over a shot that still moves (a still under the closing card reads as frozen; BashCutPro#185) |
 | CTA | 1–3 s | soft: "theo dõi để xem ngày mai" |
 
 The time stamp look: bcp:captions-text (an installed `.fcgt` template, else `graphics.newText`; the vlog library

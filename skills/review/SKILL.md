@@ -27,7 +27,10 @@ By the viewer at normal speed and size on a phone, not by the metric:
 - **needs user**: only the user can supply or decide it (a missing shot, the music, a name to spell).
 
 A measured warning is not automatically a blocker (a locked-off interview is a "long static shot", a deliberate
-long title a "long still"): fix it, change the limit for this video, or keep it with a reason.
+long title a "long still"): fix it, change the limit for this video, or keep it with a reason. In a vertical
+(short-form) review, a `longStill` with nothing said over it is a warning (BashCutPro#185): fix it unless the plan
+says the hold is meant. It is the usual end-card trap: a 6 s near-still shot under the closing text reads as frozen.
+Cut the still to 2–4 s, punch in or move it (Motion keyframes), or put a moving shot under the card.
 
 ## Before round 1: the limits
 
