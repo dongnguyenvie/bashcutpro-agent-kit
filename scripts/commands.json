@@ -1,5 +1,5 @@
 {
- "source": "filmcraft-cli 0.9.0 mcp --demo, tools/call command_list {} (default features)",
+ "source": "filmcraft-cli 0.9.0 mcp --demo, tools/call command_list {} (whisper)",
  "generated": "2026-10-20",
  "upstream": "FilmCraft 105c09bd",
  "bashcut": "bashcut.* engine ids from the same build's command_list (scripts/refresh_commands.py)",
@@ -23,7 +23,7 @@
   "ui_screenshot",
   "ui_type"
  ],
- "count": 729,
+ "count": 730,
  "pending": {
   "note": "bashcut.* ids that skills may name before they are merged, always with a fallback for builds without them (detect with command_list); move each into commands when its issue lands",
   "ids": {}
@@ -3001,7 +3001,7 @@
    "label": "Review Edit",
    "menu": [],
    "shortcut": null,
-   "params": "{\"profile\":str? (loudness target from bashcut.profiles.*; default -14 LUFS / -1 dBTP),\"checks\":[\"sound\"|\"picture\"|\"captions\"|\"edit\"]?,\"range\":{\"start\":seconds?,\"end\":seconds?}?,\"writeMarkers\":bool=true,\"samplesPerSecond\":0.5..60=5,\"sequence\":id? (must be the active one)} (findings in seconds; markers replace the previous review's)",
+   "params": "{\"profile\":str? (loudness target and caption safe area from bashcut.profiles.*; default -14 LUFS / -1 dBTP, no safe area),\"checks\":[\"sound\"|\"picture\"|\"captions\"|\"edit\"]?,\"range\":{\"start\":seconds?,\"end\":seconds?}?,\"writeMarkers\":bool=true,\"samplesPerSecond\":0.5..60=5,\"sequence\":id? (must be the active one)} (findings in seconds; markers replace the previous review's)",
    "enabled": true
   },
   {
@@ -3065,7 +3065,7 @@
    "label": "Transcribe (Drop Doubtful Text)",
    "menu": [],
    "shortcut": null,
-   "params": "{…transcript.generate params, \"keepDoubtful\":bool=false,\"minRepeats\":n=3}  (transcribes, then drops Whisper's repeated-text loops; an item with only loops reports noSpeech and keeps an empty transcript) (units: none)",
+   "params": "{…transcript.generate params, \"keepDoubtful\":bool=false,\"minRepeats\":n=3,\"keepWordTimes\":bool=false,\"minSilenceSeconds\":f=0.3}  (transcribes, moves word edges out of pauses measured on the audio (edgesMoved), then drops Whisper's repeated-text loops; an item with only loops reports noSpeech and keeps an empty transcript)",
    "enabled": true
   },
   {
@@ -3083,6 +3083,14 @@
    "shortcut": null,
    "params": "{\"maxChars\":n=42 (characters a line),\"lines\":1|2=2,\"maxCps\":f=20 (characters a second),\"minSeconds\":f=0.7,\"maxSeconds\":f=7,\"breakSeconds\":f=0.5 (a pause this long starts a cue),\"fill\":0..1=0.5 (break at a comma once the cue is this full),\"gapFrames\":n=2,\"leadSeconds\":f=0.15 (a cue may start this much before its first word),\"keepFillers\":bool=false,\"trimHedges\":bool=false,\"format\":str?,\"name\":str?=\"Captions\",\"dryRun\":bool=false}",
    "enabled": false
+  },
+  {
+   "id": "bashcut.transcript.refineEdges",
+   "label": "Refine Word Edges from Audio",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"items\":[id]? (default every transcript a recogniser made),\"minSilenceSeconds\":f=0.3 (0.1..5),\"dryRun\":bool=false}  (moves word edges out of pauses measured on the audio; one undo step)",
+   "enabled": true
   },
   {
    "id": "prefs.schema",

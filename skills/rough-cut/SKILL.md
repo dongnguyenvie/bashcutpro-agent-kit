@@ -1,6 +1,6 @@
 ---
 name: rough-cut
-description: Build the rough cut in BashCutPro by quote: lines found in the transcript with transcript.search, cut at word-exact edges (subclips placed in story order, or transcript.extract / lift on a placed take), fillers and pauses removed, selects kept with reasons; also long → short clips from a podcast or stream, one sequence per short. Triggers: "cắt thô", "rough cut", "chọn đoạn", "lọc câu hay", "cắt podcast thành short", "highlight", "selects", "cắt giữa chữ", "cut by quote".
+description: Build the rough cut in BashCutPro by quote: lines found in the transcript with transcript.search, word edges refined from the audio (bashcut.transcript.refineEdges), selects tightened on word edges by tighten.py (fillers, false starts and dead air cut, one bashcut.batch), selects kept with reasons, bashcut.review.run on every output; also long → short clips from a podcast or stream, one sequence per short. Triggers: "cắt thô", "rough cut", "chọn đoạn", "lọc câu hay", "cắt podcast thành short", "highlight", "selects", "cắt giữa chữ", "cut by quote".
 ---
 
 # Rough cut by quote
@@ -16,9 +16,11 @@ examples: `<skill_dir>/REFERENCE.md`.
 
 ## Before selecting
 
-1. **Words for each talking file.** With a Whisper build: `bashcut.transcript.generate {items, language}` (`wait` on the
-   job). Without: an outside transcriber, then `transcript.set {item, transcript: {language, words}}` (ticks;
-   `bcp:footage-survey`). `transcript.models` says which build you have. Words carry no confidence.
+1. **Words for each talking file.** With a Whisper build: `bashcut.transcript.generate {items, language, wait: true}`.
+   It also moves word edges out of the pauses it measures on the audio (`edgesMoved`, `pauses`): Whisper runs word
+   ends late into a pause and starts early. Words from elsewhere (`transcript.set {item, transcript: {language,
+   words}}`, ticks; `bcp:footage-survey`): run `bashcut.transcript.refineEdges {items}` once after the import.
+   `transcript.models` says which build you have. Words carry no confidence.
 2. **Classify the source** (T06 §4): **words** (the content is what is said: talks, interviews, tutorials),
    **reactions** (laughter, surprise: watch the picture; laughter and "clip that" lag the moment they react to) or
    **visual** (demonstrations, sport: the transcript is weak evidence, use the survey's descriptions).
@@ -42,7 +44,7 @@ matching words (ids, times); pick among several hits by context (the later take,
   move it to the nearest sentence end (punctuation, or a gap ≥ 400 ms) and search again.
 - **Padding: cut on the words, never pad by hand.** In connected speech the next word starts within ~0.1 s: a
   0.1 s pad pulled the neighbouring words in (one ad edit). Cut at the first word's `start` and the last word's
-  `end`; extend only into a gap of quiet, and at most half of it.
+  `end`; extend only into a gap of quiet, and at most half of it. `tighten.py` does exactly this.
 - **Gaps as cut points** (T06 §3): ≥ 400 ms of quiet is a clean cut; 150–400 ms needs a look at the picture
   (`render_frame`); < 150 ms is unsafe. Word ends from Whisper-style transcribers run late into pauses: check a
   doubtful edge with a frame or by the next word's `start`.
@@ -100,30 +102,54 @@ Never cut natural speech short to hit a quota or a "sweet spot" (T06 §4).
 
 ## Building the cut
 
-Two ways; pick by the source (REFERENCE "Two ways to cut" has the batches):
+**Tighten the selects with `tighten.py`** (standard library; REFERENCE "tighten.py" has every flag). It takes the
+words of the whole item and the selects as word ranges in story order, and prints one `bashcut.batch` of
+`timeline.place` steps plus a report:
 
-- **Additive, story order** (selects from anywhere, reordered): one subclip per kept select
-  (`clip.makeSubclip {item, name, start, end}` with the word times), then one `timeline.place {items: [...]}`
-  puts them back to back in order (one undo step). Best for talking heads, interviews, long → short.
-- **Subtractive, recording order** (one take, mostly kept): place the whole take, then remove what is not wanted
-  by text: `transcript.extract {from, to}` (ripple) for each dead range, `transcript.removeFillers` and
-  `transcript.removePauses {minSeconds, keepSeconds}`. Best for a single clean monologue or a tutorial.
+1. Words on the item's own clock: a scratch sequence with the item at 0 (`file.newSequence`, `timeline.place {item,
+   track: "V1", frame: 0}`), `file.save`, then write them with the command line (`BASHCUTPRO_CLI` from
+   `~/.config/bashcutpro/mcp.env`), never by retyping a tool result: `printf
+   '{"id":"sequence.open","params":{"item":<scratch>}}\n{"id":"transcript.inspect","params":{}}\n' | <cli>
+   --compact --project <project.fcproj> run - | tail -1 > words.json`. It only reads the saved file (no save, no
+   lock), so it runs while the editor holds the project.
+2. `python3 <skill_dir>/tighten.py --words words.json --item <id> --keep 117-124,103-116,125-171 --fps 30`: a hook
+   moved first is just the first range. Inside each range it drops fillers (`--lang en|vi`, `--fillers`, `--protect`
+   for a filler that is content) and false starts (a 1–3 word phrase said twice in a row keeps the later; a first
+   copy ending a sentence is emphasis and stays), and cuts every pause ≥ `--min-pause` (0.35 s) down to
+   `--keep-pause` (0.12 s) of quiet each side. Clips are whole frames; the source in point is exact, so no edge
+   lands inside a kept or a neighbouring word, even in connected speech.
+3. Read the report before running anything: `cuts`, `cutsPerMinute`, `removed` (each filler and repeat with its
+   time), `connectedSpeech` (edges with < 0.15 s of quiet: look at a frame), `shortSpans` (< 0.4 s: often a lone
+   word to merge or drop).
+4. `command_run` the printed `command` on the output's sequence: one undo step, all or nothing. Save.
 
-Send it as one `bashcut.batch` (one undo step, all or nothing; else `command_batch` with `stop_on_error: true`), then
-save. Before it, check on paper: every edge on a word
-boundary or in a gap (no cut inside a word), no cue inside a range, the total against the plan's length.
+| Pace (cuts a minute of output) | Typical | Lever |
+|---|---|---|
+| Podcast or interview clip | 12–25 (8–15 in a 40 s clip) | `--min-pause` 0.5–0.8 keeps breaths and slows it |
+| Talking head, vertical | 15–30, ≥ 70 % of cuts on a word edge | `--min-pause` 0.35, `--keep-pause` 0.1 |
+| Tutorial, explainer | 10–20 | measured silences (`bcp:vlog-tutorial`) |
+| Over 35 | reads as a jump-cut machine | raise `--min-pause`; keep the pause before a payoff |
 
-After it, `sequence_inspect` for the cut list and duration; `render_frame` at doubtful joins (same framing on
-both sides is a jump cut to come: `bcp:beat-cut` punch-in or cover footage, never over text). Mark sections with
+Other ways, when tighten.py does not fit (REFERENCE "Other ways to cut"): subclips placed in story order for a
+select record you can see in the project, or `transcript.extract` / `transcript.lift` on one placed take (last
+range first). A pause with a reaction or a look in it is content: check it with `render_frame` first.
+
+After it, `bashcut.timeline.summary` for the cut list and duration; `render_frame` at doubtful joins (same framing
+on both sides is a jump cut to come: `bcp:beat-cut` punch-in or cover footage, never over text). Mark sections with
 `markers.addRange {name}`.
 
-Then **G3** (`bcp:edit-workflow`): the duration against the plan's range, N selects, what was dropped and why,
-4–6 frames. Wait for the user's answer before rhythm, sound and text when they asked to see gates.
+Then **G3** (`bcp:edit-workflow`): the duration against the plan's range, N selects, cuts a minute, what was dropped
+and why, 4–6 frames. Wait for the user's answer before rhythm, sound and text when they asked to see gates.
+
+**Review.** Every output sequence ends with `bashcut.review.run {profile, sequence}` (`bcp:review`): `cutInWord`
+is blocking and points at the clip; the fix is the select's range or `--protect`, then tighten again (at most 2
+rounds). A `cutInWord` inside a measured silence is the transcriber stretching a word: run
+`bashcut.transcript.refineEdges`, then tighten again.
 
 ## Several shorts from one source
 
 FilmCraft has no project derive: **one sequence per short** in the same project. For each kept short,
-`file.newSequence {name: "short-03-crash-story", width: 1080, height: 1920, fps}`, then its subclips placed on it;
-finish each through the stages of `bcp:edit-workflow` (its own hook, captions and review). A separate file per
-short when the user wants them apart: `file.saveCopy {path}` after building, one copy per short. Write the list
-(short → sequence, selects, length) in the plan.
+`file.newSequence {name: "short-03-crash-story", width: 1080, height: 1920, fps}`, then its ranges tightened into
+it (`tighten.py` per short, the hook range first); finish each through the stages of `bcp:edit-workflow` (its own
+captions and `bashcut.review.run`). A separate file per short when the user wants them apart: `file.saveCopy
+{path}` after building, one copy per short. Write the list (short → sequence, selects, length) in the plan.

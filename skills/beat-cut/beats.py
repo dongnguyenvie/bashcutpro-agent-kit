@@ -3,7 +3,7 @@
 analyses beats internally only). Standard library only (Python 3.9+), an estimate, not a reference tracker.
 
   beats.py music.wav                                   # tempo, alternates, beats, downbeats, energy per second
-  beats.py music.wav --markers --at 12.5 [--source-in 3.0] [--downbeats]   # markers.add steps for command_batch
+  beats.py music.wav --markers --at 12.5 [--source-in 3.0] [--downbeats]   # markers.add steps for bashcut.batch commands
   beats.py music.wav --at 12.5 --cuts 14.0,16.1,18.2 [--fps 30]      # each cut's offset from the nearest beat
 
 How: a mono onset envelope (rise in log energy, full band plus a low band for kicks) every ~11.6 ms; tempo from

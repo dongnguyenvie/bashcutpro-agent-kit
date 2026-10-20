@@ -119,30 +119,35 @@ word times from `transcript.inspect`, frames with `render_frame`).
 | Text hold | about letters ÷ 15 + 1–1.5 s (T09 §3) | longer on busy backgrounds |
 
 - **Loudness is per output, never one number**: each export takes its platform's target (bcp:vlog-publish).
-  Nothing in FilmCraft measures loudness read-only: bcp:audio-mix says how to measure.
+  `bashcut.audio.loudness` measures the timeline and `bashcut.review.run {profile}` checks it per output
+  (bcp:audio-mix).
 - Vietnamese text needs a font with every tone mark (bcp:captions-text). The brand (palette, fonts, logo) sets the
   look when there is one.
 - Nothing generated, stock or AI is labelled on the video (news is the exception); AI disclosure is the platform's
   upload toggle. Sponsorship is said in the first seconds, on screen, in the user's wording.
-- Word-by-word highlighted captions (karaoke) do not exist in FilmCraft. Where a recipe wants them, use short 1–3
-  word caption groups (`transcript.createCaptions` with a small `maxChars`) and say so.
+- Captions: `bashcut.captions.create` at ≤ 20 cps, 2 lines, `maxChars` 42 landscape or 20 vertical (with
+  `captions.setStyle {size: 40, margin}` above the platform band); word-by-word highlight with
+  `bashcut.captions.wordStyle` (bcp:captions-text).
 - Transition kinds and their lengths: bcp:effects.
 
 ## 5. Strategy gate, then coverage
 
 1. Show the plan in 4–8 sentences plus the section table (T00 §3): hook and the establish-or-hook choice, sections
    and ranges, shot rows, each chosen value with its reason, what is missing. Check it carries one message and the
-   payoff answers the hook. Ask for G2 with a few frames attached and wait.
+   payoff answers the hook, it fits the brief, each `inferred` field is still a fair guess, and the recipe's
+   checks are in the plan. Ask for G2 with a few frames attached and wait.
 2. **Coverage**: match each shot row to a clip as placed, found (a described clip fits) or missing. Missing: offer,
    in order, a cutaway from the footage, a punch-in on a wider shot within its headroom, a stock picture
    (bcp:stock-images, `source: stock`), a generated shot (bcp:vlog-scene-prompt, given the row and its
-   neighbours so it cuts in).
+   neighbours so it cuts in). A gap found later at G3 goes back to the survey or effects once per row, not in a
+   loop.
 3. **Not shot yet**: give the missing rows as a checklist to film (what, how long, which angle).
 
 ## 6. Hand over
 
 Set the plan's `stage`, then hand over to bcp:edit-workflow from the rough cut on; it applies the plan in
-`command_batch` steps and names the skill per stage. Where a kit skill asks for a value (cut rate, caption grouping,
+one `bashcut.batch` per stage (the cut from bcp:rough-cut `tighten.py`), names the skill per stage and ends
+with `bashcut.review.run` on every output sequence. Where a kit skill asks for a value (cut rate, caption grouping,
 punch-in, music level), choose inside the plan's range and say why. If the cut shows a range was wrong, change the
 plan with a reason instead of forcing the edit. Finish with bcp:vlog-publish.
 

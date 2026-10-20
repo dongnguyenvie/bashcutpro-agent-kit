@@ -1,6 +1,6 @@
 ---
 name: beat-cut
-description: Give a BashCutPro edit rhythm by measurement: word edges from the transcript for speech-led edits, a beat grid from beats.py (an out-of-process estimate on a WAV) for music-led ones, shot lengths per section from sourced ranges, cuts in one command_batch, rhythm and beat sync checked, punch-ins sized from zoom headroom. Use when cutting to music or the cut feels flat or rushed. Triggers: "cắt theo nhịp", "cắt theo beat", "khớp nhạc", "lệch nhịp", "bản dựng phẳng", "nhàm", "punch-in", "cut to the beat".
+description: Give a BashCutPro edit rhythm by measurement: word edges from the transcript for speech-led edits, a beat grid from beats.py (an out-of-process estimate on a WAV) for music-led ones, shot lengths per section from sourced ranges, speech tightened on word edges (rough-cut tighten.py), cuts in one bashcut.batch, rhythm and beat sync checked, punch-ins sized from zoom headroom. Use when cutting to music or the cut feels flat or rushed. Triggers: "cắt theo nhịp", "cắt theo beat", "khớp nhạc", "lệch nhịp", "bản dựng phẳng", "nhàm", "punch-in", "cut to the beat".
 ---
 
 # Beat cutting and punch-in reframes
@@ -21,10 +21,12 @@ spoken lines, cut picture at phrase ends (the gap before a word), then put music
 per second from `transcript.inspect` (syllables for Vietnamese); denser speech carries more per shot, so shots hold
 longer. Before a music hit after a line, leave 0.1–0.6 s of air (bestagentkits ≥ 0.12 s, video-use 400–600 ms).
 
-Long pauses in one talking clip: `transcript.removePauses {minSeconds, keepSeconds}` (0.4 s and 0.1 s were
-BashCut's starting point: shorter for a fast talker, more kept for a slow one). Look at the long ones before
-keeping the result (`render_frame` on both sides): a long "pause" can be a reaction, a laugh or b-roll sound.
-`edit.undo` if it ate one. Then section 6.
+Long pauses, fillers and false starts in talking clips: bcp:rough-cut `tighten.py` (`--min-pause 0.4 --keep-pause
+0.1` were BashCut's starting point: shorter for a fast talker, more kept for a slow one). Its edges come from word
+times already refined on the audio (`bashcut.transcript.generate`, or `bashcut.transcript.refineEdges` after
+imported words), so no cut lands inside a word. Look at the long pauses before running its batch (`render_frame` on
+both sides): a long "pause" can be a reaction, a laugh or b-roll sound; `--protect` its words or split the range.
+Then section 6.
 
 ## 2. Read the music
 
@@ -39,8 +41,8 @@ build without the command): a small out-of-process estimate, standard-library Py
 2. `python3 "<skill_dir>/beats.py" music.wav` → `tempo`, `alternates`, `confidence`, `beats`, `downbeats`,
    `fit.rmsErrorMs`, `phaseScores`, `strengths`, `energy`. Seconds are on the WAV's clock: a beat lands on the
    timeline at clip start + (beat − source in-point) (`--at`, `--source-in` do it for you).
-3. `beats.py music.wav --markers --at START [--source-in S] [--duration D] [--downbeats]` prints `markers.add`
-   steps for one `command_batch`, so the grid shows on the timeline.
+3. `beats.py music.wav --markers --at START [--source-in S] [--duration D] [--downbeats]` prints the `markers.add`
+   steps for one `bashcut.batch`, so the grid shows on the timeline.
 
 Judge the grid before cutting on it. You cannot listen: a weak grid means ask the user, or cut on phrases.
 
@@ -80,13 +82,14 @@ Pick a band per section, then move inside it by content:
 
 One BashCut example (travel / food vlog, not a rule): cold open 6 beats (~2.6 s), busy sections 4 (2 on peaks,
 ~1.6–2.0 s), quiet ending 4 on slow music (~3.5–4 s); a uniform 3.6 s cut felt flat whatever the content; pieces
-under ~0.6 s were merged.
+under ~0.6 s were merged. Its cold open: about 8 s, three shots (the ending, the loudest, the quietest), then
+chronological, with a place label at each change of location. A high cuts-a-minute count is a choice: say why.
 
 ## 4. Cut in one batch
 
 Plan in beats and seconds, convert last. Per section: cut points → (clip, in-point) from its moments in turn → one
-`command_batch` of `timeline.place {item, time, sourceIn, duration}` (or `timeline.razor` / `timeline.trim` on
-what is placed), labelled per section in the plan's log. Spread in-points across sources; never reuse one spot.
+`bashcut.batch {label: "<section>", commands}` of `timeline.place {item, track, frame, sourceIn, duration}` (or
+`timeline.razor` / `timeline.trim` on what is placed), the label also in the plan's log. Spread in-points across sources; never reuse one spot.
 `timeline.roll` nudges a cut onto a beat or word gap; `timeline.slip` changes what a clip shows. Times are ticks
 (254 016 000 000 per second).
 
@@ -112,7 +115,7 @@ talking-head recipe; ghost-editor 4–6 per 60 s reel), timed to sentence starts
 
 ## 6. Measure again, then adjust
 
-From `sequence_inspect` (cut times, clip lengths) and the same `beats.py` run:
+From `bashcut.timeline.summary` (cut times, clip lengths) and the same `beats.py` run:
 
 - **Rhythm** (overall, per section): median, cv (standard deviation / mean), cuts per minute against your band. 6+
   consecutive shots varying under ~0.15 cv (davinci) or one length over ~60 % of shots (saas-motion-kit) is
@@ -127,7 +130,8 @@ From `sequence_inspect` (cut times, clip lengths) and the same `beats.py` run:
 - **Whole-picture hits**: a cut on the beat changes *when*, not *how hard*. Hits on every kick read as the camera
   shaking. One promo study: ~2–4 per 30–60 s, on the strongest beats, ~16 beats apart; other accents moved one
   element (title, card, number), not the frame. MV, event and hype edits use many more on purpose.
-- **Word sync**: a cut inside a word clips it; move it into the gap (`bcp:review` REFERENCE).
+- **Word sync**: `bashcut.review.run {profile, checks: ["edit"], writeMarkers: false}` lists every `cutInWord`
+  (blocking) and gap; a cut inside a word clips it: roll it into the gap. At least 70 % of all cuts on a word edge.
 
 Then look: `render_frame` on three consecutive cuts in one scene (three shot sizes?) and across a doubtful cut.
 Adjust with roll / slip, measure again; stop after 3 rounds or when a round changes nothing, and say what is left
