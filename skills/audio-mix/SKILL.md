@@ -40,8 +40,8 @@ the voice, or a build whose `command_list` lacks the id, export and measure outs
 ```
 
 ```sh
-python3 "<skill_dir>/loudness.py" /abs/tmp/mix.wav --curve      # integrated LUFS, LRA, true peak, silences
-python3 "<skill_dir>/loudness.py" /abs/tmp/music.wav --speech /abs/tmp/voice.wav   # bed under the voice vs gaps
+"${BASHCUT_PYTHON:-python3}" "<skill_dir>/loudness.py" /abs/tmp/mix.wav --curve      # integrated LUFS, LRA, true peak, silences
+"${BASHCUT_PYTHON:-python3}" "<skill_dir>/loudness.py" /abs/tmp/music.wav --speech /abs/tmp/voice.wav   # bed under the voice vs gaps
 ```
 
 **Stems**: mute every track but the voice (`mixer.setStrip {muted: true}`), export `voice.wav`; the same for the

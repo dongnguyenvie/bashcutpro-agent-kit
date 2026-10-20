@@ -133,7 +133,7 @@ bcp:audio-mix's, at the row's `at`.
 2. One `scenes.json` with every generated row: `{"scenes": [{"id": "<row id>", "prompt": "<row prompt>",
    "seconds": <at or from>, "duration": <to − seconds>}], "style": <plan.visualStyle>, "width": W, "height": H}`
    (W × H = the sequence's frame size).
-3. `python3 <plugin dir>/plugin.py illustrate --scenes scenes.json --project <file.fcproj>` (or `--bridge
+3. `"${BASHCUT_PYTHON:-python3}" <plugin dir>/plugin.py illustrate --scenes scenes.json --project <file.fcproj>` (or `--bridge
    127.0.0.1:<port>`): one batch in one locked style, imported with `media_import`, each item labelled
    AI-generated (`metadata.set`), placed on V2 with `timeline.place`. Refused rows come back in `data.failed`:
    rewrite and run those again, or change treatment.

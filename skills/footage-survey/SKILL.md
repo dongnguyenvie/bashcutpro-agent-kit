@@ -39,13 +39,13 @@ These cost seconds; a WAV export and an outside script only when a number is mis
 ## 2. Look
 
 ```sh
-python3 "<skill_dir>/contact_sheet.py" plan --item ITEM --seconds LEN --count 12 --dir /abs/tmp/frames/ITEM
+"${BASHCUT_PYTHON:-python3}" "<skill_dir>/contact_sheet.py" plan --item ITEM --seconds LEN --count 12 --dir /abs/tmp/frames/ITEM
 ```
 
 prints the `file.exportFrame` steps for one `command_batch` (source frames, evenly spread); then
 
 ```sh
-python3 "<skill_dir>/contact_sheet.py" sheet "/abs/tmp/frames/ITEM/*.png" -o /abs/tmp/ITEM-sheet.png
+"${BASHCUT_PYTHON:-python3}" "<skill_dir>/contact_sheet.py" sheet "/abs/tmp/frames/ITEM/*.png" -o /abs/tmp/ITEM-sheet.png
 ```
 
 tiles them into one numbered sheet and prints each cell's source second. Read the image. Clips that change inside
@@ -67,7 +67,7 @@ an outside transcriber on the clip's sound (export it: `file.exportMedia {format
 startSeconds, endSeconds}` over the clip on the survey sequence), then
 
 ```sh
-python3 "<skill_dir>/words_to_transcript.py" whisper.json --item ITEM --language vi > params.json
+"${BASHCUT_PYTHON:-python3}" "<skill_dir>/words_to_transcript.py" whisper.json --item ITEM --language vi > params.json
 ```
 
 and `command_run transcript.set` with that params object. It lists suspect words on stderr (REFERENCE.md has the

@@ -38,7 +38,7 @@ build without the command): a small out-of-process estimate, standard-library Py
 1. A WAV of the music: the file itself when it is WAV, else place the music, mute the other tracks
    (`mixer.setStrip {muted: true}`), `file.exportMedia {format: "wav", range: "custom", startSeconds, endSeconds,
    wait: true}` over the clip, unmute.
-2. `python3 "<skill_dir>/beats.py" music.wav` → `tempo`, `alternates`, `confidence`, `beats`, `downbeats`,
+2. `"${BASHCUT_PYTHON:-python3}" "<skill_dir>/beats.py" music.wav` → `tempo`, `alternates`, `confidence`, `beats`, `downbeats`,
    `fit.rmsErrorMs`, `phaseScores`, `strengths`, `energy`. Seconds are on the WAV's clock: a beat lands on the
    timeline at clip start + (beat − source in-point) (`--at`, `--source-in` do it for you).
 3. `beats.py music.wav --markers --at START [--source-in S] [--duration D] [--downbeats]` prints the `markers.add`

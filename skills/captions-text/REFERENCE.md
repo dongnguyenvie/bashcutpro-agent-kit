@@ -83,8 +83,8 @@ ranges, one per look.
 downloads whole `.ttf` files from Google Fonts:
 
 ```sh
-python3 <skill_dir>/fetch_font.py --subset vietnamese --category sans-serif --weight 800   # one JSON line per family
-python3 <skill_dir>/fetch_font.py --family "Be Vietnam Pro" --weights 600,800 --dest /abs/project/fonts --import
+"${BASHCUT_PYTHON:-python3}" <skill_dir>/fetch_font.py --subset vietnamese --category sans-serif --weight 800   # one JSON line per family
+"${BASHCUT_PYTHON:-python3}" <skill_dir>/fetch_font.py --family "Be Vietnam Pro" --weights 600,800 --dest /abs/project/fonts --import
 ```
 
 `--import` copies each file into the user's font folder (macOS `~/Library/Fonts`, Linux `~/.local/share/fonts`,

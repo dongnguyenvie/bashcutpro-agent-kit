@@ -10,7 +10,7 @@ A problem solved in chat but not written down **will happen again**. The kit kee
 `<data dir>/bashcut/knowledge/`, facts for one project in `<name>.fcproj.bashcut/facts.json` next to it.
 
 ```sh
-K="python3 <skill_dir>/knowledge.py"
+K="${BASHCUT_PYTHON:-python3} <skill_dir>/knowledge.py"
 $K intake --project /abs/film.fcproj --tags captions,audio   # what edit-workflow prints at intake
 ```
 

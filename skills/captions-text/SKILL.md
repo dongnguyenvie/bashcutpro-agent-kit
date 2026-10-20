@@ -68,7 +68,7 @@ It returns `before` / `after` (cues, % at or under the limit, % over 25) and `le
 `dryRun: true` measures without adding the track. Measured on a 190 wpm voice with no hesitations (28 s):
 `transcript.createCaptions` 37–62 % at or under 20 cps; `bashcut.captions.create` 32 × 2 84.6 %, 0 over 25; in a
 2-clip batch 90 % and 100 %. **Builds without it** (`command_list`): the same rules out of process,
-`python3 <skill_dir>/captions_fit.py group words.json --out /abs/project/captions/cues.srt --max-chars 32 --lines 2
+`"${BASHCUT_PYTHON:-python3}" <skill_dir>/captions_fit.py group words.json --out /abs/project/captions/cues.srt --max-chars 32 --lines 2
 --max-cps 20 --fps 30 --end 58.4` (`transcript.inspect` saved to words.json, the length from
 `bashcut.timeline.summary`), then `captions.deleteTrack` and `captions.import {path, name: "Captions"}`.
 
@@ -152,7 +152,7 @@ on its line. In and Out animation: `bcp:effects`; animated graphics: `bcp:motion
   that cannot be is enlarged or deleted; the closing URL or CTA is never the smallest line.
 - **Fonts for Vietnamese** need every stacked mark (Ắ, Ở, Ữ). `fonts.list` lists what FilmCraft finds; check a
   frame with real words of the project. Helvetica Neue's condensed faces misplace stacked marks: avoid them. Open
-  fonts with Vietnamese: `python3 <skill_dir>/fetch_font.py --subset vietnamese --category sans-serif`, then
+  fonts with Vietnamese: `"${BASHCUT_PYTHON:-python3}" <skill_dir>/fetch_font.py --subset vietnamese --category sans-serif`, then
   `--family "Be Vietnam Pro" --weights 600,800 --dest /abs/project/fonts --import` (REFERENCE "Fonts"). At most 2
   families a video; titles heavy or condensed, captions sans with a tall x-height, 600–800.
 - **Contrast** is measured, not assumed: look at the frame behind the text; below about 4.5:1 (the AA level, T09

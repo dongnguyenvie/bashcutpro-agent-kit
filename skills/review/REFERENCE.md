@@ -44,8 +44,8 @@ a suspect; look at more frames around it.
 ## Frames for looking
 
 ```sh
-python3 "<skill_dir>/../footage-survey/contact_sheet.py" plan --program --at 0.5,1.5,2.5,8.0,12.4 --dir /abs/tmp/review-r1
-python3 "<skill_dir>/../footage-survey/contact_sheet.py" sheet "/abs/tmp/review-r1/*.png" -o /abs/tmp/review-r1.png
+"${BASHCUT_PYTHON:-python3}" "<skill_dir>/../footage-survey/contact_sheet.py" plan --program --at 0.5,1.5,2.5,8.0,12.4 --dir /abs/tmp/review-r1
+"${BASHCUT_PYTHON:-python3}" "<skill_dir>/../footage-survey/contact_sheet.py" sheet "/abs/tmp/review-r1/*.png" -o /abs/tmp/review-r1.png
 ```
 
 Run the printed steps with `command_batch` between the two. One frame at phone width: MCP `render_frame {seconds,
@@ -62,7 +62,7 @@ silences in a curve.
 ```
 
 ```sh
-python3 "<skill_dir>/../audio-mix/loudness.py" /abs/tmp/review-mix.wav --curve --min-silence 2
+"${BASHCUT_PYTHON:-python3}" "<skill_dir>/../audio-mix/loudness.py" /abs/tmp/review-mix.wav --curve --min-silence 2
 ```
 
 Stems (mute the other tracks with `mixer.setStrip {muted: true}`, export, unmute) for the bed under the voice:

@@ -94,7 +94,7 @@ the card values with `graphics.template.set`. `bashcut.template.list` shows what
 
 The [`bashcut.hyperframes`](https://github.com/dongnguyenvie/bashcutpro-plugins/tree/main/plugins/hyperframes)
 plugin is a command line next to its own skill (`hyperframes`): read that skill before the first graphic; its 31
-examples and the HyperFrames catalog are raw material. Below, `HF` means `python3 <plugin dir>/plugin.py`
+examples and the HyperFrames catalog are raw material. Below, `HF` means `"${BASHCUT_PYTHON:-python3}" <plugin dir>/plugin.py`
 (`py -3 …` on Windows), with the connection `--project <file.fcproj>` (headless, saved unless `--no-save`) or
 `--bridge 127.0.0.1:<port>` (the open app).
 
