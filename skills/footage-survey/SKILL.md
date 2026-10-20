@@ -17,7 +17,7 @@ transcript yourself. In Codex (no sub-agents), follow that same brief yourself: 
 - `bashcut.media.import {paths}` (runs the plugins' import hooks; else `file.import {paths}` or MCP `media_import`)
   the whole folder's files in one call; importing does not touch a
   sequence. `project.items` lists them with their ids.
-- Per file: `media.status` (offline, missing), `media.colorInfo` (transfer: HDR or log), CLI `filmcraft-cli probe
+- Per file: `media.status` (offline, missing), `media.colorInfo` (transfer: HDR or log), CLI `bashcutpro probe
   <file>` (fps, size, rotation, streams, length).
 - A scratch sequence holds the clips for the commands that need clips: `file.newSequence {name: "Survey",
   fromItems: [...]}` (back to back). Survey there; never in the edit sequence.

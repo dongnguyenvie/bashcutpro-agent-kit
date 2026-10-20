@@ -95,7 +95,7 @@ what is placed), labelled per section in the plan's log. Spread in-points across
 The most effective change when the footage has one angle. Read each clip's Motion scale in `sequence_inspect`.
 
 - **Headroom** is the largest zoom before upscaling: media size over the size it fills in the sequence (media
-  size from `filmcraft-cli probe` or `project.items`). ~2 for 4K in a 1080 landscape sequence, 1.0 for
+  size from `bashcutpro probe` or `project.items`). ~2 for 4K in a 1080 landscape sequence, 1.0 for
   same-resolution footage (every punch-in upscales), ~1.125 for 4K landscape filling 1080×1920.
 - **Step** by purpose: size change at a cut 1.15–1.3, snap punch on a word 1.1–1.15, slow drift 1.03–1.07 over the
   shot. Aim for one described size step (wide → medium → close), within headroom where you can.

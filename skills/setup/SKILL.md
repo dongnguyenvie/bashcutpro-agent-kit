@@ -1,11 +1,11 @@
 ---
 name: setup
-description: Connect Claude Code or Codex to BashCutPro: get filmcraft-cli (source build or release) on macOS, Windows or Linux, register its MCP server headless (a project or the demo) or bridged to the running app (--control), and check command_list answers. Use when the BashCutPro tools are missing or fail to start. Triggers: "/bcp:setup", "setup BashCutPro", "connect BashCutPro", "install filmcraft-cli", "MCP not connected", "cài BashCutPro", "kết nối BashCutPro".
+description: Connect Claude Code or Codex to BashCutPro: get the bashcutpro command line (source build or release) on macOS, Windows or Linux, register its MCP server headless (a project or the demo) or bridged to the running app (--control), and check command_list answers. Use when the BashCutPro tools are missing or fail to start. Triggers: "/bcp:setup", "setup BashCutPro", "connect BashCutPro", "install bashcutpro", "install filmcraft-cli", "MCP not connected", "cài BashCutPro", "kết nối BashCutPro".
 ---
 
 # Setting up BashCutPro's MCP server
 
-BashCutPro is driven through one MCP server, `filmcraft-cli mcp` (stdio). Every later skill assumes its tools
+BashCutPro is driven through one MCP server, `bashcutpro mcp` (stdio). Every later skill assumes its tools
 answer: `command_list`, `command_run`, `command_batch`, `doc_inspect`, `render_frame`. This skill gets the binary,
 registers the server and proves it works. It changes nothing in the user's project.
 
@@ -19,20 +19,22 @@ Call `command_list` with `{"filter": "razor"}`. A list of commands with ids such
 server is up: skip to step 5 to say which mode it runs in. Otherwise note the error (tool missing, server failed
 to start, connection refused) and go on.
 
-## 2. Get `filmcraft-cli`
+## 2. Get `bashcutpro`
 
-Look for one first: `FILMCRAFT_CLI` in the environment, `filmcraft-cli` on `PATH`, a BashCutPro checkout's
-`target/release/filmcraft-cli` (`.exe` on Windows), then the install places below. Check a candidate with
-`filmcraft-cli commands razor`: it prints JSON and exits 0.
+`bashcutpro` (short name `bcpro`) is BashCutPro's command line. It runs the engine binary `filmcraft-cli`, which
+always sits beside it, with the same arguments and exit code; a plain `filmcraft-cli` works too (an older build,
+or upstream FilmCraft). Look for one first: `BASHCUTPRO_CLI` or `FILMCRAFT_CLI` in the environment, `bashcutpro`
+then `filmcraft-cli` on `PATH`, a BashCutPro checkout's `target/release/bashcutpro` (`.exe` on Windows), then the
+install places below. Check a candidate with `bashcutpro commands razor`: it prints JSON and exits 0.
 
 **From source** (any OS; needs Rust from rustup.rs and a BashCutPro checkout):
 
 ```sh
 git clone https://github.com/dongnguyenvie/BashCutPro && cd BashCutPro
-cargo build --release -p filmcraft-cli              # add -p filmcraft for the desktop app (bridge mode)
+cargo build --release -p bashcut-cli -p filmcraft-cli   # add -p filmcraft for the desktop app (bridge mode)
 ```
 
-The binary is `target/release/filmcraft-cli`. A first build takes several minutes; say so before starting it.
+The binary is `target/release/bashcutpro` (it needs `target/release/filmcraft-cli` beside it). A first build takes several minutes; say so before starting it.
 
 **From a release.** Use a [BashCutPro release](https://github.com/dongnguyenvie/BashCutPro/releases) when one is
 published. Until then an upstream [FilmCraft release](https://github.com/storytold/filmcraft/releases) runs the
@@ -40,9 +42,9 @@ same server without BashCutPro's own additions; tell the user which one they get
 
 | OS | Where the CLI is after installing |
 |---|---|
-| Windows (MSI) | `C:\Program Files\FilmCraft\filmcraft-cli.exe` by default, not on `PATH` |
-| Linux (deb, rpm) | `/usr/bin/filmcraft-cli` |
-| macOS | the separate `filmcraft-cli-<version>-macos-<arch>.zip` asset (the `.app` holds only the desktop app); unzip it to `~/.local/bin` or another folder on `PATH` |
+| Windows (MSI) | `C:\Program Files\BashCutPro\bashcutpro.exe` by default, not on `PATH` (FilmCraft: `C:\Program Files\FilmCraft\filmcraft-cli.exe`) |
+| Linux (deb, rpm) | `/usr/bin/bashcutpro` (FilmCraft: `/usr/bin/filmcraft-cli`) |
+| macOS | the separate `bashcutpro-cli-<version>-macos-<arch>.zip` asset (FilmCraft: `filmcraft-cli-…`; the `.app` holds the desktop app); unzip it to `~/.local/bin` or another folder on `PATH`, keeping `bashcutpro` and `filmcraft-cli` together |
 
 If macOS refuses to open a downloaded binary, the user can allow it in System Settings › Privacy & Security.
 
@@ -73,17 +75,17 @@ launcher (`scripts/bashcutpro-mcp.sh`) reads `~/.config/bashcutpro/mcp.env` (`$X
 write the binary and mode there, one `NAME=value` per line (no quotes needed, no comments after a value):
 
 ```sh
-FILMCRAFT_CLI=/abs/path/BashCutPro/target/release/filmcraft-cli
+BASHCUTPRO_CLI=/abs/path/BashCutPro/target/release/bashcutpro
 BASHCUTPRO_PROJECT=/abs/path/p.fcproj
 ```
 
 The mode line is one of `BASHCUTPRO_PROJECT=…`, `BASHCUTPRO_DEMO=1` or `BASHCUTPRO_BRIDGE=127.0.0.1:9876`;
 keep one: the bridge wins over a project, a project over the demo. `BASHCUTPRO_DATA_DIR` sets
 `--data-dir`. The same names in the environment override the file. Then the user reconnects the server
-(`/mcp` › bashcutpro › Reconnect) or restarts Claude Code. With `filmcraft-cli` on `PATH` and an empty
+(`/mcp` › bashcutpro › Reconnect) or restarts Claude Code. With `bashcutpro` (or `filmcraft-cli`) on `PATH` and an empty
 headless project wanted, no file is needed.
 
-When BashCutPro's `bashcut-mcp` is built (`cargo build --release -p bashcut-mcp`, next to `filmcraft-cli`, or set
+When BashCutPro's `bashcut-mcp` is built (`cargo build --release -p bashcut-mcp`, next to `bashcutpro`, or set
 `BASHCUT_MCP`), the launcher runs it instead: with no mode line it reaches the open BashCutPro window by itself (the
 app started with `--control <port>`), else runs headless. A second headless engine on the same project is refused,
 and writes outside the project folder and `BASHCUTPRO_ROOTS` are refused. `BASHCUTPRO_NO_LOCK=1` turns it off.
@@ -92,8 +94,8 @@ and writes outside the project folder and `BASHCUTPRO_ROOTS` are refused. `BASHC
 project sees it:
 
 ```sh
-claude mcp add -s user bashcutpro -- /abs/path/filmcraft-cli mcp --demo
-claude mcp add -s user bashcutpro -- "C:\Program Files\FilmCraft\filmcraft-cli.exe" mcp --bridge 127.0.0.1:9876
+claude mcp add -s user bashcutpro -- /abs/path/bashcutpro mcp --demo
+claude mcp add -s user bashcutpro -- "C:\Program Files\BashCutPro\bashcutpro.exe" mcp --bridge 127.0.0.1:9876
 ```
 
 The plugin's launcher is a POSIX shell script; if its `bashcutpro` server does not start on Windows, disable it
@@ -104,7 +106,7 @@ in `/mcp` and use the direct entry under another name (`bashcutpro-direct`) so t
 each `skills/<name>` folder to `%USERPROFILE%\.agents\skills\bcp-<name>` and register the binary directly:
 
 ```sh
-codex mcp add bashcutpro -- "C:\Program Files\FilmCraft\filmcraft-cli.exe" mcp
+codex mcp add bashcutpro -- "C:\Program Files\BashCutPro\bashcutpro.exe" mcp
 ```
 
 To change modes later, edit `mcp.env` (or remove and re-add the direct entry) and reconnect.
@@ -121,7 +123,8 @@ they can ask for next.
 
 | Symptom | Cause and fix |
 |---|---|
-| `filmcraft-cli not found` from the launcher | no binary found: set `FILMCRAFT_CLI` in `mcp.env` (step 4) |
+| `bashcutpro (or filmcraft-cli) not found` from the launcher | no binary found: set `BASHCUTPRO_CLI` in `mcp.env` (step 4) |
+| `bashcutpro: filmcraft-cli.exe was not found next to this program or on PATH` | `bashcutpro` was copied without the engine: keep `filmcraft-cli` in the same folder |
 | Tools missing, server "failed" | run the registered command by hand in a terminal; it should wait silently for input. An error there names the problem |
 | Bridge: connection refused | the app is not running with `--control`, or on another port; start it as in step 3 |
 | Exit 2 at start | an option the server does not take (only `--project`, `--demo`, `--data-dir`, `--bridge`) |
