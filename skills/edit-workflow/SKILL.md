@@ -14,18 +14,29 @@ Every edit goes through BashCutPro's MCP server (`bcp:setup` if its tools are mi
 find a command, `command_run {id, params}` for one edit (one undo step), `bashcut.batch` for many in order (one
 undo step, all or nothing), `doc_inspect` / `sequence_inspect` to read, `render_frame` to look. Use only ids that `command_list` returns.
 
+**Turn budget.** A headless agent has a turn cap (bashcut-batch `maxTurns`), and one BashCutPro#219 tutorial ran out
+at 80 turns with 34 single `render_frame` calls and 14 `command_list` calls. A whole edit, tutorial included, fits
+well under 100 turns: one lookup per command, one `bashcut.batch` per stage, one contact sheet per look.
+
 ## Hard rules
 
 - **Plan first, then one batch per stage.** Work the stage out on paper (the plan), then apply it as one
   `command_run {id: "bashcut.batch", params: {commands: [{id, params}], label: "<stage>"}}`: the stage is one undo
   step, and a failing step leaves the project unchanged and names the step (fix it, send the batch again).
+- **Look commands up once.** Take the ids and params of the stage's commands in one go, from the kit's catalogue
+  (`grep -A 6 '"id": "graphics.newText"' <kit>/scripts/commands.json`, or Grep for several ids at once) or one
+  `command_list {filter}` per command family, and keep what it returned for the whole edit. Never look up the same
+  id twice; `badParams` names the bad key, so fix that instead of listing again.
 - **Read little.** `doc_inspect` at start (project, bins, items); then `bashcut.timeline.summary` (tracks and clips
   in seconds, only what differs from a plain clip, a few KB) after a gate or a failed batch. Otherwise trust what your
   own commands returned: `bashcut.batch` answers with `changed` (clips added / changed / removed) and `createdId`.
   Errors start with a code: `notFound` (re-read, fix the id), `badParams` (fix the params), `refused` (change the
   state or ask), `busy` (wait, retry), `offline` (relink or tell the user). Never print a whole transcript: search it (`transcript.search`) or read a range.
-- **Look in batches.** `render_frame {seconds, max_side: 540}` at the frames that matter (hook, each section start,
-  every text), phone size, not every second.
+- **Look in batches: one contact sheet per pass.** List the times that matter (hook, each section start, every
+  card, zoom and text), then `python3 <kit>/skills/footage-survey/contact_sheet.py plan --program --at t1,t2,…
+  --dir /abs/tmp/look-N` → one `command_batch {steps}` → `contact_sheet.py sheet "/abs/tmp/look-N/*.png" -o
+  /abs/tmp/look-N.png --width 400` (phone size) → look at that one image. Never one `render_frame` per card or
+  zoom; a single `render_frame {seconds, max_side: 540}` only for one frame in doubt.
 - **You never certify yourself.** "Done" needs evidence (a frame, a command result, an export path). You cannot
   hear, but you can measure: `bashcut.audio.loudness` and `bashcut.review.run` read loudness, true peak, frozen
   and black picture, caption speed and safe area, and cuts in words from the timeline. Say which sound you did not
@@ -33,7 +44,8 @@ undo step, all or nothing), `doc_inspect` / `sequence_inspect` to read, `render_
 - **Render little.** Judge with `render_frame` and the review's measures, not draft exports: one export per output,
   after the review passes. Many inputs with one treatment are a batch (`bcp:batch`), not N edits by hand.
 - **Only the user answers a gate.** Silence or an earlier "go ahead" is not approval.
-- **Save after every stage**: `file.save` (a headless server with no path: `file.saveAs {path}` once).
+- **Save after every stage**: `file.save` (a headless server with no path: `file.saveAs {path}` once). A batch
+  agent that runs out of turns is exported from its last save (BashCutPro#219), so an unsaved stage is lost.
 - Files named in English, lowercase, hyphens (`draft-v1.mp4`).
 
 ## Stages
@@ -136,7 +148,7 @@ Follow `bcp:review` on **every output sequence** (`sequence.open`, then `bashcut
 loudness and true peak, caption speed, lines and safe area, cuts inside words, gaps, frozen or black picture, each
 finding with its fix and limit. Fix the blocking ones in one batch per round and run it again: 1–3 rounds, then what
 is left is kept with its reason. Add frames at phone size at the hook, every text and doubtful cuts
-(`render_frame {seconds, max_side: 540}`), and the plan's checks.
+(one contact sheet, above), and the plan's checks.
 
 **G5**: per output the verdict, blocking and warnings left, what the rounds fixed and kept, 4–6 frames, and what
 was not checked (sound by ear). No draft export: an export is made only when the user asks to watch one, at

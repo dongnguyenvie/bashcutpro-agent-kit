@@ -69,8 +69,8 @@ output, verdict, blocking, warnings, scores. An output is done when its verdict 
 or kept with a reason.
 
 **Measure from the timeline, export once.** Every round measures without rendering: `bashcut.review.run` (sound
-from the mix, picture from sampled frames), `bashcut.audio.loudness`, `render_frame {max_side: 400}` at chosen times
-only. No WAV or video export per round (the bench's renders took 5–10× BashCut's); the one export per output is
+from the mix, picture from sampled frames), `bashcut.audio.loudness`, frames on one contact sheet (step 3), never one
+`render_frame` per time. No WAV or video export per round (the bench's renders took 5–10× BashCut's); the one export per output is
 the draft (below).
 
 ## Each round
@@ -86,8 +86,9 @@ the draft (below).
    checks in REFERENCE.md. Caption findings exist only while the cues are captions: review them before
    `bashcut.captions.wordStyle` (`bcp:captions-text`).
 3. **Look in batches.** Frames at every cut and every text, the opening and the ending:
-   `contact_sheet.py plan --program --at …` (in `bcp:footage-survey`), one `command_batch`, then `sheet`. Text at
-   the width a viewer sees: `render_frame {seconds, max_side: 400}` (360–420 px). A cut in doubt: frames at
+   `contact_sheet.py plan --program --at …` (in `bcp:footage-survey`), one `command_batch`, then `sheet`: one sheet
+   per round, not a `render_frame` per frame (BashCutPro#219). Text at the width a viewer sees: `sheet --width 400`
+   (360–420 px cells). A cut in doubt: frames at
    ±0.4–1.5 s at 10–12 fps, wider for dialogue cuts, narrower for beat cuts.
 4. **Critic, always.** Hand the review to the `critic` sub-agent (`agents/critic.md`) with only the plan's brief,
    the output sequences and the round, plus the `bashcut.review.run` findings per output: without your reasons it
