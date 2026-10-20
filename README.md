@@ -51,8 +51,7 @@ tracked in [BashCutPro#24](https://github.com/dongnguyenvie/BashCutPro/issues/24
 | `batch` | The same edit over many inputs with `bashcut-batch`: when to batch, the built-in presets (Vietsub a folder, podcast to shorts, every platform, captions draft, clean audio), writing a pipeline with engine, plugin and agent steps and output profiles, watching the job book, retrying failed, tripped and needs-fix items |
 | `library` | Reusing the creator's pieces with the `bashcut.library` plugin: look in the library first (titles, looks, presets, stickers, sounds, templates, the brand kit), harvest what an edit made worth keeping after the export gate, prune what is never used, share packs |
 
-Claude Code shows them under the plugin name (`/bcp:setup`); Codex as `bcp-<name>`. The editing skills
-(`edit-workflow`, `rough-cut`, `captions-text`, …) follow in BashCutPro#5–#7, once the command catalogue (#3) lands.
+Claude Code shows them under the plugin name (`/bcp:setup`); Codex as `bcp-<name>`.
 
 **Agents.** Claude Code also gets sub-agents from [`agents/`](agents): `surveyor` (reads the footage for
 `footage-survey` and answers in under 450 words), `critic` (judges a draft for `review` without the maker's
@@ -61,9 +60,12 @@ themselves.
 
 ## Requirements
 
-- `bashcutpro` (short name `bcpro`), the BashCutPro command line, from a release or a source build
-  (`cargo build --release -p bashcut-cli -p filmcraft-cli`). It runs the engine binary `filmcraft-cli` that sits
-  beside it; a plain `filmcraft-cli` also works. The `setup` skill walks through it.
+- `bashcutpro` (short name `bcpro`), the BashCutPro command line, from a release or a source build. It runs the
+  engine binary `filmcraft-cli` that sits beside it; a plain `filmcraft-cli` also works. A source build that has
+  everything the skills use (speech to text for captions and rough cuts, `bashcut-mcp` to reach the open window):
+  `cargo build -p filmcraft -p filmcraft-cli -p bashcut-cli -p bashcut-mcp --features filmcraft/whisper,filmcraft-cli/whisper`
+  (BashCutPro's [getting started](https://github.com/dongnguyenvie/BashCutPro/blob/main/bashcut/guide/en/getting-started.md)
+  has the full steps). The `setup` skill walks through it.
 - For bridge mode, the desktop app started with `filmcraft --control <port>`.
 - Claude Code or Codex.
 
@@ -80,7 +82,10 @@ Or inside Claude Code: `/plugin marketplace add dongnguyenvie/bashcutpro-agent-k
 `/plugin install bcp@bashcutpro-agent-kit`. The plugin brings the skills and a `bashcutpro` MCP server whose
 launcher, [`scripts/bashcutpro-mcp.sh`](scripts/bashcutpro-mcp.sh), finds `bashcutpro` (`BASHCUTPRO_CLI`, then
 `FILMCRAFT_CLI`, then `bashcutpro` and `filmcraft-cli` on `PATH`, then the usual install places) and picks the mode from `~/.config/bashcutpro/mcp.env`. Then run
-`/bcp:setup`, which writes that file. To try a local checkout for one session:
+`/bcp:setup`, which writes that file, and **restart Claude Code** (or `/mcp` › bashcutpro › Reconnect). When
+`bashcutpro` is not on `PATH`, the server fails at its first start, before setup has written the file. Claude Code then
+waits about 15 minutes before it tries a failed server again, so without the restart the next edit finds no tools. To
+try a local checkout for one session:
 `claude --plugin-dir /path/to/bashcutpro-agent-kit`.
 
 On Windows the launcher (a POSIX shell script) may not start; `/bcp:setup` registers `bashcutpro.exe`
