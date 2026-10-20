@@ -41,9 +41,9 @@ ids are known:
 2. **Stills and overlays** on a track above the footage: `timeline.place {"item", "track": "V2", "frame": F,
    "duration": <ticks>}` (254 016 000 000 ticks a second; `sequence.addTracks {"video": 1}` when V2 is missing).
    A still that does not move looks frozen (the review's `frozen` finding): two keyframes on Motion scale from its
-   first frame to its last, a drift of 1–1.5 % a second (e.g. `effects.setParam {"clip", "effect": "motion",
-   "param": "scale", "value": 100, "keyframe": true, "time": <start>}` then `105` at the end of a 4 s still; under
-   0.8 %/s the review still measures a flat picture as frozen);
+   first frame to its last, a drift of 0.3–1.5 % a second (bcp:effects; e.g. `effects.setParam {"clip", "effect":
+   "motion", "param": "scale", "value": 100, "keyframe": true, "time": <start>}` then `102` at the end of a 4 s
+   still);
    alternate push-in and pull-out between neighbours; a card is smaller (scale 40–70) with `position` set.
 3. **Stock video replacing a moment** on V1: `timeline.place {"item", "track": "V1", "seconds": S, "sourceIn",
    "duration", "audio": false}`. `audio: false` keeps the original sound; without it the stock's sound overwrites
