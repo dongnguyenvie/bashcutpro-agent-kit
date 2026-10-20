@@ -18,7 +18,10 @@ against the audio's own voice activity, so a cut on a word's edge can still land
 pause instead:
 
 1. From `transcript.inspect` (the sequence's words, ticks), the pauses next to the word: the gap before its phrase
-   and after it (≥ 0.1 s; at 190 words a minute they sat at commas and full stops, 0.15–0.9 s).
+   and after it (at 190 words a minute they sat at commas and full stops, 0.15–0.9 s). A gap of 0.4 s or more is a
+   clean cut, 0.15–0.4 s needs a look at the frames, under 0.15 s is unsafe (BashCut's rough-cut, T06 §3). Whisper
+   hides long pauses inside the next word (BashCutPro#203): `loudness.py mix.wav --min-silence 0.3` (a WAV of the
+   mix, `bcp:audio-mix`) lists the real silences.
 2. Keep the word (cut later) or drop it (cut earlier), whichever keeps the line whole; the new cut is the middle of
    that pause.
 3. `timeline.trim {clip, edge: "out", mode: "ripple", delta}` on the clip before the cut (`edge: "in"` on the one

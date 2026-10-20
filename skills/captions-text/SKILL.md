@@ -83,6 +83,9 @@ voice with no hesitations (28 s): `transcript.createCaptions` 37–56 % at or un
 - **A track that already exists** (translated, imported, edited by hand): `captions.list` to a file, then
   `captions_fit.py plan caps.json --max-cps 20 --end S` prints `commands` (`captions.setText`, `captions.setTimes`,
   `captions.merge`) for one `bashcut.batch {commands, label: "Caption reading speed"}`: one undo step.
+- **In a batch or a shell** (no MCP): `captions_fit.py apply --cli <filmcraft-cli> --project p.fcproj --max-chars 32
+  --lines 2` does `group` on the saved project's active sequence, imports the SRT over the first caption track and
+  saves (`bcp:batch` uses it as a plugin step).
 - Without the script: `transcript.createCaptions {maxChars, lines, minSeconds, maxSeconds, gapFrames}`. It breaks
   only at the character limit, a sentence end once half full and pauses of 1 s or more; `gapFrames` is the empty
   frames left **between** cues, not the pause that breaks one. Then fix speed with `captions_fit.py plan`.

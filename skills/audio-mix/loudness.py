@@ -6,10 +6,13 @@ export the mix, a stem or a range as WAV (`file.exportMedia {format: "wav"}`) an
   loudness.py music.wav --speech voice.wav         # music under the voice vs in its gaps (stems, same range)
   loudness.py music.wav --windows speech.json      # the same against explicit speech windows
   loudness.py mix.wav --from 30 --to 60 --curve    # one range, short-term loudness per second
+  loudness.py mix.wav --min-silence 0.8 --tighten 0.4   # + a bashcut.batch that cuts each silence down to 0.4 s
 
 --speech: speech windows are where that file (the voice stem exported over the same range) is above
 --silence-lufs. --windows: a JSON list of [start, end] or {"start", "end"} in seconds (word spans from `transcript.inspect`,
-joined), on the file's own clock. Prints one JSON object. True peak is estimated by 4x oversampling around the
+joined), on the file's own clock. --tighten KEEP: for a WAV of the whole sequence mix (`--sequence-start` when it
+starts later), `tighten.commands` mark in and out inside every silence of --min-silence or more, KEEP seconds left
+(half each side), and `sequence.extract` it, last silence first, for one `bashcut.batch`. Prints one JSON object. True peak is estimated by 4x oversampling around the
 loudest samples. PCM 16 / 24 / 32-bit and float WAV. Standard library only (Python 3.9+); about 3 s per minute
 of stereo 48 kHz audio."""
 import argparse, array, json, math, struct, sys
@@ -160,6 +163,21 @@ def spans(flags, hop, min_s):
     return out
 
 
+def tighten(silences, keep, offset=0.0):
+    """Commands that cut each silence down to `keep` seconds (mark in, mark out, extract), last one first so the
+    earlier times stay right."""
+    cmds, removed = [], 0.0
+    for s, e in sorted(silences, reverse=True):
+        a, b = s + offset + keep / 2.0, e + offset - keep / 2.0
+        if b - a < 0.1:
+            continue
+        cmds += [{"id": "markers.markIn", "params": {"seconds": round(a, 3)}},
+                 {"id": "markers.markOut", "params": {"seconds": round(b, 3)}},
+                 {"id": "sequence.extract", "params": {}}]
+        removed += b - a
+    return {"commands": cmds, "cuts": len(cmds) // 3, "removedSeconds": round(removed, 2)}
+
+
 def median(v):
     v = sorted(v)
     return v[len(v) // 2] if v else None
@@ -175,6 +193,8 @@ def main(argv=None):
     ap.add_argument("--curve", action="store_true", help="add short-term loudness (3 s) once a second")
     ap.add_argument("--silence-lufs", type=float, default=-50, help="momentary loudness below this is silence")
     ap.add_argument("--min-silence", type=float, default=1.0, help="shortest silence listed, seconds")
+    ap.add_argument("--tighten", type=float, help="seconds of each silence to keep: print commands that cut the rest")
+    ap.add_argument("--sequence-start", type=float, default=0.0, help="sequence time of the file's first sample")
     o = ap.parse_args(argv)
     rate, chans = read_wav(o.wav)
     a, b = int(o.start * rate), int(o.to * rate) if o.to else None
@@ -207,6 +227,8 @@ def main(argv=None):
         audible = lambda v: [x for x in v if x > -70]
         out["windows"] = {"insideMedianLufs": num(median(audible(inside))), "outsideMedianLufs": num(median(audible(outside))),
                           "insideSeconds": round(len(inside) * 0.1, 1), "outsideSeconds": round(len(outside) * 0.1, 1)}
+    if o.tighten is not None:
+        out["tighten"] = tighten(out["silences"], o.tighten, o.start + o.sequence_start)
     if o.curve:
         out["shortTerm"] = [[round(o.start + i + 3, 1), num(lufs(p))] for i, p in enumerate(short)]
     print(json.dumps(out, ensure_ascii=False))
