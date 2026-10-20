@@ -49,7 +49,7 @@ Sample lengths, not slots: the plan gives each section its range and a named ran
 - **Kinetic type is the picture**: one to three words a card in a heavy face, entering on the beat; a giant ghost word
   scrolling slowly behind at low opacity (RC "COMPLEXITY"); a two-colour word for the manifesto ("BUILD / CAPACITY.",
   `graphics.setCharStyle`). bcp:motion-graphics sets the timing; an installed `.fcgt` via `graphics.template.apply`,
-  else `graphics.newText` (the vlog library looks are not ported yet).
+  else `graphics.newText` (a series keeps its cards in a project template, `bashcut.template.save`).
 - **Counters roll fast**: 10 → 24 → 29+ in about 0.3 s (RC), then hold the final number with its label; a journey of
   years as a timeline.
 - **Screenshots slide in** from the edge, tilted, over the number they prove (RC): the user's real product, site or
@@ -90,6 +90,33 @@ glitch hit on glitches, a paper or print sound on halftones (bcp:audio-mix, lice
 at its measured rate (bcp:voiceover). One palette, one heavy display face and one text face. Intent: a showreel dark
 and restrained with one accent; a comic saturated and loud (RC: saturation 63 against the showreel's 48) with halftone,
 sunburst and paper textures. Footage graded toward the palette (bcp:color-grade).
+
+## Measure and finish
+
+Measure the edit, not a render: these read the sequence directly. Look with `render_frame` at phone size
+(`max_side` ~400), never a test export.
+
+| Check | Command | This recipe |
+|---|---|---|
+| Shot lengths, cut rate | `bashcut.timeline.summary` (V1 clip `start` / `end` in seconds) | 12–13 cuts a minute, 4.0–4.5 s a shot with something changing inside about every 2.7 s; every cut within 2 frames of a beat from `bashcut.audio.beats {clip}` (or a bar for a voiced hype, on the phrase first) |
+| Cuts in speech | in and out points from `transcript.search` (`start` / `end` in ticks ÷ 254 016 000 000: the first word's start, the last word's end), never typed times | 0 `cutInWord` findings |
+| Frozen and still | `bashcut.review.pictureChecks {}` | Still frames 0–2 %: frozen picture 0.5–1 s at most (a manifesto line held for reading is kept with a reason); kinetic type and counters always move |
+| Captions | `transcript.createCaptions {maxChars: 32 (vertical) or 42 (landscape), lines: 2, minSeconds: 1.2, gapFrames: 0}` | ≤ 20 characters a second (none over 25), ≤ 42 characters a line, 2 lines, each cue starting and ending on a word edge |
+| Loudness | `bashcut.audio.loudness {}` | −14 LUFS ± 1 (`facebook-square` −16), true peak ≤ −1 dBTP; music 5–18 dB under the voice |
+| Look | `bashcut.looks.apply {look, intensity: 0.6–1.0}` on one adjustment layer (bcp:color-grade) | `punchy-shorts`, `teal-orange`, `silver-grit` (sport), `moody-green` |
+| Beat sync | `bashcut.audio.beats {clip}` against the V1 cuts from the summary | 90 %+ of cuts within 2 frames (0.07 s at 30 fps) of a beat |
+
+**Captions read at 20 characters a second because the cue spans the pauses**, not because it is short: on one
+voice, 2-line cues of 24–42 characters had 83–90 % of cues at or under 20 cps, 1-line 16-character cues only 76 %
+with one over 25. Fix a `readingSpeed` finding by stretching the cue into the pause after it (`captions.setTimes`),
+merging it with a short neighbour (`captions.merge`, then check `lines`) or dropping a filler word, never by
+splitting it smaller.
+
+**Review every output.** On each output sequence (`sequence.open {item}` first; the review reads the active one):
+`bashcut.review.run {profile}` with `tiktok`, `reels`, `shorts`; `youtube` for a showreel. `blocking` must be 0: fix the findings (each has seconds and a
+`fix`) in one `bashcut.batch`, run the review again, at most 3 rounds; warnings are fixed or kept with a reason in
+the plan; what still blocks after round 3 goes to the user. Then bcp:vlog-publish: one `bashcut.profiles.apply` per
+output.
 
 ## Review notes
 

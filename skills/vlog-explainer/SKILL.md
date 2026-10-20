@@ -12,10 +12,9 @@ videos measured 2026-10-07); T-notes as in the other recipes.
 
 Order: the script with sources → the voice (bcp:voiceover; numbers spelled out as heard, captions with digits) →
 word times (`transcript.inspect`) → one graphic per section landing on its word (bcp:motion-graphics) → captions
-(bcp:captions-text) → music and SFX (bcp:audio-mix). Place them together per stage with `command_batch`, not one by
-one. Data graphics wait for a graphics plugin: until then, an installed `.fcgt` (`graphics.template.list`,
-`graphics.template.apply`) or plain `graphics.newText` and `graphics.newRectangle` built up line by line (the vlog
-library looks are not ported yet).
+(bcp:captions-text) → music and SFX (bcp:audio-mix). Place them together per stage with one `bashcut.batch` (one undo
+step), not one by one. Data graphics wait for a graphics plugin: until then, an installed `.fcgt` (`graphics.template.list`,
+`graphics.template.apply`) or plain `graphics.newText` and `graphics.newRectangle` built up line by line (a series keeps its cards in a project template, `bashcut.template.save`).
 
 ## Ranges
 
@@ -102,6 +101,33 @@ Voice first at the measured rate, music deep under it, a soft whoosh on card swi
 they help (bcp:audio-mix). The older music-only kits shipped 17 dB too quiet (RC): normalize per output. One palette
 and one font family from the brand or a reference (bcp:style-study); a paper, kraft or dark textured background;
 photos graded to the palette's warmth (bcp:color-grade); generated illustrations left as made.
+
+## Measure and finish
+
+Measure the edit, not a render: these read the sequence directly. Look with `render_frame` at phone size
+(`max_side` ~400), never a test export.
+
+| Check | Command | This recipe |
+|---|---|---|
+| Shot lengths, cut rate | `bashcut.timeline.summary` (V1 clip `start` / `end` in seconds) | 0–1.5 hard cuts a minute; a new card, picture or graphic step every 6–8 s (vertical), 20–60 s sections landscape |
+| Cuts in speech | in and out points from `transcript.search` (`start` / `end` in ticks ÷ 254 016 000 000: the first word's start, the last word's end), never typed times | 0 `cutInWord` findings |
+| Frozen and still | `bashcut.review.pictureChecks {}` | Nothing stands still over 1–2 s with nothing new on it: photos drift at 1–1.5 %/s, graphics build; a quote or table held to be read is a `longStill` kept with a reason |
+| Captions | `transcript.createCaptions {maxChars: 32 (vertical) or 42 (landscape), lines: 2, minSeconds: 1.2, gapFrames: 0}` | ≤ 20 characters a second (none over 25), ≤ 42 characters a line, 2 lines, each cue starting and ending on a word edge |
+| Loudness | `bashcut.audio.loudness {}` | −14 LUFS ± 1 (`facebook-square` −16), true peak ≤ −1 dBTP; music 5–18 dB under the voice |
+| Look | `bashcut.looks.apply {look, intensity: 0.6–1.0}` on one adjustment layer (bcp:color-grade) | `news-neutral`, `screen-clean` (screenshots), `archive-warm` (history) |
+| Numbers on screen | `transcript.search` for every number said | each on screen while said; its source in the plan |
+
+**Captions read at 20 characters a second because the cue spans the pauses**, not because it is short: on one
+voice, 2-line cues of 24–42 characters had 83–90 % of cues at or under 20 cps, 1-line 16-character cues only 76 %
+with one over 25. Fix a `readingSpeed` finding by stretching the cue into the pause after it (`captions.setTimes`),
+merging it with a short neighbour (`captions.merge`, then check `lines`) or dropping a filler word, never by
+splitting it smaller.
+
+**Review every output.** On each output sequence (`sequence.open {item}` first; the review reads the active one):
+`bashcut.review.run {profile}` with `tiktok`, `reels`, `shorts`; `youtube` for 2–5 min landscape. `blocking` must be 0: fix the findings (each has seconds and a
+`fix`) in one `bashcut.batch`, run the review again, at most 3 rounds; warnings are fixed or kept with a reason in
+the plan; what still blocks after round 3 goes to the user. Then bcp:vlog-publish: one `bashcut.profiles.apply` per
+output.
 
 ## Review notes
 

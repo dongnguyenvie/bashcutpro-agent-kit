@@ -36,7 +36,7 @@ Sample lengths, not slots: the plan gives each section its own range and a named
 | CTA | 2–4 s (T14 §3) | where to buy, or "comment câu hỏi" |
 
 Chips, labels and cards: bcp:captions-text / bcp:motion-graphics (an installed `.fcgt` template, else
-`graphics.newText`; the vlog library looks are not ported yet).
+`graphics.newText`; a series keeps its cards in a project template, `bashcut.template.save`).
 
 ## Cuts and motion
 
@@ -69,6 +69,33 @@ show the spec as text.
 - Sound: light music under the voice, a click or pop on labels, the product's real sound when it has one.
 - Look intent: true-to-life colour (the product's real colour matters more than mood), clean whites; product shots
   graded to match each other. Measure first (bcp:color-grade).
+
+## Measure and finish
+
+Measure the edit, not a render: these read the sequence directly. Look with `render_frame` at phone size
+(`max_side` ~400), never a test export.
+
+| Check | Command | This recipe |
+|---|---|---|
+| Shot lengths, cut rate | `bashcut.timeline.summary` (V1 clip `start` / `end` in seconds) | 10–14 cuts a minute (BashCut beat-cut: review 10–14): talking shots 2.5–6 s with a punch-in every 4–6 s, detail inserts 1–1.5 s |
+| Cuts in speech | in and out points from `transcript.search` (`start` / `end` in ticks ÷ 254 016 000 000: the first word's start, the last word's end), never typed times | 0 `cutInWord` findings |
+| Frozen and still | `bashcut.review.pictureChecks {}` | No frozen picture: a held hero or spec card drifts at 1–1.5 %/s; a locked-off talking shot is a `longStill` only past 5 s: punch in or cut on a sentence before that |
+| Captions | `transcript.createCaptions {maxChars: 32 (vertical) or 42 (landscape), lines: 2, minSeconds: 1.2, gapFrames: 0}` | ≤ 20 characters a second (none over 25), ≤ 42 characters a line, 2 lines, each cue starting and ending on a word edge |
+| Loudness | `bashcut.audio.loudness {}` | −14 LUFS ± 1 (`facebook-square` −16), true peak ≤ −1 dBTP; music 5–18 dB under the voice |
+| Look | `bashcut.looks.apply {look, intensity: 0.6–1.0}` on one adjustment layer (bcp:color-grade) | `product-true` (colour as sold); `clean-skin` or `warm-presenter` on the talking parts if they differ |
+| Price and claims | `transcript.search` for the price and each claim | the price tag lands on its word; every claim has its shot within 1 s |
+
+**Captions read at 20 characters a second because the cue spans the pauses**, not because it is short: on one
+voice, 2-line cues of 24–42 characters had 83–90 % of cues at or under 20 cps, 1-line 16-character cues only 76 %
+with one over 25. Fix a `readingSpeed` finding by stretching the cue into the pause after it (`captions.setTimes`),
+merging it with a short neighbour (`captions.merge`, then check `lines`) or dropping a filler word, never by
+splitting it smaller.
+
+**Review every output.** On each output sequence (`sequence.open {item}` first; the review reads the active one):
+`bashcut.review.run {profile}` with `tiktok`, `reels`, `shorts`; `youtube` for the long review. `blocking` must be 0: fix the findings (each has seconds and a
+`fix`) in one `bashcut.batch`, run the review again, at most 3 rounds; warnings are fixed or kept with a reason in
+the plan; what still blocks after round 3 goes to the user. Then bcp:vlog-publish: one `bashcut.profiles.apply` per
+output.
 
 ## Review notes
 
