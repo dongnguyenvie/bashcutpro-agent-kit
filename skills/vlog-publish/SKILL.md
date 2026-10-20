@@ -43,7 +43,10 @@ On **every output sequence** (`sequence.open {item}` first: the review reads the
 (time ranges in seconds, a suggested fix each) and run it again, at most 3 rounds; what is still blocking after
 round 3 goes to the user with the finding, not into the file. Captions must pass its caption checks: at most 20
 characters a second (over 25 blocks), 42 characters a line, 2 lines. Same-shape outputs share one sequence: review it
-with the strictest profile (the largest safe area). bcp:review has the full loop. Then ask for the draft gate (G5):
+with the strictest profile (the largest safe area). The review does not see caption boxes: before the export, one
+`render_frame` with captions and titles on screen, checked against the profile's `safeAreaPx` (Reels covers the top
+269 px and the bottom 384 px of 1920); text inside a band moves first (`captions.setStyle {margin: 0.21}`), then
+the export. bcp:review has the full loop. Then ask for the draft gate (G5):
 length, outputs, what was left on purpose; wait for the user.
 
 ## 3. One export per output
