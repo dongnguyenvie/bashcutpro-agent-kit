@@ -1,6 +1,6 @@
 ---
 name: review
-description: Review a BashCutPro edit before export as a capped loop of 1-3 rounds: limits chosen from sourced ranges, measure what can be measured (cut list against the words, frames at phone size at every cut and text, scopes, loudness of a WAV export), judge each finding by what a viewer perceives, fix, re-measure, with an independent critic sub-agent. Triggers: "review", "kiểm tra video", "soát lỗi", "xem lại bản dựng", "chấm bản dựng", "QC", "trước khi xuất", "check my edit".
+description: Review a BashCutPro edit before export as a capped loop of 1-3 rounds: bashcut.review.run on every output sequence, each finding fixed by its check (captions speed, cuts in words, gaps, frozen picture, loudness, true peak), measured from the timeline with one export per output, frames at phone size at every cut and text, judge each finding by what a viewer perceives, fix, re-measure, with an independent critic sub-agent. Triggers: "review", "kiểm tra video", "soát lỗi", "xem lại bản dựng", "chấm bản dựng", "QC", "trước khi xuất", "check my edit".
 ---
 
 # Reviewing an edit
@@ -50,62 +50,72 @@ profiles (`loudnessLufs`, `truePeakDbtp`, `safeArea` as fractions of the frame),
 | length vs plan | 2–15 % | strict for ads and fixed slots, loose for vlogs |
 | rounds | 1–3 | 1 when the user is waiting and nothing blocks; up to 3 unattended |
 
+## Every output, every round
+
+A review covers **every output sequence** (one per output in the plan: three clips are three sequences), not the
+one that is open: the bench's podcast job shipped two clips with 5 blocking caption findings because only the active
+sequence was reviewed. `bashcut.review.run` reads the active sequence only, so per output:
+
+```json
+{"id": "sequence.open", "params": {"item": 41}}
+{"id": "bashcut.review.run", "params": {"profile": "shorts", "sequence": 41}}
+```
+
+(sequence ids from the plan's outputs or MCP `project_inspect`; the profile is that output's). Keep a table per round:
+output, verdict, blocking, warnings, scores. An output is done when its verdict is `pass` and every warning is fixed
+or kept with a reason.
+
+**Measure from the timeline, export once.** Every round measures without rendering: `bashcut.review.run` (sound
+from the mix, picture from sampled frames), `bashcut.audio.loudness`, `render_frame {max_side: 400}` at chosen times
+only. No WAV or video export per round (the bench's renders took 5–10× BashCut's); the one export per output is
+the draft (below).
+
 ## Each round
 
 1. **Read the edit once.** `bashcut.timeline.summary` (clips, tracks, length in seconds; `sequence_inspect` when you
-   need effect params or transitions); `transcript.inspect` for the words;
-   the plan from `project.notes`. Every stage the plan requires (effects, sound, colour) that is still open is a
-   blocker, whatever else passes: one BashCut tutorial passed review with its effects stage not done, one zoom
-   reused on every screen shot.
-2. **Measure.** First `bashcut.review.run {profile}` (the brief's output profile): measured findings for sound,
-   picture, captions and the edit, each with severity, range in seconds, the number and a fix, written as Review
-   markers on the timeline (`writeMarkers: false` to only read), a score per category and `verdict` (`needsFix` when
-   anything blocks). Judge each finding as below; a measured warning is not automatically a blocker. What it lists
-   under `skipped` (music over speech, caption safe area and contrast) and a build without it use the checks below.
-   (REFERENCE.md has the exact calls.)
-   - **Cuts against words**: every cut time from `sequence_inspect` against the word spans: a cut inside a word
-     clips it; a caption or title more than the word-landing limit off its word.
-   - **Gaps and black**: gaps in `sequence_inspect` on the main video track; `bashcut.review.pictureChecks` for black,
-     frozen and flashing stretches (else `scopes.read {scopes: ["waveform"], seconds}` at each cut ± a few frames and
-     at every gap: a luma maximum near 0 is black).
-   - **Shot lengths**: from the clip list against the limits; runs of the same framing (`bcp:beat-cut`).
-   - **Sound**: `bashcut.audio.loudness {series: true}` for the mix (integrated, true peak, loud seconds); export the
-     mix as WAV, `loudness.py --curve`: silences over the limit, jumps between sections,
-     true peak; voice and music stems with `--speech` for the bed under the voice (`bcp:audio-mix`).
-   - **Colour jumps**: `scopes.read` at the middle of neighbouring clips; a jump between clips meant to match
-     goes to `bcp:color-grade`.
-   - **Length and shape** against the plan and the outputs.
+   need effect params or transitions); `transcript.inspect` for the words; the plan from `project.notes`. Every
+   stage the plan requires (effects, sound, colour) that is still open is a blocker, whatever else passes: one
+   BashCut tutorial passed review with its effects stage not done, one zoom reused on every screen shot.
+2. **Measure** every output with `bashcut.review.run` as above: findings for sound, picture, captions and the edit,
+   each with `check`, severity, range in seconds, the number and a fix, written as Review markers
+   (`writeMarkers: false` to only read), a score per category and `verdict` (`needsFix` when anything blocks). What
+   it lists under `skipped` (music over speech, caption safe area and contrast) and a build without it use the
+   checks in REFERENCE.md. Caption findings exist only while the cues are captions: review them before
+   `bashcut.captions.wordStyle` (`bcp:captions-text`).
 3. **Look in batches.** Frames at every cut and every text, the opening and the ending:
    `contact_sheet.py plan --program --at …` (in `bcp:footage-survey`), one `command_batch`, then `sheet`. Text at
    the width a viewer sees: `render_frame {seconds, max_side: 400}` (360–420 px). A cut in doubt: frames at
    ±0.4–1.5 s at 10–12 fps, wider for dialogue cuts, narrower for beat cuts.
 4. **Critic, always.** Hand the review to the `critic` sub-agent (`agents/critic.md`) with only the plan's brief,
-   the sequence and the round: without your reasons it sees what a viewer sees. No sub-agent (Codex): audit
-   yourself by `<skill_dir>/../../agents/critic.md`, and say the audit was your own.
-5. **Decide each finding** by severity: fix it (one batch of commands per area, through that area's skill), change
-   the limit when it is wrong for this video (say why), keep it with a reason, or list it for the user. Never hide
-   a fault with a transition or a flash.
-6. **Measure each fix again** with the same measurement that found it. Say "fixed" only with the new number:
-   "looks better" does not count. Then look only at what changed (`history.list` shows the round's edits).
-7. **Log the round** in the plan's `log` (fixed, kept with reasons, left).
+   the output sequences and the round, plus the `bashcut.review.run` findings per output: without your reasons it
+   sees what a viewer sees. No sub-agent (Codex): audit yourself by `<skill_dir>/../../agents/critic.md`, and say
+   the audit was your own.
+5. **Decide each finding** by severity and fix it with the table below: one `bashcut.batch` per area per sequence
+   (one undo step each), through that area's skill. Change the limit when it is wrong for this video (say why),
+   keep it with a reason, or list it for the user. Never hide a fault with a transition or a flash.
+6. **Measure each fix again**: `bashcut.review.run` on the sequences you changed. Say "fixed" only with the new
+   number: "looks better" does not count. Then look only at what changed (`history.list` shows the round's edits).
+7. **Log the round** in the plan's `log` (per output: fixed, kept with reasons, left).
 
-| Finding | Look and measure | Fix with |
+| `check` (category) | Severity in review.run | Fix |
 |---|---|---|
-| black, frozen picture, gap, long static shot | `render_frame`, `scopes.read`, the clip list | `bcp:beat-cut`, `bcp:effects`; a gap: `sequence.closeGap` |
-| jump cut, repeated framing, cut inside a word | frames around the cut, cut times vs words | `bcp:rough-cut`, `bcp:beat-cut` |
-| cut or text off the beat or the word | cut and text times vs beats (`bcp:beat-cut` `beats.py`) and words | `bcp:beat-cut`, `bcp:captions-text` |
-| text in a safe zone, too small, overlapping, low contrast, over a face or burned-in text | `render_frame {max_side: 400}` at the text; face and text boxes from the `bashcut.vision` sidecar when there is one | `bcp:captions-text` |
-| no hook, slow opening | the first 3 s: frames, words, first text | story (`bcp:edit-workflow`), `bcp:captions-text` |
-| dead air, music gaps, voice drowned, one SFX repeated like a machine gun | `loudness.py` on the mix and stems | `bcp:audio-mix` |
-| live speech and voiceover at different levels | each speech stem within ~2 LU, music 15–20 LU under | `bcp:audio-mix` |
-| a restart or a phrase said twice | suspect words from the survey, the words around each cut | `bcp:rough-cut` |
-| colour jumps between clips | `scopes.read` per clip, `render_frame` | `bcp:color-grade` |
-| a promised shot or line missing | the plan's cut list against `sequence_inspect` and the words | `bcp:rough-cut`, ask |
-| loudness, true peak of the delivery | a WAV export with the delivery's `loudnessLufs`, `loudness.py` | `bcp:audio-mix` |
+| `readingSpeed`, `lineLength`, `lines`, `overlap` (captions) | warning over 20 cps, blocking over 25 / overlap | `captions_fit.py plan` → one `bashcut.batch` (`bcp:captions-text` §2); after a word style, undo it, fix, style again |
+| `cutInWord` (edit) | blocking | move the cut into the nearest real pause (≥ 0.1 s between words, usually a phrase end), not to the word's edge: `timeline.trim {clip, edge, mode: "ripple", delta}` (REFERENCE "Cut into a pause") |
+| `gap` (edit), `black` inside the edit (picture) | blocking | `sequence.closeGap {track: "V1", time}` or fill it |
+| `shortClip`, `shortGap` (picture) | warning | delete the sliver or `timeline.roll` the cut; `sequence.closeGap` |
+| `offline` (edit) | blocking | relink or replace the clip |
+| `frozen` (picture) | warning | a stuck video source or a frame hold: cut it or cover it (`bcp:beat-cut`). A still screen or a locked-off speaker **under speech** is not a fault (BashCutPro#193/#196): keep it with a reason |
+| `longStill` (picture) | info | the genre's limit: a punch-in or zoom (`bcp:effects`), or keep it |
+| `flash` (picture) | warning | a dissolve or cut it |
+| `loudness`, `loudSegment`, `silence` (sound) | blocking past 2 × tolerance, else warning | `bcp:audio-mix`: `bashcut.audio.polish {clips, profile}` on the voice, the bed's gain; the export by profile normalizes the mix |
+| `truePeak`, `clipping` (sound) | blocking over 0 dBTP / ≥ 48 clipped samples, else warning | lower that clip's gain (`clip.audioGain`); the export's `peakCheck` re-exports when the file is over |
+
+The bench counts a blocking finding as 25 points, a warning as 3, info as nothing: zero blocking on every output
+first, then the cheap warnings (caption speed, a sliver).
 
 ## Rounds and stopping
 
-- Cap: the rounds limit above (never more than 3).
+- Cap: the rounds limit above (never more than 3; 2 fix rounds unattended, as `bashcut-batch` `fixRounds: 2`).
 - From round 2, first confirm the previous fixes, then **only a new blocker fails the round**. New polish and
   taste findings are listed, not chased: rubric creep is how loops never end.
 - Stop early when a round fixes nothing. What is left goes to the user with reasons, never silently shipped.
@@ -115,14 +125,17 @@ profiles (`loudnessLufs`, `truePeakDbtp`, `safeArea` as fractions of the frame),
 
 ## The draft
 
-Loudness and the delivered file are measured last, from a normalized export (`file.exportMedia {loudnessLufs,
-wait: true}`, `bcp:edit-workflow`), plus a WAV export at the same settings for `loudness.py`. Review once more,
-then the draft gate.
+One export per output, last: `bashcut.profiles.apply {profile, path, wait: true}` on each output sequence (its
+size, bitrate, loudness and captions). It measures the exported file's true peak and exports again with a lower
+limit when it is over (`peakCheck`: `truePeakDbtp`, `reexported`); report that number, not the setting. A `burn`
+profile writes no SRT: export one first (`bcp:captions-text`). Where ffmpeg is installed, `ffmpeg -i out.mp4 -af
+ebur128=peak=true -f null -` on the file gives integrated LUFS and true peak as the bench measures them. Then the
+draft gate.
 
 ## Report
 
 A few lines: rounds; whether the critic or you audited; fixes (finding → edit → new number); limits changed and
 findings kept, with reasons; what needs the user; what was not checked (sound by ear, motion between frames,
-text contrast by number). Example: "Review: 2 rounds, critic audited. Closed a 1.2 s gap at 0:41 (now 0 gaps),
+text contrast by number). Per output: verdict, blocking, warnings, scores, LUFS and true peak of the file. Example: "Review: 2 rounds, critic audited. Closed a 1.2 s gap at 0:41 (now 0 gaps),
 raised the caption out of the Reels bar. Kept: the 9 s shot at 0:12 (locked-off interview). Not checked: the music
 under your voice by ear."
