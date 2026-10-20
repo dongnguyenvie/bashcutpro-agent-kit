@@ -22,20 +22,36 @@ fact is unknown say so instead of filling it in (T17 §4).
 - **Length**: the moment sets it; the platform's cap limits it. **Never trim to a "sweet spot"**: they contradict
   (Shorts 30–45 s in one source, "avoid 30–45 s" in another; TikTok 21–34 s or 15–30 s; T17 §3). Mention one only
   as context when asked, with its source.
-- **Loudness**: each output exported to its own target, never one number for all (T11 §3, T17 §3); the targets and
-  how to check them are bcp:audio-mix (nothing in FilmCraft measures loudness read-only).
+- **Loudness**: each output exported to its own target, never one number for all (T11 §3, T17 §3). The built-in
+  profiles: `tiktok`, `reels`, `shorts`, `youtube`, `youtube-4k` −14 LUFS, `facebook-square` −16 LUFS; true peak
+  −1 dBTP. `bashcut.profiles.get {profile}` prints the numbers, safe area and caption mode of a profile; the user's
+  own profiles may differ. Read the mix with `bashcut.audio.loudness {}` (LUFS, dBTP), no export needed.
+
+| Profile | Frame | Captions | Safe area (top / bottom / right of the frame) |
+|---|---|---|---|
+| `tiktok` | 1080×1920 | burned in | 8 % / 20 % / 12 % |
+| `reels` | 1080×1920 | burned in | 14 % / 20 % / 10 % |
+| `shorts` | 1080×1920 | burned in | 10 % / 20 % / 12 % |
+| `youtube`, `youtube-4k` | 1920×1080, 3840×2160 | SRT sidecar | 5 % each side |
+| `facebook-square` | 1080×1080 | burned in | 5 % / 15 % / 5 % |
 - **AI disclosure**: each platform has an upload toggle for AI-made or altered content.
 
 ## 2. Before exporting
 
-bcp:review passed on the last draft: no error left. Ask for the draft gate (G5): length, outputs, what was left
-on purpose; wait for the user.
+On **every output sequence** (`sequence.open {item}` first: the review reads the active one):
+`bashcut.review.run {profile: "<that output's profile>"}`. `blocking: 0` on each, or no export: fix the findings
+(time ranges in seconds, a suggested fix each) and run it again, at most 3 rounds; what is still blocking after
+round 3 goes to the user with the finding, not into the file. Captions must pass its caption checks: at most 20
+characters a second (over 25 blocks), 42 characters a line, 2 lines. Same-shape outputs share one sequence: review it
+with the strictest profile (the largest safe area). bcp:review has the full loop. Then ask for the draft gate (G5):
+length, outputs, what was left on purpose; wait for the user.
 
 ## 3. One export per output
 
-One `bashcut.profiles.apply {"profile", "path", "wait": true}` per output where the build has output profiles
-(`tiktok`, `reels`, `shorts`, `youtube`, `youtube-4k`, `facebook-square`, or the user's own): the platform's size,
-fps, bitrate, loudness, true peak and caption mode come from the profile; `bashcut.profiles.list {"seconds"}` shows
+One `bashcut.profiles.apply {"profile", "path", "sequence", "wait": true}` per output where the build has output
+profiles (`tiktok`, `reels`, `shorts`, `youtube`, `youtube-4k`, `facebook-square`, or the user's own): the platform's
+size, fps, bitrate, loudness, true peak and caption mode come from the profile, and an export whose true peak lands
+over the limit is measured and exported again with a lower limit by itself; `bashcut.profiles.list {"seconds"}` shows
 the estimated file sizes when an upload limit matters. Without them (`command_list` has no `bashcut.profiles.*`):
 `file.exportMedia` per output with `path`, the size, `loudnessLufs` at that output's target, and captions burned
 in (`burnCaptions`) or as a sidecar file (`captionSidecar` srt or vtt). Vertical apps usually get them burned in;
@@ -51,6 +67,10 @@ YouTube landscape often a sidecar the viewer can switch off (T09 §7). Long expo
   the export (bcp:audio-mix), name it `<name>-nomusic`, normalize it too. When the cut was timed to the beat, say a
   new track will not match the cuts.
 - Bit rate only for a measured reason.
+- **Export once per output.** Never a test export to "see" the edit: look with `render_frame` and listen with
+  `bashcut.audio.loudness`; a full export is minutes of render (a 45 s 1080×1920 export took 80 s on a debug build).
+  After an export, read the result instead of exporting again: `peakCheck` (`truePeakDbtp` of the file, `reexported`
+  when the limiter had to be lowered), the export result (frames, bytes, seconds of render).
 
 ## 4. Cover
 

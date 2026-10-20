@@ -82,6 +82,13 @@ A card the series repeats (a stat card, a lower third, a price tag, a chapter ca
 A template cannot count a number up, draw a chart or build a diagram: those go to the plugin. Details and a
 worked batch: REFERENCE "Template cards".
 
+**A series with the same frame** (an explainer or news channel's chrome, a weekly format): once the first episode's
+chrome, cards and music bed are right, keep the whole project as a project template:
+`bashcut.template.save {name, slots: [{item: <footage or photo id>, name: "main"}, {item: <music id>, name: "music"}],
+title}`. The next episode starts from it with `bashcut.template.instantiate {template: name, fills: [{slot: "main",
+file}], saveAs}`: clips, effects, keyframes and text stay, the slot footage is swapped in one undo step; then change
+the card values with `graphics.template.set`. `bashcut.template.list` shows what is saved.
+
 ## 5. Render with the HyperFrames plugin
 
 The [`bashcut.hyperframes`](https://github.com/dongnguyenvie/bashcutpro-plugins/tree/main/plugins/hyperframes)
@@ -133,6 +140,11 @@ assets.
 - Re-timing the voice moves words, not the graphic: after cuts there, run `transcript.search` again, then move the
   clip or `HF rerender` with new `at`s. A render that changed length (`lengthChanged`): trim or extend the clip.
 - Never export over drafts: `HF finalise` first (bcp:vlog-publish).
+- Look with `render_frame` (single frames), never a full export: 3 frames a graphic (entrance, landing word, last
+  frame) is enough.
+- Then on **every output sequence** (`sequence.open {item}`): `bashcut.review.run {profile: "<its output profile>"}`.
+  A card held still with no speech over it shows as `frozen`: give it motion (a 2–3 % drift or an element that
+  builds) or shorten it; a card's clip or gap under 3 frames is blocking. Fix and run again, at most 3 rounds.
 
 ## Report
 

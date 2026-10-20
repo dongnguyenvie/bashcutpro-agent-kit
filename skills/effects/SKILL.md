@@ -15,12 +15,14 @@ one's parameters. Use names exactly as the list prints them; never guess one fro
 
 ## 1. Read what the cut already does
 
-`sequence_inspect` (or `doc_inspect`) gives clips, their effect lists with keyframes, and the transitions at
-each cut. Count from it:
+`bashcut.timeline.summary` gives every clip with its id, start, end and duration in seconds (shot lengths, cuts
+a minute); `sequence_inspect` adds the effect lists with keyframes and the transitions at each cut. Count from them:
 
 - transitions by name, and runs of one name on neighbouring cuts;
 - Motion keyframes per clip: shots that all push in the same way (one failure: all 12 shots a push-in,
   vox-director; T08 §2), one interpolation on most moves, long stretches with no motion at all;
+- stills and locked-off shots: `bashcut.review.pictureChecks {range}` lists frozen and long-still stretches in
+  seconds; each one with no speech over it needs motion (§3) or a cut;
 - look at the frames that matter with `render_frame` (before, inside and after each cut you plan to touch).
 
 Decide **motif or mistake** for each pattern; a motif is fine when it is a choice. Other kits warn on: the same
@@ -62,6 +64,10 @@ Made with Motion keyframes: `effects.setParam {"clip", "effect": "motion", "para
 | Size change at a cut | 115-130 %, capped by headroom | bcp:beat-cut |
 | Beat pulse | 2 % or less as texture; full-frame impacts at most 3 per film, 16+ beats apart | bestagentkits, guizang |
 
+- **No frozen picture.** A photo, a screenshot or a locked-off shot held over 1.5 s with nothing said over it reads
+  as a stuck video (the review's `frozen` finding): give it a drift of at least 1 %/s (1–1.5 %/s; 4 s: 100 to
+  105 %) from its first frame to its last. Measured: a flat 1080p still at 0.8 %/s was still `frozen` for 1 s, at
+  1.4 %/s it passed (`bashcut.review.pictureChecks`). Under a voice the slower 0.3–1 %/s drift below is fine.
 - State drift as a rate so short and long shots feel alike: end scale = 100 x (1 + rate x seconds); 0.5 %/s over
   8 s is about 104 %.
 - **The ceiling is resolution, not taste.** Source size over the sequence frame size (both in `doc_inspect`) is
@@ -82,7 +88,7 @@ Speed changes break lip sync: b-roll and action only, never talking shots.
 - Freeze: `clip.frameHold` holds one frame for the whole clip; `clip.insertFrameHoldSegment {"clip", "time",
   "seconds"}` inserts a held stretch, the usual freeze + label.
 - Real slow motion needs 50/60/120 fps sources; slowing 30 fps below about 50 % stutters (T08 §3). If it must,
-  try `clip.setTimeInterpolation {"mode": "opticalFlow"}` and watch it with `render_preview`.
+  try `clip.setTimeInterpolation {"mode": "opticalFlow"}` and watch 1–2 s of it with `render_preview`.
 - A few frames short: slow the clip slightly (102-110 %, vox-director), never freeze its last frame.
 - Fast-forward: 150-200 % when narrated over, 400-2000 % for silent waiting (digitalsamba, vlog tutorial; T19
   §3). One example: a 65 s typing stretch read clearly at 16x (about 4 s) with no presenter or captions and one
@@ -151,23 +157,23 @@ trimmed). Building the text itself: bcp:captions-text, bcp:motion-graphics.
 
 ## 9. Apply in one batch
 
-`bashcut.batch {commands: [{id, params}]}` runs steps in order as one undo step; a failing step leaves the project
-unchanged and names the step. Without it, `command_batch` with `stop_on_error` (each step its own undo step: on a
-mistake undo step by step with `edit.undo` or fix forward). Ticks: 254 016 000 000 per second.
+`bashcut.batch {commands: [{id, params}], label}` runs steps in order as one undo step; a failing step leaves the
+project unchanged and names the step. Without it, `command_batch` with `stop_on_error` (each step its own undo step:
+on a mistake undo step by step with `edit.undo` or fix forward). Ticks: 254 016 000 000 per second.
 Example at 30 fps: a 15-frame Cross Dissolve out of clip 12, and a Ken Burns drift on clip 13 (8 s, 100 to 104 %)
 starting at 40 s:
 
 ```json
-{"stop_on_error": true, "steps": [
+{"label": "Dissolve and drift", "commands": [
   {"id": "sequence.applyVideoTransition", "params": {"clip": 12, "effect": "Cross Dissolve", "frames": 15, "edge": "out"}},
   {"id": "effects.setParam", "params": {"clip": 13, "effect": "motion", "param": "scale", "value": 100, "time": 10160640000000, "keyframe": true}},
   {"id": "effects.setParam", "params": {"clip": 13, "effect": "motion", "param": "scale", "value": 104, "time": 12192768000000, "keyframe": true}}
 ]}
 ```
 
-Take the clip ids (numbers) from `sequence_inspect` and the parameter names from `effects.list {"detail": true}` (spelling as
-printed); then set interpolation with `effects.setInterpolation` (`linear` for this drift). If a step is
-refused, `command_list {"filter": "<id>"}` shows its params.
+Take the clip ids (numbers) from `bashcut.timeline.summary` and the parameter names from `effects.list {"detail":
+true}` (spelling as printed); then set interpolation with `effects.setInterpolation` (`linear` for this drift). If a
+step is refused, `command_list {"filter": "<id>"}` shows its params.
 
 ## Not possible yet: say so and offer the alternative
 
@@ -178,7 +184,12 @@ fake it with a pre-rendered file without telling the user.
 
 ## Verify
 
-`sequence_inspect` again: the runs you meant to break are gone, the rest are motifs you can name, the new effects
-sit on the clips you meant. Look before, inside and after each effect (`render_frame` on the first, middle and
-last frame of a move; `render_preview` across a transition or ramp); after a reframe, what matters is still in
-frame. Ask the user to listen to the sound. A full review pass: bcp:review.
+`bashcut.timeline.summary` and `sequence_inspect` again: the runs you meant to break are gone, the rest are motifs
+you can name, the new effects sit on the clips you meant. Look before, inside and after each effect with
+`render_frame` (first, middle and last frame of a move); `render_preview` only across a transition or ramp, 1–2 s of
+it, never the whole edit. After a reframe, what matters is still in frame. Ask the user to listen to the sound.
+
+Then, on **every output sequence** (`sequence.open {item}`): `bashcut.review.run {profile: "<its output
+profile>"}`. Blocking findings (black frames inside the edit, clips or gaps under 3 frames, a cut inside a word)
+are fixed and the review run again, at most 3 rounds; `frozen` warnings on a still you meant are fixed with motion
+(§3) or kept with a reason. What is left after round 3 goes to the user. The full review: bcp:review.

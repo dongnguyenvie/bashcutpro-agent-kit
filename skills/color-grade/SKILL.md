@@ -26,8 +26,8 @@ intent. Every `command_run` is one undo step (`edit.undo`), so a bad try costs n
 | Before / after | `effects.toggleEnabled {clip, index}` on the Lumetri effect, read, toggle back |
 | Keep a look | `presets.save {clip, name}`, `lut.export {lut, path}` |
 
-Durations in params are ticks (254 016 000 000 per second) unless a param says `seconds`. Find clip ids and the
-Lumetri effect's index with `sequence_inspect`; read a parameter's exact name there before `effects.setParam`
+Durations in params are ticks (254 016 000 000 per second) unless a param says `seconds`. Find clip ids with
+`bashcut.timeline.summary` and the Lumetri effect's index with `sequence_inspect`; read a parameter's exact name there before `effects.setParam`
 (never guess it). Grade picture tracks only: an adjustment layer grades every video track below it, so keep
 titles and captions above it.
 
@@ -40,7 +40,8 @@ converted) needs a technical conversion first: `lumetri.setInputLut` with the ca
 
 ## 2. Measure
 
-`scopes.read` at several times per clip (`sequence_inspect` gives each clip's range), not one frame. Find the
+`scopes.read` at 3 times per clip (start + 0.5 s, middle, end − 0.5 s; `bashcut.timeline.summary` gives each clip's
+start and end in seconds), not one frame. Find the
 **brightest, darkest and skin-heavy** clips: they are the check frames later. Read the scale from the result
 (waveform columns, histogram bins); the ranges below are on 0–100.
 
@@ -59,32 +60,49 @@ per band; see REFERENCE.md).
 
 ## 3. Candidates
 
-**One sheet, one pick.** Turn the intent into a target, then show few candidates on the check frames:
+**One sheet, one pick.** Turn the intent into a target, then show 2–3 candidates on the check frames. Order:
 
-0. **BashCutPro's look pack first** (when `command_list` has `bashcut.looks.list`): list by the brief's genre
-   (`tags`: `talking-head`, `interview`, `podcast`, `travel`, `food`, `product-ad`, `tutorial`, `news`, `daily`,
-   `cinematic`, `shorts`, `mono`, `fix`…) and pick 2–3 whose one-line **purpose** matches the intent. Render each
-   on a check frame (`bashcut.looks.thumbnail {look, frame: true, path}`, playhead on that frame) and read them.
-   Apply the pick with `bashcut.looks.apply {look, intensity, clips: [<adjustment clip>]}`: `intensity` is the
-   look's strength (1.0 as designed; clamped to its safe range, listed as `intensity.min` / `max`).
-   `bashcut.looks.get` reports the look's own damage on reference colours; still measure the footage (§4).
-1. Presets: `lumetri.presets`, then `lumetri.presetThumbnails {names: [...], path}` draws the chosen ones on the
+1. **The look pack** (`bashcut.looks.list {tags}`): 26 looks, each with a one-line purpose, genre tags and a safe
+   intensity range (0.25–1.5). Start from the genre's row, pick 2–3 whose purpose matches the intent:
+
+   | Genre (recipe) | Looks to try first |
+   |---|---|
+   | talking head, tutorial | `clean-skin`, `warm-presenter`, `screen-clean` (screen recordings) |
+   | interview, podcast | `soft-interview`, `podcast-punch` (dim studio on phones) |
+   | travel | `travel-vivid`, `clear-sky` (bright day), `golden-hour`, `city-night`, `teal-orange` |
+   | food | `fresh-food`, `cafe-warm` |
+   | daily, lifestyle | `morning-light`, `soft-pastel`, `cafe-warm`, `film-matte` |
+   | product review / ad | `product-true` (review: colour as sold), `product-punch` (ad) |
+   | news, explainer, documentary | `news-neutral`, `archive-warm` |
+   | promo, hype, shorts | `punchy-shorts`, `teal-orange`, `silver-grit` (sport), `moody-green` |
+   | black and white | `mono-clean`, `mono-warm` |
+   | repair before a look | `fix-tungsten` (orange indoor light), `fix-grey-day` (flat overcast) |
+
+   Draw each on a check frame without changing the edit: `bashcut.looks.thumbnail {look, frame: true, width: 480,
+   path}` with the playhead on that frame. Read the PNGs side by side; never export a video to compare looks.
+   Apply the pick with `bashcut.looks.apply {look, intensity, clips: [<adjustment clip>]}` (replaces a previous
+   pack look; one undo step). `bashcut.looks.get` and `bashcut.looks.check` report the look's own damage on
+   reference colours; still measure the footage (§4).
+2. Presets: `lumetri.presets`, then `lumetri.presetThumbnails {names: [...], path}` draws the chosen ones on the
    current frame in one image; read it.
-2. LUTs: `lut.list` (built-in and imported). The user's own `.cube` files: `lut.import`.
-3. A generated look when nothing is close: `grade.py lut` writes a `.cube` from a look in `looks.json`, fitted with
+3. LUTs: `lut.list` (built-in and imported). The user's own `.cube` files: `lut.import`.
+4. A generated look when nothing is close: `grade.py lut` writes a `.cube` from a look in `looks.json`, fitted with
    `match` on the source (REFERENCE.md), then `lut.import`.
 
-| Look (`looks.json`) | Use for | Fitted reference |
+| Look (`grade.py`, `looks.json`) | Use for | Fitted reference |
 |---|---|---|
 | `matte-cinematic` | default cinematic: street, daytime, travel | black ~7, white ~84, sat ~28; teal shadows, peach highlights, greens to olive, skin protected |
 | `warm-film` | warm indoor light, late afternoon, personal stories | deep blacks (~2.6), highlights ~66–76, sat ~29, warm mids |
 | `faded-memory` | hook, flashback or emotional low point, then back to colour | near black-and-white, lifted blacks |
 | `teal-orange`, `clean-bright`, `moody-green`, `bw`, `film-print` | blockbuster / travel; food, product, tutorial; forest, rain, night; drama; narrative | set by hand, not fitted (`grade.py looks`) |
 
-Apply the pick once over the edit: adjustment layer as long as the sequence, placed on a new top video track,
-`lumetri.setLook {clip: <adjustment clip>, lut: "lib:<id>"}`. One clip only: `lumetri.setLook` on that clip.
+Apply the pick once over the edit: an adjustment layer as long as the sequence on a new top video track.
+`file.newAdjustmentLayer {seconds: <sequence length>}` answers `{item}`; then one `bashcut.batch {label: "Grade",
+commands: [timeline.place {item, track: "new", time: 0}, bashcut.looks.apply {look, intensity: 0.8}]}`: the placed
+clip is selected, so the look needs no clip id (a LUT instead: `lumetri.setLook {clip, lut: "lib:<id>"}` with the id
+from the batch's `createdId`). One clip only: `bashcut.looks.apply {look, intensity, clips: [id]}`.
 
-- **Strength** 0.5–1.0; 0.6–0.8 is typical (openmontage). Lower for log-like or already saturated footage,
+- **Strength** 0.5–1.0; 0.6–0.8 is typical (openmontage); a pack look's `intensity` 0.6–1.0. Lower for log-like or already saturated footage,
   skin-heavy shots and mixed light.
 - **One look for the video**; fix outliers per clip (`lumetri.applyMatch` to a good clip, or that clip's own
   Lumetri) rather than a second global look.
@@ -121,3 +139,10 @@ preset; `lut.export` writes the look as a `.cube` for other projects. Matching a
 
 `grade.py candidates` (and `fetch_luts.py`) needed BashCut's library and its Online Resources plugin; they are not
 part of this kit. The other `grade.py` commands run as they did.
+
+## Finish: review every output
+
+Grading is done when, on **every output sequence** (`sequence.open {item}` makes it active),
+`bashcut.review.run {profile: "<its output profile>", checks: ["picture"]}` reports `blocking: 0` (a crushed look
+can turn a dark shot into black frames). Fix what it reports and run it again, at most 3 rounds; then tell the user
+what is left. The full pre-export review (sound, captions, edit) is bcp:review.
