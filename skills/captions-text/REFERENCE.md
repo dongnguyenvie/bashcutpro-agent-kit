@@ -42,19 +42,23 @@ Each `captions.setText` is its own undo step (a batch of 40 is 40 undo steps).
 
 ## A captions batch
 
+After `captions_fit.py group … --out /abs/project/captions/cues.srt` (SKILL.md §2), one `bashcut.batch`:
+
 ```json
-{"steps": [
-  {"id": "transcript.createCaptions", "params": {"maxChars": 24, "lines": 1, "minSeconds": 0.6, "maxSeconds": 3,
-   "gapFrames": 9, "name": "Captions vi"}},
-  {"id": "captions.setStyle", "params": {"track": "C1", "font": "Be Vietnam Pro", "size": 64, "color": "#ffffff",
-   "outline": 4, "outlineColor": "#000000", "anchor": "bottom", "margin": 0.28, "align": "center"}},
-  {"id": "file.save", "params": {}}
-], "stop_on_error": true}
+{"id": "bashcut.batch", "params": {"label": "Captions", "commands": [
+  {"id": "captions.deleteTrack", "params": {}},
+  {"id": "captions.import", "params": {"path": "/abs/project/captions/cues.srt", "name": "Captions"}},
+  {"id": "captions.setStyle", "params": {"font": "Be Vietnam Pro", "size": 64, "color": "#ffffff",
+   "outline": 4, "outlineColor": "#000000", "anchor": "bottom", "margin": 0.28, "align": "center"}}
+]}}
 ```
 
-Values are a vertical talking-head start; take them from the measurement and the table in SKILL.md, then look
-at a frame. `size` and `outline` are in the track's own units: check the result at phone size rather than trust
-the number.
+`captions.deleteTrack` and `captions.setStyle` without `track` act on the first caption track; leave the delete out
+when there is none yet. Values are a vertical talking-head start; take them from the measurement and the table in
+SKILL.md, then look at a frame. `size` and `outline` are in the track's own units: check the result at phone size
+rather than trust the number. Then, in order: `bashcut.review.run {checks: ["captions"], writeMarkers: false}`,
+`captions.export {path: "/abs/exports/<output>.srt"}`, and only then `bashcut.captions.wordStyle` if the look asks
+for it.
 
 ## Titles by hand
 
@@ -95,6 +99,7 @@ everywhere.
 
 ## Limits of this build
 
-- No word-by-word highlight style for captions (karaoke): short groups instead.
+- Word-by-word styles (`bashcut.captions.wordStyle`) are graphic text layers: no caption is left to review or
+  export afterwards, and a one-word cue stays a plain caption.
 - No measured contrast, safe-zone or face check: look at `render_frame` frames at phone size.
 - `captions.setStyle` is per track: a different look for one cue means another track.
