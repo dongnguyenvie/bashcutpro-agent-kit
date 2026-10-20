@@ -14,13 +14,18 @@ notes); the user's own history and what the footage holds come first.
 
 - `project.notes`: an existing brief; keep its `confirmed` fields, ask only about the rest.
 - `doc_inspect`: the media (clips, lengths, shape, fps), capture dates from the files, what is already transcribed.
+- `bashcut.template.list`: a series format the creator already saved (its slots show what each episode needs).
+- `bashcut.profiles.list {seconds}`: the outputs the creator can pick, with each one's frame, loudness and file size.
 
 ## 2. Angles from the footage first
 
 1. **Look.** Frames from each clip (bcp:footage-survey: `file.exportFrame` with `target: "source"` at a few
    times, tiled into a sheet). Note shot size, move, subjects, on-screen text, best moment, as facts.
-2. **Listen.** For clips with speech, the words (`transcript.generate` with the whisper build, else imported with
-   `transcript.set`; read them with `transcript.inspect`). Strong lines, numbers said aloud, a question, a surprise.
+2. **Listen.** For clips with speech, the words (`bashcut.transcript.generate` with the whisper build, else imported
+   with `transcript.set`; read them with `transcript.inspect`). Strong lines, numbers said aloud, a question, a
+   surprise; find each with `transcript.search` so its time is real, not guessed. Sound with no words:
+   `bashcut.audio.loudness {clip}` (`silent`, or under about −35 LUFS: room tone only, so the angle needs a voice or
+   music).
 3. **Group** by place, time (one day, one evening, a route), people and speech moments.
 4. **Derive 3–5 angles**, each from evidence you can name: "48 h in Đà Lạt: 6 places, prices said in 4 clips" or
    "the noodle stall: 3 min of the cook talking, one strong line at 01:12". Fewer when the footage is narrow (T01
@@ -68,7 +73,9 @@ cap is the only hard limit (T17 §3).
 
 A JSON block in the project notes (`project.setNotes`, keeping the rest of the notes). Each field is
 `{value, status, source}`: `stated` (the user said it), `inferred` (read from footage or prompt), `confirmed`
-(approved at the brief gate).
+(approved at the brief gate). `outputs` are profile ids (`tiktok`, `reels`, `shorts`, `youtube`, `youtube-4k`,
+`facebook-square`, or the creator's own): the edit reviews and exports each with `bashcut.review.run {profile}` and
+`bashcut.profiles.apply`.
 
 ```json
 {"goal": {"value": "a cost guide for a 2-day trip", "status": "inferred", "source": "prices said in 4 clips"},

@@ -29,7 +29,7 @@ carries no on-video label; AI disclosure is the platform's upload toggle (bcp:vl
 - **No generation by default.** The prompt is the job. Generate only when the user asks and a tool exists; show the
   provider, the cost and the request first and wait for a yes; never spend their credits on your own initiative. No
   provider: deliver the prompt and say generation is theirs.
-- **Compare takes, then keep one.** Import the takes (`file.import`) and look side by side (`render_frame`). Measure
+- **Compare takes, then keep one.** Import the takes (`bashcut.media.import`) and look side by side (`render_frame`). Measure
   what the model did, not what was asked: real duration (`file.mediaProperties`), cuts inside the clip, motion. Cull
   on hard invariants first (identity, wardrobe, props, screen direction, text that must not appear, length), then
   judge. Record each verdict on the item (`metadata.set`, Comment: take, keep or cull, reason). The same failure in
@@ -37,7 +37,8 @@ carries no on-video label; AI disclosure is the platform's upload toggle (bcp:vl
 - **Chaining.** The next clip starts from the kept take's real last frame (`file.exportFrame` at its end), never an
   imagined one.
 - **Bringing clips in**: check the frame, note the plan row it fills in the item's Description, then
-  bcp:edit-workflow. Effects or grading on footage already in the project: bcp:effects, bcp:color-grade.
+  bcp:edit-workflow. Generated clips often end on held frames: once placed, `bashcut.review.pictureChecks {range}`
+  over the clip; trim a `frozen` tail off rather than keep it. Effects or grading on footage already in the project: bcp:effects, bcp:color-grade.
 - **Series.** Offer to save character, scene and prop anchors in the project notes (`project.setNotes`) with the item
   and frame each comes from.
 
