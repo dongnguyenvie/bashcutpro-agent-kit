@@ -53,7 +53,7 @@ def mcp_session(cli):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--cli", required=True, help="the filmcraft-cli binary of a BashCutPro build")
+    ap.add_argument("--cli", required=True, help="the bashcutpro (or filmcraft-cli) binary of a BashCutPro build")
     ap.add_argument("--features", default="default features", help="how that build was made, for the provenance line")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()

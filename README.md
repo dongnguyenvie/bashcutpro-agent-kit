@@ -1,7 +1,7 @@
 # BashCutPro agent kit
 
 Editing skills for Claude Code and Codex that drive [BashCutPro](https://github.com/dongnguyenvie/BashCutPro)
-(a fork of FilmCraft) through its MCP server (`filmcraft-cli mcp`) and command ids.
+(a fork of FilmCraft) through its MCP server (`bashcutpro mcp`) and command ids.
 
 The skills carry over the editing craft of [bashcut-agent-kit](https://github.com/dongnguyenvie/bashcut-agent-kit)
 (how to cut, mix, caption and review well), rewritten against FilmCraft's command model: `command_list` to find a
@@ -35,7 +35,7 @@ tracked in [BashCutPro#24](https://github.com/dongnguyenvie/BashCutPro/issues/24
 | `vlog-explainer` | Explainers with little footage: a question-and-number hook, one data graphic per section timed to the voice, fixed frame chrome, every number sourced, voiced or music-only |
 | `vlog-news` | News shorts and documentaries from photos, archive and screenshots: fixed chrome or date cards, credits on every picture, verbatim quotes, attributed claims |
 | `vlog-promo` | Promos, hype videos and showreels: beat cuts, kinetic type, rolling counters, a declared motif of two or three transitions, sourced numbers, only the person's own work |
-| `setup` | Getting `filmcraft-cli` (source build or release, macOS / Windows / Linux), registering its MCP server headless (a project, the demo, or empty) or bridged to the running app, and checking `command_list` answers |
+| `setup` | Getting `bashcutpro`, the BashCutPro command line (source build or release, macOS / Windows / Linux), registering its MCP server headless (a project, the demo, or empty) or bridged to the running app, and checking `command_list` answers |
 | `audio-mix` | Mixing by measurement: voice levelled per clip, a fixed music bed under it (ducking for long silences), fades, keyframes, SFX at cuts, music retimed, music and SFX found (`fetch_audio.py`), loudness read from WAV exports (`loudness.py`) and set per output |
 | `color-grade` | Grading by measurement: scopes on the brightest, darkest and skin-heavy frames, Lumetri presets and LUTs (`grade.py` generates fitted looks), damage checks and backing off, shot match, one adjustment layer |
 | `footage-survey` | The survey before an edit: inventory, scene detection, contact sheets from rendered frames (`contact_sheet.py`), transcripts (outside words imported with `words_to_transcript.py`), cues and restarts, shot descriptions in metadata, coverage gaps; run by the `surveyor` sub-agent |
@@ -61,8 +61,9 @@ themselves.
 
 ## Requirements
 
-- `filmcraft-cli` from a BashCutPro source build (`cargo build --release -p filmcraft-cli`) or a release. The
-  `setup` skill walks through it.
+- `bashcutpro` (short name `bcpro`), the BashCutPro command line, from a release or a source build
+  (`cargo build --release -p bashcut-cli -p filmcraft-cli`). It runs the engine binary `filmcraft-cli` that sits
+  beside it; a plain `filmcraft-cli` also works. The `setup` skill walks through it.
 - For bridge mode, the desktop app started with `filmcraft --control <port>`.
 - Claude Code or Codex.
 
@@ -77,12 +78,12 @@ claude plugin install bcp@bashcutpro-agent-kit
 
 Or inside Claude Code: `/plugin marketplace add dongnguyenvie/bashcutpro-agent-kit`, then
 `/plugin install bcp@bashcutpro-agent-kit`. The plugin brings the skills and a `bashcutpro` MCP server whose
-launcher, [`scripts/bashcutpro-mcp.sh`](scripts/bashcutpro-mcp.sh), finds `filmcraft-cli` (`FILMCRAFT_CLI`, then
-`PATH`, then the usual install places) and picks the mode from `~/.config/bashcutpro/mcp.env`. Then run
+launcher, [`scripts/bashcutpro-mcp.sh`](scripts/bashcutpro-mcp.sh), finds `bashcutpro` (`BASHCUTPRO_CLI`, then
+`FILMCRAFT_CLI`, then `bashcutpro` and `filmcraft-cli` on `PATH`, then the usual install places) and picks the mode from `~/.config/bashcutpro/mcp.env`. Then run
 `/bcp:setup`, which writes that file. To try a local checkout for one session:
 `claude --plugin-dir /path/to/bashcutpro-agent-kit`.
 
-On Windows the launcher (a POSIX shell script) may not start; `/bcp:setup` registers `filmcraft-cli.exe`
+On Windows the launcher (a POSIX shell script) may not start; `/bcp:setup` registers `bashcutpro.exe`
 directly instead.
 
 **Codex** (macOS, Linux):
@@ -101,20 +102,20 @@ It links each skill as `~/.agents/skills/bcp-<name>` and registers the launcher 
 
 | Name | Effect |
 |---|---|
-| `FILMCRAFT_CLI` | the `filmcraft-cli` binary |
+| `BASHCUTPRO_CLI` | the CLI binary (`bashcutpro`; `FILMCRAFT_CLI` is read when it is unset) |
 | `BASHCUTPRO_BRIDGE` | `host:port` of the running app: `mcp --bridge` |
 | `BASHCUTPRO_PROJECT` | headless: `mcp --project` this `.fcproj` |
 | `BASHCUTPRO_DEMO` | `1`: headless on the demo project |
 | `BASHCUTPRO_DATA_DIR` | FilmCraft data dir: `--data-dir` (user presets; where `bashcut-mcp` finds the window) |
-| `BASHCUT_MCP` | the `bashcut-mcp` binary (default: next to `filmcraft-cli`, on `PATH`) |
+| `BASHCUT_MCP` | the `bashcut-mcp` binary (default: next to the CLI, on `PATH`) |
 | `BASHCUTPRO_ROOTS` | more folders agents may write to (path list) |
-| `BASHCUTPRO_NO_LOCK` | `1`: plain `filmcraft-cli mcp`, without `bashcut-mcp` |
+| `BASHCUTPRO_NO_LOCK` | `1`: plain `bashcutpro mcp`, without `bashcut-mcp` |
 
 With `bashcut-mcp` installed (BashCutPro, `cargo build -p bashcut-mcp`), the launcher runs it: with no mode set it
 bridges to the open BashCutPro window when that window runs its control channel (`filmcraft --control <port>`), else
 it starts headless. A headless engine holds the project's engine lock, so a second one on the same project is
 refused. Writes outside the project folder and `BASHCUTPRO_ROOTS` come back as tool errors. Without `bashcut-mcp`,
-or for the demo, it runs `filmcraft-cli mcp` directly, and with none of the mode names set the server is headless
+or for the demo, it runs `bashcutpro mcp` directly, and with none of the mode names set the server is headless
 with an empty project.
 
 ## Layout
@@ -133,7 +134,7 @@ hooks/hooks.json                  optional Claude Code hooks (self-learn's corre
 bench/                            quality bench Pro vs BashCut: jobs, rubric, score.py, scorecard template (BashCutPro#58)
 tests/                            unit tests of the kit's scripts: python3 -m unittest discover -s tests
 skills/<name>/agents/openai.yaml  Codex policy, only for a user-only skill (disable-model-invocation: true)
-scripts/bashcutpro-mcp.sh         finds filmcraft-cli and starts `filmcraft-cli mcp` in the configured mode
+scripts/bashcutpro-mcp.sh         finds bashcutpro (else filmcraft-cli) and starts `bashcutpro mcp` in the configured mode
 scripts/install-codex.sh          Codex setup
 scripts/check.py                  checks skills, links, the Skills table and the packaging files
 scripts/refresh_bashcut.py        refreshes BashCutPro's bashcut.* ids in commands.json from a checkout (engine + window commands)
