@@ -68,8 +68,9 @@ YouTube landscape often a sidecar the viewer can switch off (T09 §7). Long expo
   new track will not match the cuts.
 - Bit rate only for a measured reason.
 - **Export once per output.** Never a test export to "see" the edit: look with `render_frame` and listen with
-  `bashcut.audio.loudness`; a full export is minutes of render. After an export, check the file's own numbers in the
-  result (length, loudness, true peak) instead of exporting again.
+  `bashcut.audio.loudness`; a full export is minutes of render (a 45 s 1080×1920 export took 80 s on a debug build).
+  After an export, read the result instead of exporting again: `peakCheck` (`truePeakDbtp` of the file, `reexported`
+  when the limiter had to be lowered), the export result (frames, bytes, seconds of render).
 
 ## 4. Cover
 
