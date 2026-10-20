@@ -22,12 +22,15 @@ Finish, review (`bcp:review`) and save the base first: every variant is measured
    "why": "test which opening holds past 3 s", "profile": "tiktok", "status": "draft"}`, and one line in the plan
    notes (`project.setNotes {"merge": "variants"}`) naming the variants.
 4. Make **only** that change in the copy, with the skill that owns it (`bcp:rough-cut` for the opening,
-   `bcp:color-grade` for the look, `bcp:audio-mix` for music), then review the copy like any draft.
+   `bcp:color-grade` for the look, `bcp:audio-mix` for music), then review the copy like any draft:
+   `bashcut.review.run {profile}` with the copy open, blocking findings fixed and run again, at most 3 rounds. A
+   change that adds a blocking finding the base did not have (a cut inside a word at the new opening, a caption over
+   20 characters a second) is fixed in the copy, never shipped as part of the test.
 
 ## 2. Compare
 
-Save `sequence_inspect` (or `bashcut.timeline.summary` where the build has it) of each sequence to a file, and the
-review result of each when there is one, then:
+For each sequence, with it open (`sequence.open {item}`): save `bashcut.timeline.summary` (or `sequence_inspect`)
+to a file, and `bashcut.review.run {profile: "<its profile>"}` to another, then:
 
 ```sh
 python3 <skill_dir>/diff.py base.json variant.json [--review-a rb.json --review-b rv.json] --text [--one-change]
@@ -60,7 +63,7 @@ variant's sequence open): the opening for a hook test, a skin-heavy frame for a 
 
 ## 4. Export
 
-One export per variant, each from its own sequence, named `<project>-<variant>.mp4` and made with that variant's
+Only variants whose review reports `blocking: 0`. One export per variant, each from its own sequence, named `<project>-<variant>.mp4` and made with that variant's
 output profile: `bashcut.profiles.apply {"profile", "path", "sequence": <variant item>, "wait": true}` where the build
 has profiles, else `sequence.open` then `file.exportMedia` with the platform's size, loudness and caption mode
 (`bcp:vlog-publish`). Set the variant's `status` to `exported` with the file path in the sidecar.

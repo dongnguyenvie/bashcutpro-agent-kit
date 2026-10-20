@@ -31,8 +31,13 @@ install places below. Check a candidate with `bashcutpro commands razor`: it pri
 
 ```sh
 git clone https://github.com/dongnguyenvie/BashCutPro && cd BashCutPro
-cargo build --release -p bashcut-cli -p filmcraft-cli   # add -p filmcraft for the desktop app (bridge mode)
+cargo build --release -p bashcut-cli -p filmcraft-cli --features filmcraft-cli/whisper
+# add -p filmcraft (and --features filmcraft/whisper) for the desktop app (bridge mode)
 ```
+
+`--features filmcraft-cli/whisper` adds speech to text (`bashcut.transcript.generate`): captions, rough cuts by
+quote and the review's cut-inside-a-word check all need words. Without it, words come from an outside transcriber
+(bcp:footage-survey).
 
 The binary is `target/release/bashcutpro` (it needs `target/release/filmcraft-cli` beside it). A first build takes several minutes; say so before starting it.
 
@@ -46,7 +51,9 @@ same server without BashCutPro's own additions; tell the user which one they get
 | Linux (deb, rpm) | `/usr/bin/bashcutpro` (FilmCraft: `/usr/bin/filmcraft-cli`) |
 | macOS | the separate `bashcutpro-cli-<version>-macos-<arch>.zip` asset (FilmCraft: `filmcraft-cli-…`; the `.app` holds the desktop app); unzip it to `~/.local/bin` or another folder on `PATH`, keeping `bashcutpro` and `filmcraft-cli` together |
 
-If macOS refuses to open a downloaded binary, the user can allow it in System Settings › Privacy & Security.
+If macOS refuses to open a downloaded binary, the user can allow it in System Settings › Privacy & Security. On
+Windows the kit's scripts run with `python` (or `py -3`), not `python3`; set `PYTHONUTF8=1` so Vietnamese text
+prints.
 
 ## 3. Pick the mode
 
@@ -114,7 +121,11 @@ To change modes later, edit `mcp.env` (or remove and re-add the direct entry) an
 ## 5. Check it works
 
 1. `command_list` with `{"filter": "razor"}` returns commands. Without a filter it returns the whole catalogue
-   (about a thousand ids), so filter when you only need to know it answers.
+   (about a thousand ids), so filter when you only need to know it answers. Then `command_list {"filter":
+   "bashcut."}`: BashCutPro's own commands (`bashcut.review.run`, `bashcut.timeline.summary`, `bashcut.batch`,
+   `bashcut.profiles.*`, `bashcut.looks.*`, `bashcut.template.*`, `bashcut.audio.*`) that the skills use first; an
+   upstream FilmCraft binary has none, and the skills fall back to plain commands. `transcript.models` says whether
+   Whisper is in (`available: true`) and which model is installed.
 2. `doc_inspect` returns the project tree: the user's project, the demo's bins, or an empty project.
 3. Bridge only: `ui_inspect` returns the app's tool, workspace and panels.
 

@@ -21,7 +21,10 @@ one-off instructions. Clear them with `$K corrections --clear` once handled.
 
 Worth recording: the user corrects you ("không, dùng X", "thật ra…", "X chứ không phải Y", "no, use X") or rejects
 a proposed action; says to remember ("nhớ là…", "lần sau đừng…", "next time…"); a command fails or a result had to
-be redone; `bcp:review` finds the same problem in two rounds or two projects. A question, a one-off instruction for
+be redone; `bashcut.review.run` reports the same `check` (`readingSpeed`, `cutInWord`, `frozen`, `truePeak`…) in two rounds
+or two projects, or a blocking finding is still there after the last round. Quote the finding (its `check`,
+`measured`, `limit` and seconds) in `--evidence` and tag it with its category (`captions`, `edit`, `picture`,
+`sound`). A question, a one-off instruction for
 this clip or vague feedback ("chưa ổn") is not a lesson.
 
 ## 1. Write the lesson

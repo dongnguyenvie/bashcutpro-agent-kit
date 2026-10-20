@@ -22,7 +22,11 @@ At the plan stage (bcp:vlog-plan, bcp:edit-workflow), before any title, look, st
 2. Per need, `LB search --query "<what it is for>" --kind <kind> --for-project <fcproj>`: favourites and the ones
    used in this project come first. Show the preview (`LB show`) and say which you would reuse and why.
 3. Reuse beats remaking: apply with `LB apply --id <id>` (title at `--seconds` with `--values`, preset or look on
-   `--clip`, sticker / sound / music placed on a track). The brand kit's parts: `LB brand apply --id <kit> --part
+   `--clip`, sticker / sound / music placed on a track). The engine's own pack comes before a library look for a
+   genre the creator has no look for yet: `bashcut.looks.list {tags}` (bcp:color-grade); saved project templates
+   before building a series format again: `bashcut.template.list`.
+4. What `LB apply` placed is part of the edit: it goes through the edit's review like anything else
+   (`bashcut.review.run` on every output sequence, bcp:review). The brand kit's parts: `LB brand apply --id <kit> --part
    lowerThird|logo|intro|outro|captionStyle` (the caption style goes through `captions.setStyle`).
 
 ## 2. Harvest after an edit
@@ -34,7 +38,8 @@ save only what the user picks:
 |---|---|---|
 | a title, lower third or card built with `graphics.*` | `title` / `text-style` | select it, `LB save --kind title` (`graphics.template.export`) |
 | an effect stack tuned on a clip (punch-in, blur, glow) | `effect-preset` | `LB save --kind effect-preset --clip <id>` (`presets.save`, `presets.export`) |
-| a look fitted for the creator (bcp:color-grade) | `look` | from the app's LUT library: `LB save --kind look --lut lib:<id>` (`lut.export`); a `.cube` file: `LB add --kind look --file` |
+| a look fitted for the creator (bcp:color-grade) | `look` | from the app's LUT library: `LB save --kind look --lut lib:<id>` (`lut.export`); a pack look at its tuned strength: `bashcut.looks.export {look, intensity, path}` to a `.cube`, then `LB add --kind look --file`; a `.cube` file: `LB add --kind look --file` |
+| export settings for the creator's platforms | `profile` | output profiles live in BashCutPro, not the library: the built-ins (`bashcut.profiles.list`) cover TikTok, Reels, Shorts, YouTube and square; write the profile id into the brand kit's notes instead of a copy |
 | a sting, whoosh or music bed cut to length | `sound` / `music` | `LB save --kind sound --start <s> --end <s>` (`file.exportMedia`, wav) |
 | a sticker or overlay with alpha | `sticker` / `overlay` | `LB save --kind overlay --start <s> --end <s>` (ProRes 4444) |
 | the project set up as a starting point | `template` | where the build has templates: a bundle with slots, `bashcut.template.save {"name", "slots": [footage, music bed, logo items]}` (kept in `<data dir>/bashcut/templates/`, listed by `bashcut.template.list`, reused with `bashcut.template.instantiate`); else a plain copy, `LB add --kind template --file <copy.fcproj>` |

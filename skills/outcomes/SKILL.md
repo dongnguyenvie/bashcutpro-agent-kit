@@ -16,7 +16,8 @@ you (an analytics export they downloaded); never log in, scrape or fetch from th
   viewers / retention column). Ask which file and which published video it is.
 - **The edit that was published**: open the project, open the sequence that was exported (for a variant, its own
   sequence, `bcp:variants`), save `sequence_inspect` (or `bashcut.timeline.summary`) to a file. A video re-cut after
-  publishing: use the version that was posted (a copy or the draft file's sequence), or the mapping is wrong.
+  publishing: use the version that was posted (a copy or the draft file's sequence), or the mapping is wrong. Never
+  export the video again to read it: the summary has every cut in seconds.
 - **Length**: a percent-position export needs the published video's length; the sequence gives it, `--duration`
   overrides when the upload was trimmed.
 
@@ -34,13 +35,16 @@ cut within 1 s, the section marker and the clips on screen, and writes the findi
 a single drop as a question, not a finding.
 
 To see them on the timeline without touching the edit: duplicate the sequence (`project.select`, `edit.duplicate`,
-`clip.rename` to `<base> — outcomes`), open it, then run the marker batch (`command_batch` with the file's
-`commands`: `markers.add`, red for drops, green for rewatches).
+`clip.rename` to `<base> — outcomes`), open it, then run the marker batch as one undo step (`bashcut.batch` with the
+file's `commands`, else `command_batch`: `markers.add`, red for drops, green for rewatches).
 
 ## 3. Explain
 
 For each drop, look before you conclude: `render_frame` just before and after the time, and read the words there
-(`transcript.search` or the captions). Usual causes, in the order to check:
+(`transcript.search` or the captions). `bashcut.review.run {range: {start, end}, checks: ["picture", "captions", "edit"],
+writeMarkers: false}` over the 5 s before a drop (leave `sound` out: a short range is judged against the whole
+video's loudness target) says what a measurement sees there (a still picture, a long silence, a caption over 20 characters a
+second, a cut inside a word). Usual causes, in the order to check:
 
 | On screen at the drop | Likely cause |
 |---|---|
@@ -49,6 +53,7 @@ For each drop, look before you conclude: `render_frame` just before and after th
 | an intro card, logo, "subscribe" ask | a delay before the content |
 | music change or silence | energy drop |
 | text appearing over the face or off the safe area | the viewer could not read or see it |
+| a caption the review measured over 20 characters a second | the viewer could not keep up |
 
 A rewatch usually marks something worth more of: a reveal, a fast moment, a number on screen read twice.
 Compare the hook figure with the platform's norm the user knows or earlier outcomes in the sidecar; across
