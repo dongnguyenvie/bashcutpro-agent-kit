@@ -16,7 +16,7 @@ examples: `<skill_dir>/REFERENCE.md`.
 
 ## Before selecting
 
-1. **Words for each talking file.** With a Whisper build: `transcript.generate {items, language}` (`wait` on the
+1. **Words for each talking file.** With a Whisper build: `bashcut.transcript.generate {items, language}` (`wait` on the
    job). Without: an outside transcriber, then `transcript.set {item, transcript: {language, words}}` (ticks;
    `bcp:footage-survey`). `transcript.models` says which build you have. Words carry no confidence.
 2. **Classify the source** (T06 §4): **words** (the content is what is said: talks, interviews, tutorials),

@@ -1,5 +1,5 @@
 {
- "source": "filmcraft-cli 0.9.0 mcp --demo, tools/call command_list {} (dev build of BashCutPro 7cc00504, default features, no whisper)",
+ "source": "filmcraft-cli 0.9.0 mcp --demo, tools/call command_list {} (whisper)",
  "generated": "2026-10-20",
  "upstream": "FilmCraft 105c09bd",
  "bashcut": "bashcut.* engine ids from the same build's command_list (scripts/refresh_commands.py)",
@@ -23,7 +23,7 @@
   "ui_screenshot",
   "ui_type"
  ],
- "count": 726,
+ "count": 728,
  "pending": {
   "note": "bashcut.* ids that skills may name before they are merged, always with a fallback for builds without them (detect with command_list); move each into commands when its issue lands",
   "ids": {}
@@ -1567,7 +1567,7 @@
    ],
    "shortcut": null,
    "params": "{\"track\":\"mix\"|\"A1\"|id?,\"language\":\"en|auto\"?,\"diarize\":bool?,\"maxSpeakers\":n?,\"model\":str?}",
-   "enabled": false
+   "enabled": true
   },
   {
    "id": "sequence.simplify",
@@ -1869,7 +1869,7 @@
    "menu": [
     "Markers"
    ],
-   "shortcut": "Ctrl+Shift+M",
+   "shortcut": null,
    "params": "{\"time\":ticks?,\"durationFrames\":i64=1s,\"duration\":ticks?,\"name\":str?,\"comment\":str?,\"color\":label?}",
    "enabled": true
   },
@@ -2280,7 +2280,7 @@
    "id": "trim.toggleType",
    "label": "Toggle Trim Type",
    "menu": [],
-   "shortcut": "Ctrl+T",
+   "shortcut": null,
    "params": "{}",
    "enabled": false
   },
@@ -3061,6 +3061,22 @@
    "enabled": true
   },
   {
+   "id": "bashcut.transcript.generate",
+   "label": "Transcribe (Drop Doubtful Text)",
+   "menu": [],
+   "shortcut": null,
+   "params": "{…transcript.generate params, \"keepDoubtful\":bool=false,\"minRepeats\":n=3}  (transcribes, then drops Whisper's repeated-text loops; an item with only loops reports noSpeech and keeps an empty transcript) (units: none)",
+   "enabled": true
+  },
+  {
+   "id": "bashcut.transcript.clean",
+   "label": "Drop Doubtful Transcript Text",
+   "menu": [],
+   "shortcut": null,
+   "params": "{\"items\":[id]? (default every transcript a recogniser made),\"minRepeats\":n=3,\"dryRun\":bool=false}  (doubtful stretches: start / end in media seconds)",
+   "enabled": true
+  },
+  {
    "id": "prefs.schema",
    "label": "Settings Schema",
    "menu": [],
@@ -3636,7 +3652,7 @@
    "id": "multicam.cutToCamera9",
    "label": "Cut to Camera 9",
    "menu": [],
-   "shortcut": "Ctrl+9",
+   "shortcut": null,
    "params": "{\"videoOnly\":bool?}",
    "enabled": true
   },
@@ -5151,7 +5167,7 @@
    ],
    "shortcut": null,
    "params": "{\"items\":[id]?,\"model\":\"whisper-base\"?,\"language\":\"en|auto\"?,\"diarize\":bool?,\"maxSpeakers\":n?}",
-   "enabled": false
+   "enabled": true
   },
   {
    "id": "transcript.set",
@@ -5202,7 +5218,7 @@
    "menu": [],
    "shortcut": null,
    "params": "{\"model\":\"whisper-base\"?}",
-   "enabled": false
+   "enabled": true
   },
   {
    "id": "transcript.select",

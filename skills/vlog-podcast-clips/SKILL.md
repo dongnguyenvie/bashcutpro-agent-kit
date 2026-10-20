@@ -32,7 +32,7 @@ Outputs per clip: vertical → Shorts, TikTok, Reels; a topic clip for YouTube �
 
 ## 1. Read and classify the source
 
-1. Transcribe (`transcript.generate`, or `transcript.set` with imported word timings), then read words and gaps with
+1. Transcribe (`bashcut.transcript.generate`, or `transcript.set` with imported word timings), then read words and gaps with
    `transcript.inspect`.
 2. Classify it (T06 §4): **words** (trust the transcript), **reactions** (laughs, a heated exchange: listen and look;
    a laugh is a lagging marker of the moment before it) or **visual** (a demo, a reveal: look at frames with

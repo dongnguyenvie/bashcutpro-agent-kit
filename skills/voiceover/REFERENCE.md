@@ -101,7 +101,7 @@ pick, then in one batch remove the old clip and place the new one at the same se
 
 ## Checking a take
 
-- Whisper build: `transcript.generate {items: ["<take item>"], language: "auto"}`, then `transcript.inspect`,
+- Whisper build: `bashcut.transcript.generate {items: ["<take item>"], language: "auto"}`, then `transcript.inspect`,
   saved, into `narration.py check`. Its words are on the take's own clock.
 - No Whisper: run an outside transcriber on the take's wav with word timestamps (for example `mlx_whisper` or
   `faster-whisper`, `language vi`) and pass its JSON to `narration.py check` as is.
