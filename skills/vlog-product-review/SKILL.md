@@ -92,10 +92,10 @@ merging it with a short neighbour (`captions.merge`, then check `lines`) or drop
 splitting it smaller.
 
 **Review every output.** On each output sequence (`sequence.open {item}` first; the review reads the active one):
-`bashcut.review.run {profile}` with `tiktok`, `reels`, `shorts`; `youtube` for the long review. `blocking` must be 0: fix the findings (each has seconds and a
-`fix`) in one `bashcut.batch`, run the review again, at most 3 rounds; warnings are fixed or kept with a reason in
-the plan; what still blocks after round 3 goes to the user. Then bcp:vlog-publish: one `bashcut.profiles.apply` per
-output.
+`bashcut.review.run {profile}` with `tiktok`, `reels`, `shorts`; `youtube` for the long review. `blocking` must be
+0: fix the findings (each has seconds and a `fix`) in one `bashcut.batch`, run the review again, at most 3 rounds;
+warnings are fixed or kept with a reason in the plan; what still blocks after round 3 goes to the user. Then
+bcp:vlog-publish: one `bashcut.profiles.apply` per output.
 
 ## Review notes
 
