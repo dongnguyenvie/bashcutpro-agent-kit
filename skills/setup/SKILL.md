@@ -72,7 +72,7 @@ Headless also takes `--data-dir DIR` (user presets). Any other option is rejecte
 the app must be running with the control channel on the same port, which listens on `127.0.0.1` only:
 
 ```sh
-filmcraft --control 9876          # or FILMCRAFT_CONTROL_PORT=9876; from source: target/release/filmcraft
+filmcraft --control 9876          # BashCutPro serves 127.0.0.1:9876 (or a free port) by default; read <data dir>/bashcut/automation.json
 ```
 
 Default to headless with the user's project when they name one, the bridge when they want to watch the app.
@@ -98,7 +98,7 @@ headless project wanted, no file is needed.
 
 When BashCutPro's `bashcut-mcp` is built (`cargo build --release -p bashcut-mcp`, next to `bashcutpro`, or set
 `BASHCUT_MCP`), the launcher runs it instead: with no mode line it reaches the open BashCutPro window by itself (the
-app started with `--control <port>`), else runs headless. A second headless engine on the same project is refused,
+channel is on by default, found through `<data dir>/bashcut/automation.json`), else runs headless. A second headless engine on the same project is refused,
 and writes outside the project folder and `BASHCUTPRO_ROOTS` are refused. `BASHCUTPRO_NO_LOCK=1` turns it off.
 
 **Claude Code without the plugin, or on Windows.** Register the binary directly, in the user's scope so every
@@ -141,6 +141,6 @@ they can ask for next.
 | `bashcutpro (or filmcraft-cli) not found` from the launcher | no binary found: set `BASHCUTPRO_CLI` in `mcp.env` (step 4) |
 | `bashcutpro: filmcraft-cli.exe was not found next to this program or on PATH` | `bashcutpro` was copied without the engine: keep `filmcraft-cli` in the same folder |
 | Tools missing, server "failed" | run the registered command by hand in a terminal; it should wait silently for input. An error there names the problem |
-| Bridge: connection refused | the app is not running with `--control`, or on another port; start it as in step 3 |
+| Bridge: connection refused | the app is not running, or the user turned off "Allow AI agents to control BashCutPro" (Agent section) or set `BASHCUT_CONTROL=0`; the port is in `<data dir>/bashcut/automation.json` |
 | Exit 2 at start | an option the server does not take (only `--project`, `--demo`, `--data-dir`, `--bridge`) |
 | `isError` from `command_run` | the engine's message; read it, then `command_list {"filter": "<id>"}` for the command's params |
