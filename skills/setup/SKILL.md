@@ -178,13 +178,13 @@ they can ask for next.
 
 | Symptom | Cause and fix |
 |---|---|
-| `bashcutpro-cli (or bcpro, filmcraft-cli) not found` from the launcher | no binary found: set `BASHCUTPRO_CLI` in `mcp.env` (step 4) |
+| `bashcutpro-cli not found: install BashCutPro or set BASHCUTPRO_CLI` from the launcher (also the JSON-RPC error `/mcp` shows) | no binary found: set `BASHCUTPRO_CLI` in `mcp.env` (step 4) |
 | The server starts the desktop app, or exits at once with the app's usage | `BASHCUTPRO_CLI` (or the direct entry) names `bashcutpro`, the desktop app: point it at `bashcutpro-cli` (or `bcpro`) instead |
 | Tools missing, server "failed" | the user runs the registered command by hand in a terminal; it should wait silently for input. An error there names the problem |
 | Agent panel: tools missing | the app's control channel is off: the user turns on "Allow AI agents to control BashCutPro" (Agent section) or unsets `BASHCUT_CONTROL=0`, then sends the prompt again |
 | Bridge: connection refused | the app is not running, or the user turned off "Allow AI agents to control BashCutPro" (Agent section) or set `BASHCUT_CONTROL=0`; the port is in `<data dir>/bashcut/automation.json` |
 | A command or tool call is denied | not a bug to work around: tell the user what was denied and the command to run in their terminal (step 0) |
-| Plugin server shows `failed` in `system/init` or `/mcp` | the launcher exits 1 when it finds no CLI (the message is on its stderr): install one (step 2) or set `BASHCUTPRO_CLI` in `mcp.env`; a path in `BASHCUTPRO_CLI` that does not exist counts as not found |
+| Plugin server shows `failed` in `system/init` or `/mcp` | the launcher answers every request with a JSON-RPC error `bashcutpro-cli not found: ...` (also on its stderr) when it finds no CLI: install one (step 2) or set `BASHCUTPRO_CLI` in `mcp.env`; a path in `BASHCUTPRO_CLI` that does not exist counts as not found |
 | Not signed in to Claude Code (`authentication_failed`) | the user runs `claude` in a terminal and types `/login`; never handle credentials |
 | Exit 2 at start | an option the server does not take (only `--project`, `--demo`, `--data-dir`, `--bridge`) |
 | `isError` from `command_run` | the engine's message; read it, then `command_list {"filter": "<id>"}` for the command's params |
