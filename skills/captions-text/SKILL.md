@@ -88,7 +88,7 @@ The table gives `maxChars` × `lines` and `breakSeconds` (the script's `--max-ch
 - **A track that already exists** (translated, imported, edited by hand): `captions.list` to a file, then
   `captions_fit.py plan caps.json --max-cps 20 --end S` prints `commands` (`captions.setText`, `captions.setTimes`,
   `captions.merge`) for one `bashcut.batch {commands, label: "Caption reading speed"}`: one undo step.
-- **In a batch or a shell** (no MCP): a `bashcut.captions.create` command step; on a build without it `captions_fit.py apply --cli <filmcraft-cli> --project p.fcproj --max-chars 32
+- **In a batch or a shell** (no MCP): a `bashcut.captions.create` command step; on a build without it `captions_fit.py apply --cli <bashcutpro-cli> --project p.fcproj --max-chars 32
   --lines 2` does `group` on the saved project's active sequence, imports the SRT over the first caption track and
   saves (`bcp:batch` uses it as a plugin step).
 - Without the script: `transcript.createCaptions {maxChars, lines, minSeconds, maxSeconds, gapFrames}`. It breaks

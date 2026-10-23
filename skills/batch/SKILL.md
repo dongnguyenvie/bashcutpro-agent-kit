@@ -7,7 +7,7 @@ description: Run the same edit over many inputs with BashCutPro's batch runner (
 
 Reply in the user's language. `bashcut-batch` runs one pipeline over many inputs: **every input becomes its own
 project** (open and fix any of them later), up to `concurrency` items run at once, each step in its own
-`bashcutpro` (engine) process, and the job book survives the app, the runner or the machine stopping. The app does not need
+`bashcutpro-cli` (engine) process, and the job book survives the app, the runner or the machine stopping. The app does not need
 to be open. Format, job book and caps: BashCutPro `bashcut/batch.md`; this skill is how to use it well.
 
 ## 1. Batch or not

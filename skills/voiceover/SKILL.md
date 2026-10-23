@@ -15,7 +15,7 @@ The content language decides (`brief.language` in the project notes, else the fo
 
 | Language | Voice | Where it runs |
 |---|---|---|
-| English | `tts.*`: `tts.voices` lists them, `tts.create` places a line, `tts.edit` re-takes it | in the app. Headless MCP (`bashcutpro mcp`) has only the built-in formant voices, robotic; the natural Kokoro voices (`tts.downloadVoices`) exist only in the desktop app, so bridge to it (`bcp:setup`) for a narrator a viewer should believe |
+| English | `tts.*`: `tts.voices` lists them, `tts.create` places a line, `tts.edit` re-takes it | in the app. Headless MCP (`bashcutpro-cli mcp`) has only the built-in formant voices, robotic; the natural Kokoro voices (`tts.downloadVoices`) exist only in the desktop app, so bridge to it (`bcp:setup`) for a narrator a viewer should believe |
 | Vietnamese | the `bashcut.vieneu-tts` plugin (VieNeu-TTS v3 Turbo, 25 preset voices, cloning with consent) | out of process on this computer: wav takes, then `media_import` + `timeline.place` |
 | another language | none built in | a recorded voiceover (`audio.voiceover.*`), or captions and on-screen text carry the lines |
 

@@ -1,4 +1,5 @@
-"""scripts/bashcutpro-mcp.sh finds the CLI (BashCutPro#154): `bashcutpro` first, else `filmcraft-cli`, with fakes on PATH."""
+"""scripts/bashcutpro-mcp.sh finds the CLI by exact name: `bashcutpro-cli`, then `bcpro`, then `filmcraft-cli`
+(never plain `bashcutpro`, the desktop app), with fakes on PATH."""
 
 import os
 import shutil
@@ -31,7 +32,7 @@ class LauncherTests(unittest.TestCase):
         return path
 
     def launch(self, **env):
-        e = {k: v for k, v in os.environ.items() if k not in ("BASHCUTPRO_CLI", "FILMCRAFT_CLI", "BASHCUT_MCP", "BASHCUTPRO_BRIDGE", "BASHCUTPRO_PROJECT")}
+        e = {k: v for k, v in os.environ.items() if k not in ("BASHCUTPRO_CLI", "BASHCUT_FILMCRAFT_CLI", "FILMCRAFT_CLI", "BASHCUT_MCP", "BASHCUTPRO_BRIDGE", "BASHCUTPRO_PROJECT")}
         e.update(
             PATH=os.pathsep.join([self.bin, os.path.dirname(SH)]),
             HOME=self.dir,
@@ -42,11 +43,17 @@ class LauncherTests(unittest.TestCase):
         e.update(env)
         return subprocess.run([SH, LAUNCHER], capture_output=True, text=True, env=e, timeout=30)
 
-    def test_only_bashcutpro_on_path(self):
-        self.fake("bashcutpro")
+    def test_only_bashcutpro_cli_on_path(self):
+        self.fake("bashcutpro-cli")
         r = self.launch()
         self.assertEqual(r.returncode, 0, r.stderr)
-        self.assertEqual(r.stdout.strip(), "bashcutpro mcp --demo")
+        self.assertEqual(r.stdout.strip(), "bashcutpro-cli mcp --demo")
+
+    def test_only_bcpro_on_path(self):
+        self.fake("bcpro")
+        r = self.launch()
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(r.stdout.strip(), "bcpro mcp --demo")
 
     def test_only_filmcraft_cli_on_path(self):
         self.fake("filmcraft-cli")
@@ -54,12 +61,26 @@ class LauncherTests(unittest.TestCase):
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertEqual(r.stdout.strip(), "filmcraft-cli mcp --demo")
 
-    def test_pro_name_wins_and_env_names_it(self):
+    def test_order_bashcutpro_cli_bcpro_filmcraft_cli(self):
+        self.fake("filmcraft-cli")
+        self.fake("bcpro")
+        self.assertEqual(self.launch().stdout.strip(), "bcpro mcp --demo")
+        self.fake("bashcutpro-cli")
+        self.assertEqual(self.launch().stdout.strip(), "bashcutpro-cli mcp --demo")
+
+    def test_plain_bashcutpro_is_never_the_cli(self):
+        # /usr/bin/bashcutpro is the desktop app on Linux: an exact-name lookup must not pick it
         self.fake("bashcutpro")
+        r = self.launch()
+        self.assertEqual(r.returncode, 1, r.stdout)
+        self.fake("filmcraft-cli")
+        self.assertEqual(self.launch().stdout.strip(), "filmcraft-cli mcp --demo")
+
+    def test_env_names_it(self):
+        self.fake("bashcutpro-cli")
         old = self.fake("filmcraft-cli")
-        self.assertEqual(self.launch().stdout.strip(), "bashcutpro mcp --demo")
-        self.assertEqual(self.launch(FILMCRAFT_CLI=old).stdout.strip(), "filmcraft-cli mcp --demo")
-        self.assertEqual(self.launch(BASHCUTPRO_CLI=old).stdout.strip(), "filmcraft-cli mcp --demo")
+        for var in ("BASHCUTPRO_CLI", "BASHCUT_FILMCRAFT_CLI", "FILMCRAFT_CLI"):
+            self.assertEqual(self.launch(**{var: old}).stdout.strip(), "filmcraft-cli mcp --demo", var)
 
     def test_none_says_what_to_do(self):
         r = self.launch()
