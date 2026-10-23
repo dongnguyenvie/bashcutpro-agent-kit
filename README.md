@@ -114,7 +114,7 @@ It links each skill as `~/.agents/skills/bcp-<name>` and registers the launcher 
 | `BASHCUTPRO_BRIDGE` | `host:port` of the running app: `mcp --bridge` |
 | `BASHCUTPRO_PROJECT` | headless: `mcp --project` this `.fcproj` |
 | `BASHCUTPRO_DEMO` | `1`: headless on the demo project |
-| `BASHCUTPRO_DATA_DIR` | FilmCraft data dir: `--data-dir` (user presets; where `bashcut-mcp` finds the window) |
+| `BASHCUTPRO_DATA_DIR` | BashCutPro data dir: `--data-dir` (user presets; where `bashcut-mcp` finds the window). The kit's scripts read it, else `FILMCRAFT_DATA_DIR`, else BashCutPro's per-user folder |
 | `BASHCUT_MCP` | the `bashcut-mcp` binary (default: next to the CLI, on `PATH`) |
 | `BASHCUTPRO_ROOTS` | more folders agents may write to (path list) |
 | `BASHCUTPRO_NO_LOCK` | `1`: plain `bashcutpro-cli mcp`, without `bashcut-mcp` |
