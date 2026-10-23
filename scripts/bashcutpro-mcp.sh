@@ -12,6 +12,8 @@
 #                          FILMCRAFT_CLI, else bashcutpro-cli, bcpro, filmcraft-cli on PATH, then the usual install
 #                          places (exact names, never plain `bashcutpro`: that is the desktop app)
 #   BASHCUTPRO_BRIDGE      host:port of the running app (`bashcutpro --control <port>`): drive it instead of headless
+#                          (needs FILMCRAFT_CONTROL_TOKEN exported by you, the window's control token, when the app was started with one;
+#                          bashcut-mcp and bashcutpro-cli find it themselves in automation.json, so leave BRIDGE unset when you can)
 #   BASHCUTPRO_PROJECT     headless: open this .fcproj
 #   BASHCUTPRO_DEMO=1      headless: open the demo project (when no project is set)
 #   BASHCUTPRO_DATA_DIR    FilmCraft data dir (--data-dir): user presets, and where bashcut-mcp finds the window
@@ -87,6 +89,8 @@ if [ -n "$mcp" ]; then
     exec "$mcp" "$@"
 fi
 
+# Explicit bridge without bashcut-mcp: the plain CLI does not look up the window token; FILMCRAFT_CONTROL_TOKEN must be in
+# the environment (the app's value). bashcut-mcp / bashcutpro-cli read it from automation.json on their own.
 if [ -n "${BASHCUTPRO_BRIDGE-}" ]; then
     exec "$cli" mcp --bridge "$BASHCUTPRO_BRIDGE"
 fi
