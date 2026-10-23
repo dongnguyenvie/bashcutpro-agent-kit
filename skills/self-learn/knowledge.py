@@ -42,23 +42,41 @@ def now():
     return datetime.datetime.now().replace(microsecond=0).isoformat()
 
 
-def data_dir(env=None):
-    env = os.environ if env is None else env
-    if env.get("FILMCRAFT_DATA_DIR"):
-        return env["FILMCRAFT_DATA_DIR"]
+# The environment variables that pick the data dir, first set wins (bashcut-dirs' order).
+OVERRIDES = ("BASHCUTPRO_DATA_DIR", "FILMCRAFT_DATA_DIR")
+
+
+def per_user(names, env):
+    """`names` (macOS / Windows folder, XDG folder) under this user's data folder."""
     home = env.get("HOME") or os.path.expanduser("~")
     if sys.platform == "darwin":
-        return os.path.join(home, "Library", "Application Support", "FilmCraft")
+        return os.path.join(home, "Library", "Application Support", names[0])
     if sys.platform == "win32":
-        return os.path.join(env.get("APPDATA") or home, "FilmCraft")
+        return os.path.join(env.get("APPDATA") or home, names[0])
     if env.get("XDG_DATA_HOME"):
-        return os.path.join(env["XDG_DATA_HOME"], "filmcraft")
-    return os.path.join(home, ".local", "share", "filmcraft")
+        return os.path.join(env["XDG_DATA_HOME"], names[1])
+    return os.path.join(home, ".local", "share", names[1])
+
+
+def data_dir(env=None):
+    env = os.environ if env is None else env
+    for name in OVERRIDES:
+        if env.get(name):
+            return env[name]
+    return per_user(("BashCutPro", "bashcutpro"), env)
 
 
 def store_dir(env=None):
     env = os.environ if env is None else env
     return env.get("BASHCUT_KNOWLEDGE_DIR") or os.path.join(data_dir(env), "bashcut", "knowledge")
+
+
+def filmcraft_store_dir(env=None):
+    """Upstream FilmCraft's knowledge folder, read only; None when a variable picks the folder."""
+    env = os.environ if env is None else env
+    if env.get("BASHCUT_KNOWLEDGE_DIR") or any(env.get(name) for name in OVERRIDES):
+        return None
+    return os.path.join(per_user(("FilmCraft", "filmcraft"), env), "bashcut", "knowledge")
 
 
 def sidecar(project):
@@ -118,15 +136,27 @@ def slug(text):
 
 
 class Store:
-    def __init__(self, root=None):
-        self.root = root or store_dir()
+    def __init__(self, root=None, fallback=None):
+        """`fallback` is read when a file is missing in `root`; by default FilmCraft's folder for the default root."""
+        if root is None:
+            root, fallback = store_dir(), filmcraft_store_dir()
+        self.root, self.fallback = root, fallback
 
     def path(self, name):
         return os.path.join(self.root, name)
 
+    def source(self, name):
+        """Where `name` is read: ours, else the fallback's copy when ours has none (it is never moved)."""
+        ours = self.path(name)
+        if self.fallback and not os.path.exists(ours):
+            old = os.path.join(self.fallback, name)
+            if os.path.exists(old):
+                return old
+        return ours
+
     # Lessons ------------------------------------------------------------------------------------------------
     def lessons(self):
-        return read_lines(self.path("lessons.jsonl"))
+        return read_lines(self.source("lessons.jsonl"))
 
     def add_lesson(self, title, symptom, cause, fix, tags=(), evidence=None, check=None, status="active", project=None):
         if status not in STATUSES:
@@ -194,7 +224,7 @@ class Store:
 
     # Preferences --------------------------------------------------------------------------------------------
     def prefs(self):
-        return read_json(self.path("prefs.json"), {})
+        return read_json(self.source("prefs.json"), {})
 
     def set_pref(self, key, value=None, words=None, remove=False):
         prefs = self.prefs()
@@ -230,17 +260,21 @@ class Store:
         target = os.path.join(folder, "%s-%s.md" % (slug(skill), stamp))
         shutil.copyfile(file, target)
         entry = {"skill": skill, "file": os.path.basename(target), "summary": summary, "reason": reason, "created": now()}
-        index = read_json(os.path.join(folder, "index.json"), [])
+        index = self.proposals()
+        for old in index:  # the files of proposals read from the fallback are copied next to the new index
+            name = os.path.basename(str(old.get("file") or ""))
+            if name and not os.path.exists(os.path.join(folder, name)) and os.path.isfile(self.source(os.path.join("skills", name))):
+                shutil.copyfile(self.source(os.path.join("skills", name)), os.path.join(folder, name))
         index.append(entry)
         write_json(os.path.join(folder, "index.json"), index)
         return entry
 
     def proposals(self):
-        return read_json(os.path.join(self.path("skills"), "index.json"), [])
+        return read_json(self.source(os.path.join("skills", "index.json")), [])
 
     # Correction candidates (the hook) -----------------------------------------------------------------------
     def corrections(self):
-        return read_lines(self.path("corrections.jsonl"))
+        return read_lines(self.source("corrections.jsonl"))
 
     def record_correction(self, text, project=None):
         row = {"text": text.strip()[:600], "at": now()}

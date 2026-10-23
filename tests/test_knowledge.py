@@ -99,5 +99,71 @@ class KnowledgeTests(unittest.TestCase):
         self.assertEqual(len(self.store.lessons()), 1)
 
 
+class DataDirTests(unittest.TestCase):
+    """The store is in BashCutPro's data dir (bashcut-dirs' order); FilmCraft's folder is only read, as a fallback."""
+
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.dir)
+
+    def test_order_of_the_variables(self):
+        env = {"HOME": "/h", "FILMCRAFT_DATA_DIR": "/fc", "BASHCUTPRO_DATA_DIR": "/bc"}
+        self.assertEqual(knowledge.data_dir(env), "/bc")
+        del env["BASHCUTPRO_DATA_DIR"]
+        self.assertEqual(knowledge.data_dir(env), "/fc")
+        self.assertIsNone(knowledge.filmcraft_store_dir(env))
+        self.assertEqual(knowledge.store_dir(dict(env, BASHCUT_KNOWLEDGE_DIR="/k")), "/k")
+        self.assertIsNone(knowledge.filmcraft_store_dir({"HOME": "/h", "BASHCUT_KNOWLEDGE_DIR": "/k"}))
+
+    def test_per_os_defaults(self):
+        cases = {
+            "darwin": ({"HOME": "/h"}, os.path.join("/h", "Library", "Application Support", "BashCutPro"),
+                       os.path.join("/h", "Library", "Application Support", "FilmCraft")),
+            "win32": ({"HOME": "/h", "APPDATA": "/ad"}, os.path.join("/ad", "BashCutPro"), os.path.join("/ad", "FilmCraft")),
+            "linux": ({"HOME": "/h", "XDG_DATA_HOME": "/x"}, os.path.join("/x", "bashcutpro"), os.path.join("/x", "filmcraft")),
+        }
+        for platform, (env, ours, theirs) in cases.items():
+            with self.subTest(platform), mock.patch.object(knowledge.sys, "platform", platform):
+                self.assertEqual(knowledge.data_dir(env), ours)
+                self.assertEqual(knowledge.store_dir(env), os.path.join(ours, "bashcut", "knowledge"))
+                self.assertEqual(knowledge.filmcraft_store_dir(env), os.path.join(theirs, "bashcut", "knowledge"))
+        with mock.patch.object(knowledge.sys, "platform", "linux"):
+            self.assertEqual(knowledge.data_dir({"HOME": "/h"}), os.path.join("/h", ".local", "share", "bashcutpro"))
+
+    def test_default_store_reads_filmcraft_when_ours_is_missing(self):
+        env = {"HOME": self.dir, "APPDATA": self.dir, "XDG_DATA_HOME": self.dir}
+        with mock.patch.dict(os.environ, env, clear=True):
+            old = knowledge.Store(knowledge.filmcraft_store_dir())
+            old.add_lesson("Old lesson", "s", None, "f")
+            old.set_pref("tone", "calm")
+            store = knowledge.Store()
+            self.assertEqual(store.root, knowledge.store_dir())
+        self.assertEqual(store.fallback, old.root)
+        self.assertEqual([r["title"] for r in store.lessons()], ["Old lesson"])
+        self.assertEqual(store.prefs()["tone"]["value"], "calm")
+        store.add_lesson("New lesson", "s", None, "f")  # written to ours, FilmCraft's file untouched
+        self.assertEqual(len(store.lessons()), 2)
+        self.assertEqual([r["title"] for r in old.lessons()], ["Old lesson"])
+        self.assertTrue(os.path.isfile(os.path.join(store.root, "lessons.jsonl")))
+        self.assertEqual(store.prefs()["tone"]["value"], "calm")  # still from FilmCraft: ours has no prefs.json
+
+    def test_proposals_from_filmcraft_follow_the_new_index(self):
+        old = knowledge.Store(os.path.join(self.dir, "fc"))
+        store = knowledge.Store(os.path.join(self.dir, "bc"), fallback=old.root)
+        draft = os.path.join(self.dir, "draft.md")
+        with open(draft, "w", encoding="utf-8") as f:
+            f.write("draft\n")
+        first = old.propose("captions", draft, "s", "r")
+        self.assertEqual(store.proposals(), [first])
+        store.propose("audio", draft, "s", "r")
+        self.assertEqual(len(store.proposals()), 2)
+        self.assertTrue(os.path.isfile(os.path.join(store.root, "skills", first["file"])))
+        self.assertTrue(os.path.isfile(os.path.join(old.root, "skills", first["file"])))
+        self.assertEqual(len(old.proposals()), 1)
+
+    def test_explicit_root_has_no_fallback(self):
+        self.assertIsNone(knowledge.Store(os.path.join(self.dir, "k")).fallback)
+
+
 if __name__ == "__main__":
     unittest.main()

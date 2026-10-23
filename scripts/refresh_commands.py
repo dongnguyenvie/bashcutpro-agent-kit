@@ -20,7 +20,8 @@ FIELDS = ("id", "label", "menu", "shortcut", "params", "enabled")
 
 
 def mcp_session(cli):
-    proc = subprocess.Popen([cli, "mcp", "--demo"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+    proc = subprocess.Popen([cli, "mcp", "--demo"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True,
+                            encoding="utf-8")  # the JSON is UTF-8 whatever the console's code page is
     state = {"n": 0}
 
     def call(method, params=None):
