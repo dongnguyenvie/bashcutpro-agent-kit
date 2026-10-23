@@ -1,11 +1,22 @@
 name: CI
-# Manual only, like every BashCutPro workflow.
 on:
+  push:
+    branches: [main]
+  pull_request:
   workflow_dispatch:
 jobs:
   check:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - run: python3 scripts/check.py
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python scripts/check.py
+      - run: python -m unittest discover -s tests
       - run: sh -n scripts/bashcutpro-mcp.sh scripts/install-codex.sh
+        if: runner.os != 'Windows'
