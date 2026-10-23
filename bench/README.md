@@ -1,7 +1,7 @@
 # Quality bench: Pro vs BashCut
 
 Proves, with numbers, that BashCutPro makes better videos than the Swift BashCut, and keeps it true
-(BashCutPro#58). This folder holds the harness only; the runs need a built BashCutPro (`bashcutpro`) and the
+(BashCutPro#58). This folder holds the harness only; the runs need a built BashCutPro (`bashcutpro-cli`) and the
 batch runner (#45), and the first scorecard is **pending the build pass**.
 
 | File | What |

@@ -6,7 +6,7 @@ cue on its last word, so cues end mid-phrase and fast ones have no silence to ho
   captions_fit.py group words.json --out cues.srt [--max-chars 42] [--lines 2] [--max-cps 20]   # then captions.import
   captions_fit.py plan caps.json [--max-cps 20] [--jsonl]       # fix an existing track (translated, imported, edited)
   captions_fit.py report caps.json|cues.srt [--max-cps 20]      # cues, % at or under the limit, % over 25, worst
-  captions_fit.py apply --cli filmcraft-cli --project p.fcproj [group options]   # group the active sequence and import
+  captions_fit.py apply --cli bashcutpro-cli --project p.fcproj [group options]   # group the active sequence and import
 
 `group` reads `transcript.inspect` output (the edited sequence's words, ticks) or any JSON of {text|word, start, end}
 words (seconds) and breaks a cue at a sentence end, at a comma once the cue is half full (--fill), at a pause of
@@ -17,7 +17,7 @@ the silence after it until it reads at 95 % of --max-cps (up to the next cue les
 --min-seconds), start it up to --lead seconds before its first word when that is not enough, and merge a still-fast
 cue with a neighbour when the pair reads under the limit and fits the lines; --trim-hedges then drops "just",
 "actually", "you know"… from the cues still over. `plan` prints `commands` for
-`bashcut.batch {commands, label}` (`--jsonl`: one per line for `filmcraft-cli run`). Every mode prints `before` /
+`bashcut.batch {commands, label}` (`--jsonl`: one per line for `bashcutpro-cli run`). Every mode prints `before` /
 `after` stats and `left`: cues still over the limit (shorten them yourself, or keep them when the speech is that
 fast). `apply` does `group` through the engine's CLI on a saved project (a `bashcut-batch` plugin step, or any shell):
 reads the active sequence's words, length and frame rate, writes the SRT (--out, default `<project folder>/captions/
@@ -352,7 +352,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("mode", choices=["group", "plan", "report", "apply"])
     ap.add_argument("path", nargs="?", help="group: words JSON; plan, report: captions.list JSON (ticks) or an SRT / VTT")
-    ap.add_argument("--cli", default=os.environ.get("BASHCUTPRO_CLI") or "filmcraft-cli", help="apply: the engine")
+    ap.add_argument("--cli", default=os.environ.get("BASHCUTPRO_CLI") or "bashcutpro-cli", help="apply: the engine (bashcutpro-cli, bcpro or filmcraft-cli)")
     ap.add_argument("--project", default=os.environ.get("BASHCUT_PROJECT"), help="apply: the saved project")
     ap.add_argument("--name", default="Captions", help="apply: the caption track's name")
     ap.add_argument("--out", help="group, apply: the SRT to write")

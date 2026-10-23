@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Refresh scripts/commands.json from a build's own `command_list` (the authority; refresh_bashcut.py only reads source).
 
-  python3 scripts/refresh_commands.py --cli /abs/BashCutPro/target/debug/filmcraft-cli [--features "default"] [--dry-run]
+  python3 scripts/refresh_commands.py --cli /abs/BashCutPro/target/debug/bashcutpro-cli [--features "default"] [--dry-run]
 
 Starts `<cli> mcp --demo`, calls `tools/list` and `tools/call command_list {}`, and rewrites `commands` (id, label, menu,
 shortcut, params, enabled), `count`, `mcpTools` and the provenance lines. The `frontend` list (window-only ids) and
@@ -53,11 +53,11 @@ def mcp_session(cli):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--cli", required=True, help="the bashcutpro (or filmcraft-cli) binary of a BashCutPro build")
+    ap.add_argument("--cli", required=True, help="the bashcutpro-cli (or bcpro, filmcraft-cli) binary of a BashCutPro build")
     ap.add_argument("--features", default="default features", help="how that build was made, for the provenance line")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
-    version = subprocess.run([a.cli, "--version"], capture_output=True, text=True).stdout.strip() or "filmcraft-cli"
+    version = subprocess.run([a.cli, "--version"], capture_output=True, text=True).stdout.strip() or os.path.basename(a.cli)
     tools, real = mcp_session(a.cli)
     with open(CATALOGUE, encoding="utf-8") as f:
         cat = json.load(f)
