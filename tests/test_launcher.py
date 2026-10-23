@@ -87,9 +87,15 @@ class LauncherTests(unittest.TestCase):
         self.assertEqual(r.returncode, 1)
         self.assertIn("BASHCUTPRO_CLI", r.stderr)
 
-    @unittest.skip("test ticket: BASHCUT_IN_APP_AGENT=1 makes the launcher exit 0 with one stderr line and start no CLI")
     def test_in_app_agent_starts_no_server(self):
-        pass
+        # a CLI is on PATH and would print if started; inside BashCutPro's Agent panel the launcher steps aside
+        self.fake("bashcutpro-cli")
+        r = self.launch(BASHCUT_IN_APP_AGENT="1")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(r.stdout, "")
+        self.assertEqual(len(r.stderr.strip().splitlines()), 1, r.stderr)
+        # other values do not step aside
+        self.assertEqual(self.launch(BASHCUT_IN_APP_AGENT="0").stdout.strip(), "bashcutpro-cli mcp --demo")
 
 
 if __name__ == "__main__":
