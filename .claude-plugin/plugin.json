@@ -5,6 +5,6 @@
   "author": { "name": "BashCutPro" },
   "homepage": "https://github.com/dongnguyenvie/bashcutpro-agent-kit",
   "repository": "https://github.com/dongnguyenvie/bashcutpro-agent-kit",
-  "license": "MIT",
+  "license": "MIT OR Apache-2.0",
   "keywords": ["video", "editing", "bashcutpro", "filmcraft", "mcp"]
 }
