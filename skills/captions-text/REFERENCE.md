@@ -4,7 +4,7 @@ Detail for `bcp:captions-text`; read only the section a step names.
 
 ## Vocabulary and Whisper
 
-FilmCraft's own `transcript.generate` takes a model and a language, no vocabulary. Names and terms it misspells
+The engine's own `transcript.generate` takes a model and a language, no vocabulary. Names and terms it misspells
 are fixed afterwards with `captions.setText`. An outside Whisper run (the default build has no Whisper, so words
 come from outside anyway) can be steered before it runs; these held in BashCut's Whisper captions plugin
 (mlx-whisper, large-v3 turbo):

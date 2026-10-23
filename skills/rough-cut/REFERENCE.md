@@ -4,7 +4,7 @@ Detail for `bcp:rough-cut`. "T06 §n" cites BashCut's rough-cut research notes, 
 
 ## Ticks
 
-FilmCraft times are ticks: **254 016 000 000 per second**. 61.42 s = 15 601 662 720 000 ticks. Word `start` /
+BashCutPro times are ticks: **254 016 000 000 per second**. 61.42 s = 15 601 662 720 000 ticks. Word `start` /
 `end` from the transcript are already ticks: copy them, never convert from rounded seconds. Commands that take
 `seconds` or `frame` say so in their params (`timeline.place`, `playhead.set`).
 

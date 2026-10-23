@@ -12,7 +12,7 @@ by name and weights, then look at it on a frame. A download takes the whole .ttf
 family's Fontsource `type` is google): Fontsource's own .ttf files are split per subset (its vietnamese file has no
 a–z), so they are never used. A family that is not on Google Fonts has no whole file here: the line says so. With
 --import, each file is copied into the user's font folder (macOS ~/Library/Fonts, Linux ~/.local/share/fonts,
-Windows %LOCALAPPDATA%\Microsoft\Windows\Fonts), where FilmCraft's `fonts.list` finds it. No key needed.
+Windows %LOCALAPPDATA%\Microsoft\Windows\Fonts), where BashCutPro's `fonts.list` finds it. No key needed.
 """
 import argparse
 import json

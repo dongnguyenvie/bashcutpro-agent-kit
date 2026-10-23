@@ -20,7 +20,7 @@ creator or video the user pointed to, measured with bcp:style-study) → the rec
 the recipe's range for every value it measures. Name it in the plan.
 
 **Library looks are not ported.** BashCut's vlog pack (hook, section, price, CTA, verdict, time-stamp and news text
-styles, stickers, four transitions) waits for `.fcgt` (FilmCraft graphics template) conversions. Where a recipe names
+styles, stickers, four transitions) waits for `.fcgt` (BashCutPro graphics template) conversions. Where a recipe names
 a look ("a section chip", "a price tag"), build it with bcp:captions-text / bcp:motion-graphics: an installed
 template (`graphics.template.list`, then `graphics.template.apply` with its values) when one exists, else plain
 `graphics.newText`.

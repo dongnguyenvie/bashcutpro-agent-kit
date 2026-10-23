@@ -1,7 +1,7 @@
 # Effects reference
 
 Detail for the `effects` skill. Durations in seconds; frames = seconds x the sequence fps. Ticks: 254 016 000 000
-per second. Effect and transition names are exactly the ones FilmCraft's catalogue shows; anything else is found
+per second. Effect and transition names are exactly the ones BashCutPro's catalogue shows; anything else is found
 with `effects.list` at run time, never guessed.
 
 ## Genre: what fits
@@ -28,13 +28,13 @@ with `effects.list` at run time, never guessed.
 | Text or sticker In / Out | entrance 0.2-0.6 s, exit shorter | talkcraft |
 | Impact (slam, flash, crash-zoom) | 0.10-0.25 s after its target is fully visible | assafkip |
 
-## BashCut kind to FilmCraft
+## BashCut kind to BashCutPro
 
 "Look up" means: `effects.list {"kind": "VideoTransition"}` once (112 names; `"folder": "Video Transitions/Wipe"`
 for the wipes), pick the entry whose name says that move, apply it with `sequence.applyVideoTransition`. Use the
 fallback recipe when the list has nothing that fits, and say which one you used.
 
-| BashCut kind or effect | FilmCraft name or recipe |
+| BashCut kind or effect | BashCutPro name or recipe |
 |---|---|
 | `dissolve` | `Cross Dissolve` (`cross_dissolve`), 0.3-1.0 s |
 | `dip-black` | look up a dip; fallback: Opacity keys 100 to 0 over the out clip's last frames and 0 to 100 over the in clip's first, nothing underneath (black) |

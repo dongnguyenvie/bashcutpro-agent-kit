@@ -104,5 +104,5 @@ could not check (motion between frames).
 ## Not ported from BashCut
 
 BashCut's `plan.cut.graphics` rows built by one `graphic plan` call, `@words` times, frame chrome (`backdrop`,
-`chip`, `callout`, `float`) and `bashcut timeline sheet` have no FilmCraft equivalent: word times come from
+`chip`, `callout`, `float`) and `bashcut timeline sheet` have no BashCutPro command: word times come from
 `transcript.search`, each graphic is one `HF place`, and the look comes from `--brand` and widget variables.

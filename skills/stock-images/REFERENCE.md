@@ -13,7 +13,7 @@ BashCut-only calls itself (see the plugin's README, "How the scripts run here"):
 | `--import` (`media import DIR`) | reported only; import with `media_import` yourself |
 | the project's illustration set and palette | kept by the plugin (one set per project still holds) |
 
-Where the plugin is looked for: `$BASHCUTPRO_RESOURCES_DIR`, `<FilmCraft data dir>/bashcut-plugins/bashcut.resources`,
+Where the plugin is looked for: `$BASHCUTPRO_RESOURCES_DIR`, `<data dir>/bashcut-plugins/bashcut.resources`,
 then a `bashcutpro-plugins/plugins/resources` checkout in this kit's or the working folder's parents. The scripts'
 indexes and downloads are kept in the plugin's data folder (`shared/`, `cache/`).
 

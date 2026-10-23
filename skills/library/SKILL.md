@@ -8,7 +8,7 @@ description: Keeping a BashCutPro creator's reusable pieces in one library with 
 A creator's channel looks like itself because the same lower third, look, sting and caption style come back in
 every video. The `bashcut.library` plugin (in `bashcutpro-plugins`, `plugins/library`; its own skill `library-plugin`
 has every flag) keeps them in `<data dir>/bashcut/library/` with a purpose line, tags, licence, favourite and uses
-per project, on top of what FilmCraft stores: `.fcgt` graphics templates, effect presets, LUTs and media exports.
+per project, on top of what the editor stores: `.fcgt` graphics templates, effect presets, LUTs and media exports.
 `LB` = `"${BASHCUT_PYTHON:-python3}" <plugin dir>/plugin.py`; `save`, `apply` and `brand apply` take
 `--bridge 127.0.0.1:<port>` or `--project <file.fcproj>`. Every command prints one JSON object (`ok`, `message`,
 `data` or `error`).

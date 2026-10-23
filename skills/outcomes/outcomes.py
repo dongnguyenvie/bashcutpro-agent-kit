@@ -34,7 +34,7 @@ import re
 import statistics
 import sys
 
-TPS = 254016000000  # FilmCraft ticks per second
+TPS = 254016000000  # engine ticks per second
 POSITION = re.compile(r"position|second|time|moment|thời", re.I)
 RETENTION = re.compile(r"retention|viewers|audience|watch|giữ chân|người xem", re.I)
 

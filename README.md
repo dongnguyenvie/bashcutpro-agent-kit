@@ -1,10 +1,10 @@
 # BashCutPro agent kit
 
 Editing skills for Claude Code and Codex that drive [BashCutPro](https://github.com/dongnguyenvie/BashCutPro)
-(a fork of FilmCraft) through its MCP server (`bashcutpro-cli mcp`) and command ids.
+through its MCP server (`bashcutpro-cli mcp`) and command ids.
 
 The skills carry over the editing craft of [bashcut-agent-kit](https://github.com/dongnguyenvie/bashcut-agent-kit)
-(how to cut, mix, caption and review well), rewritten against FilmCraft's command model: `command_list` to find a
+(how to cut, mix, caption and review well), rewritten against BashCutPro's command model: `command_list` to find a
 command, `command_run {id, params}` or `command_batch` to edit (undoable), `doc_inspect` to read the project and
 sequence, `render_frame` to look. They do not map BashCut's own tools. Plan and order:
 [`bashcut/migration.md`](https://github.com/dongnguyenvie/BashCutPro/blob/main/bashcut/migration.md) in BashCutPro,
@@ -17,7 +17,7 @@ tracked in [BashCutPro#24](https://github.com/dongnguyenvie/BashCutPro/issues/24
 | `captions-text` | Captions from speech or imported words (`transcript.createCaptions`), a script or SRT aligned to the speech with the `bashcut.align` plugin, SRT/VTT, fixing and styling captions, titles and cards with `graphics.*` and `.fcgt` templates, Vietnamese fonts (`fetch_font.py`), size, contrast, safe area, sync |
 | `edit-workflow` | The spine of every edit, raw footage to export: intake, brief and plan in the project notes, stages with the one skill to read for each, `command_batch` per stage, the user's gates, draft and export |
 | `rough-cut` | The rough cut by quote: lines found with `transcript.search`, word-exact edges, takes and recording cues, fillers and pauses, selects with reasons, the blind second pass, long → short as one sequence per short |
-| `effects` | Choosing transitions, motion, speed and reframes that fit the moment and genre, then making them with FilmCraft effects and keyframes (Cross Dissolve and the transition map, Motion Ken Burns and punch-ins, Time Remapping ramps, freeze, Auto Reframe, masks) |
+| `effects` | Choosing transitions, motion, speed and reframes that fit the moment and genre, then making them with BashCutPro's effects and keyframes (Cross Dissolve and the transition map, Motion Ken Burns and punch-ins, Time Remapping ramps, freeze, Auto Reframe, masks) |
 | `vlog-plan` | Planning any vlog from a brief: the routing table to the right recipe, intake and survey, the plan as JSON in the project notes with section range markers, shared checks and ranges, then the hand-over to `edit-workflow` |
 | `vlog-ideate` | Turning a vague idea or a folder of footage into a brief: angle, audience, hook ideas and outputs, read from the footage first, stored in the project notes, the idea gate asked in conversation |
 | `vlog-hook-script` | Writing the hook, beats and voiceover script sized to the voice's measured rate, 2–3 openings compared on the real footage, the counterfactual check, the script gate |
@@ -61,13 +61,13 @@ themselves.
 ## Requirements
 
 - `bashcutpro-cli` (short name `bcpro`), the BashCutPro command line (the editor's engine), from a release or a
-  source build; every BashCutPro package carries it next to the app. An older or upstream `filmcraft-cli` also
+  source build; every BashCutPro package carries it next to the app. `filmcraft-cli`, the older engine name, also
   works. A source build that has everything the skills use (speech to text for captions and rough cuts,
   `bashcut-mcp` to reach the open window):
   `cargo build -p filmcraft -p bashcutpro-cli -p bashcut-mcp --features filmcraft/whisper,bashcutpro-cli/whisper`
   (BashCutPro's [getting started](https://github.com/dongnguyenvie/BashCutPro/blob/main/bashcut/guide/en/getting-started.md)
   has the full steps). The `setup` skill walks through it.
-- For bridge mode, the BashCutPro desktop app (`bashcutpro`; a source build names it `filmcraft`), open; its control
+- For bridge mode, the BashCutPro desktop app (`bashcutpro`; a source build keeps the older engine name `filmcraft`), open; its control
   channel is on by default (`--control <port>` picks the port).
 - Claude Code or Codex.
 
@@ -93,6 +93,10 @@ try a local checkout for one session:
 
 On Windows the launcher (a POSIX shell script) may not start; `/bcp:setup` registers `bashcutpro-cli.exe`
 directly instead.
+
+In BashCutPro's own Agent panel (which runs `claude -p`) the app brings its `bashcutpro` server for the open
+window; there `/bcp:setup` only checks the connection and registers nothing. It runs only short, non-interactive
+commands, listed in the skill, and changes nothing without the user's yes.
 
 **Codex** (macOS, Linux):
 
@@ -136,7 +140,7 @@ with an empty project.
 agents/<name>.md                  Claude Code sub-agents (surveyor, critic, voice); skills point Codex at the same brief
 skills/<name>/SKILL.md            the skills (Agent Skills format, shared by Claude Code and Codex)
 skills/<name>/REFERENCE.md        detail a skill reads on demand (keeps SKILL.md under 250 lines)
-scripts/commands.json             FilmCraft command catalogue (copy of BashCutPro bashcut/commands.json) plus the merged
+scripts/commands.json             the engine's command catalogue (copy of BashCutPro bashcut/commands.json) plus the merged
                                   bashcut.* ids and a `pending` list of planned ones; check.py rejects command ids a
                                   skill names that are not in it
 hooks/hooks.json                  optional Claude Code hooks (self-learn's correction candidates; off unless BASHCUTPRO_SELF_LEARN=1)
@@ -155,7 +159,7 @@ scripts/refresh_commands.py       refreshes commands.json from a build's own com
 - English instructions; trigger phrases may be in any language users speak (Vietnamese included).
 - Frontmatter: `name` (the folder name), `description` (what and when, at most 1024 characters) ending in
   `Triggers: "phrase", "phrase", …`.
-- Use FilmCraft command ids found with `command_list`, never BashCut's commands; say what to do and why.
+- Use BashCutPro command ids found with `command_list`, never BashCut's commands; say what to do and why.
 - Only rules that were observed (a measurement, an error, a user's correction), with the number that proves it.
 - Run `python3 scripts/check.py` and `python3 -m unittest discover -s tests` before committing. A change to `skills/` raises `version` in
   `.claude-plugin/plugin.json`: Claude Code caches an installed plugin per version.
@@ -163,7 +167,7 @@ scripts/refresh_commands.py       refreshes commands.json from a build's own com
 ## License
 
 Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE) or [MIT license](LICENSE-MIT) at your
-option, the same terms as BashCutPro and FilmCraft.
+option, the same terms as BashCutPro.
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you,
 as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.

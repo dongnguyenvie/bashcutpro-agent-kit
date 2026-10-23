@@ -1,6 +1,6 @@
 ---
 name: effects
-description: Pick the effect that fits the moment and genre, then make it in BashCutPro with FilmCraft commands: video and audio transitions (Cross Dissolve, the Wipe folder, recipes for whip, crash-zoom, glitch, flash), Ken Burns and punch-in with Motion keyframes, speed ramps (Time Remapping), reverse, freeze frames, reframing to vertical (Auto Reframe, Motion, blurred backdrop), masks that follow and blur a logo, effect presets. Use when the user asks for transitions, motion, speed changes or a vertical reframe, or when a cut looks flat or repetitive. Triggers: "effects", "add a transition", "speed ramp", "Ken Burns", "punch-in", "freeze frame", "reframe to vertical", "hiệu ứng", "chuyển cảnh", "tua nhanh", "làm chậm", "zoom vào màn hình", "cắt khung dọc", "chữ nhảy".
+description: Pick the effect that fits the moment and genre, then make it with BashCutPro's commands: video and audio transitions (Cross Dissolve, the Wipe folder, recipes for whip, crash-zoom, glitch, flash), Ken Burns and punch-in with Motion keyframes, speed ramps (Time Remapping), reverse, freeze frames, reframing to vertical (Auto Reframe, Motion, blurred backdrop), masks that follow and blur a logo, effect presets. Use when the user asks for transitions, motion, speed changes or a vertical reframe, or when a cut looks flat or repetitive. Triggers: "effects", "add a transition", "speed ramp", "Ken Burns", "punch-in", "freeze frame", "reframe to vertical", "hiệu ứng", "chuyển cảnh", "tua nhanh", "làm chậm", "zoom vào màn hình", "cắt khung dọc", "chữ nhảy".
 ---
 
 # Effects: look, then when, then how
@@ -44,7 +44,7 @@ Prompts to look, not rules.
 - **Never use a flash or transition to hide a missing action** or a moment that should be seen (ReelMimic).
 - **Whole-frame hits are rare** (flash, blink, crash-zoom, flicker, full-frame zoom punch, exposure pop): each is
   a slam. One promo study kept about 2-4 per 30-60 s on the strongest beats and moved only an element on the other
-  beats; event and MV edits use far more. FilmCraft has no beat analysis: take beats from markers or from
+  beats; event and MV edits use far more. BashCutPro has no beat analysis: take beats from markers or from
   bcp:beat-cut, and keep full-frame impacts at least 16 beats apart unless the genre wants more.
 - **Every visible move gets a matching sound**, sized to it (bcp:audio-mix); cutting all music and SFX for 1-2 s
   on a punchline worked once.
@@ -114,7 +114,7 @@ adds.
 Only `Cross Dissolve` (and the audio `Constant Power`) are known by name. For anything else, list the 112
 transitions once (`effects.list {"kind": "VideoTransition"}`, or the Wipe folder) and pick by its name; when none
 fits, build it from Motion, Opacity, Gaussian Blur or RGB Split keyframes around the cut. BashCut's 39 kinds,
-each with its FilmCraft name or recipe: the map in `<skill_dir>/REFERENCE.md`.
+each with its BashCutPro name or recipe: the map in `<skill_dir>/REFERENCE.md`.
 
 ## 6. Effects on a clip
 
@@ -132,7 +132,7 @@ A setup worth reusing: `presets.save {"clip", "effects", "name", "keyframes": "s
 
 A crop decides what the viewer loses. Look first, never crop blind.
 
-1. **Look** at the start, middle, end and action peaks of each shot with `render_frame`. FilmCraft has no face or
+1. **Look** at the start, middle, end and action peaks of each shot with `render_frame`. BashCutPro has no face or
    subject boxes; the `bashcut.vision` plugin finds them (`subjects`, into `<project>.vision.json`), and
    `subjects --clip <id> --reframe` writes Motion scale and position keyframes that follow the main face in the
    sequence's shape. Without the plugin, read the subject's place off the frames. Check the result either way.
