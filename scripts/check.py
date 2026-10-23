@@ -6,6 +6,9 @@ Skills table; the plugin, marketplace and MCP files. Prints one line per skill, 
 on any problem. Standard library only."""
 import json, os, re, sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from brandcheck import brand_leaks
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SKILLS = os.path.join(ROOT, "skills")
 MAX_LINES = 250
@@ -147,6 +150,16 @@ for server, spec in load_json(os.path.join(ROOT, ".mcp.json")).get("mcpServers",
     command = spec.get("command", "").replace("${CLAUDE_PLUGIN_ROOT}", ROOT)
     if command.startswith(ROOT) and not os.access(command, os.X_OK):
         problems.append(f".mcp.json: {server} command {rel(command)} is missing or not executable")
+
+# No FilmCraft wording for users (AK2): skills, README, plugin.json; scripts/commands.json keeps its provenance field.
+branded = [os.path.join(ROOT, "README.md"), os.path.join(ROOT, ".claude-plugin", "plugin.json"),
+           os.path.join(ROOT, "scripts", "commands.json")]
+for folder, dirs, files in os.walk(SKILLS):
+    dirs[:] = [d for d in dirs if d != "__pycache__"]
+    branded += [os.path.join(folder, f) for f in files if f.endswith((".md", ".json", ".py", ".sh", ".yaml"))]
+for path in branded:
+    for n, line in brand_leaks(open(path, encoding="utf-8").read()):
+        problems.append(f"{rel(path)}:{n}: says FilmCraft (use BashCutPro, or the older engine): {line[:80]}")
 
 print("\n".join(problems) or "OK")
 sys.exit(1 if problems else 0)
