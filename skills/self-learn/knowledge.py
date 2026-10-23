@@ -71,12 +71,15 @@ def store_dir(env=None):
     return env.get("BASHCUT_KNOWLEDGE_DIR") or os.path.join(data_dir(env), "bashcut", "knowledge")
 
 
-def filmcraft_store_dir(env=None):
+def older_engine_store_dir(env=None):
     """The older engine's (FilmCraft) knowledge folder, read only; None when a variable picks the folder."""
     env = os.environ if env is None else env
     if env.get("BASHCUT_KNOWLEDGE_DIR") or any(env.get(name) for name in OVERRIDES):
         return None
     return os.path.join(per_user(("FilmCraft", "filmcraft"), env), "bashcut", "knowledge")
+
+
+filmcraft_store_dir = older_engine_store_dir  # old name, kept for importers
 
 
 def sidecar(project):
@@ -139,7 +142,7 @@ class Store:
     def __init__(self, root=None, fallback=None):
         """`fallback` is read when a file is missing in `root`; by default the older engine's folder for the default root."""
         if root is None:
-            root, fallback = store_dir(), filmcraft_store_dir()
+            root, fallback = store_dir(), older_engine_store_dir()
         self.root, self.fallback = root, fallback
 
     def path(self, name):
