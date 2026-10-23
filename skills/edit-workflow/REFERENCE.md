@@ -125,6 +125,13 @@ does not have them (`scripts/commands.json` lists them under `frontend`):
   outside the window use `bashcut-batch` (`bcp:batch`).
 - Showing the user something: `bashcut.ui.show.looks`, `bashcut.ui.show.batch`, `bashcut.ui.show.agent`.
 
+Driving the window (`ui.click`, `ui.key`, `ui.type`, `ui.drag`, `ui.elements`, `ui.inspect`, `ui.set`,
+`ui.screenshot`): these wait for a drawn frame. When the window draws none (minimised on Windows, covered on some
+macOS setups) a request answers `window not in front … call ui.focus {}` after about 11 s, and the original
+request may still land late. On that reply call `ui.focus {}` once, then re-read the state (`ui.elements` or
+`ui.screenshot`) before deciding; never repeat the click blindly, it may already have happened. `ui.focus` and
+`ui.menu.invoke` are not capped, so they answer even when the window is hidden.
+
 ## Limits
 
 - Loudness and true peak are measured on the timeline (`bashcut.audio.loudness`, `bashcut.review.run`) and on the

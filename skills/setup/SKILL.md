@@ -111,6 +111,9 @@ the app must be running with its control channel, which listens on `127.0.0.1` o
 port, written to `<data dir>/bashcut/automation.json`); `bashcutpro --control 9876` picks the port (a source
 build: `filmcraft --control 9876`). Starting the app is the user's step.
 
+If a `ui_*` request answers `window not in front … call ui.focus {}`, call `ui.focus {}` once, then re-read
+(`ui.elements`, `ui.screenshot`) before acting again; details in `bcp:edit-workflow` (`REFERENCE.md`).
+
 Default to headless with the user's project when they name one, the bridge when they want to watch the app.
 
 ## 4. Register the server
