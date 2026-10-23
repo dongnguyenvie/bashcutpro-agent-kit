@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
 """Refresh scripts/commands.json from a build's own `command_list` (the authority; refresh_bashcut.py only reads source).
 
-  python3 scripts/refresh_commands.py --cli /abs/BashCutPro/target/debug/bashcutpro-cli [--features "default"] [--dry-run]
+  python3 scripts/refresh_commands.py --cli /abs/BashCutPro/target/debug/bashcutpro-cli [--features "default"]
+      [--upstream "FilmCraft <sha> (vX.Y.Z + N)"] [--dry-run]
 
 Starts `<cli> mcp --demo`, calls `tools/list` and `tools/call command_list {}`, and rewrites `commands` (id, label, menu,
 shortcut, params, enabled), `count`, `mcpTools` and the provenance lines. The `frontend` list (window-only ids) and
-`pending` are kept as they are: a headless command_list does not have them. Prints what changed. Standard library only.
+`pending` are kept as they are: a headless command_list does not have them. `upstream` is kept unless --upstream is
+given (the synced commit is the top row of BashCutPro's UPSTREAM.md sync log). The source line names the OS the
+script ran on: default shortcuts differ by platform (off macOS upstream drops a Ctrl chord that collides with a Cmd
+one, e.g. markers.addRange, trim.toggleType, multicam.cutToCamera9). Prints what changed. Standard library only.
 """
 import argparse
 import datetime
 import json
 import os
+import platform
 import subprocess
 import sys
 
@@ -56,6 +61,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--cli", required=True, help="the bashcutpro-cli (or bcpro, filmcraft-cli) binary of a BashCutPro build")
     ap.add_argument("--features", default="default features", help="how that build was made, for the provenance line")
+    ap.add_argument("--upstream", help='the FilmCraft commit the build is synced to, e.g. "FilmCraft dd525c93 (v0.10.0 + 20)"')
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
     version = subprocess.run([a.cli, "--version"], capture_output=True, text=True).stdout.strip() or os.path.basename(a.cli)
@@ -75,9 +81,13 @@ def main():
     changes += [f"- {cid}" for cid in sorted(set(old) - ids)]
     if tools != cat.get("mcpTools"):
         changes.append(f"~ mcpTools: {tools}")
-    cat["source"] = f"{version} mcp --demo, tools/call command_list {{}} ({a.features})"
+    cat["source"] = f"{version} mcp --demo, tools/call command_list {{}} ({a.features}, {platform.system() or sys.platform})"
     cat["generated"] = datetime.date.today().isoformat()
     cat["bashcut"] = "bashcut.* engine ids from the same build's command_list (scripts/refresh_commands.py)"
+    if a.upstream:
+        if a.upstream != cat.get("upstream"):
+            changes.append(f"~ upstream: {a.upstream}")
+        cat["upstream"] = a.upstream
     cat["mcpTools"] = tools
     cat["commands"] = new
     cat["count"] = len(new)
