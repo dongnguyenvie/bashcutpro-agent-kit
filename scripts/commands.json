@@ -1,5 +1,5 @@
 {
- "source": "bashcutpro-cli 0.10.0 mcp --demo, tools/call command_list {} (whisper)",
+ "source": "bashcutpro-cli 0.10.0 mcp --demo, tools/call command_list {} (whisper, Windows)",
  "generated": "2026-10-23",
  "upstream": "FilmCraft dd525c93 (v0.10.0 + 20)",
  "bashcut": "bashcut.* engine ids from the same build's command_list (scripts/refresh_commands.py)",
@@ -223,7 +223,7 @@
   },
   {
    "id": "file.exportSelectionProject",
-   "label": "Selection as FilmCraft Project…",
+   "label": "Selection as BashCutPro Project…",
    "menu": [
     "File",
     "Export"
@@ -2913,7 +2913,7 @@
    "label": "Export with Output Profile",
    "menu": [],
    "shortcut": null,
-   "params": "{\"profile\":str,\"path\":str?,\"queue\":bool=false,\"wait\":bool=false,\"sequence\":id?,\"range\":str?,\"hooks\":bool=true,\"dir\":str?}  (no path: compile only, for filmcraft-cli export --preset) (units: none here; the profile sets pixels, kbit/s and LUFS)",
+   "params": "{\"profile\":str,\"path\":str?,\"queue\":bool=false,\"wait\":bool=false,\"sequence\":id?,\"range\":str?,\"hooks\":bool=true,\"dir\":str?}  (no path: compile only, for bashcutpro-cli export --preset) (units: none here; the profile sets pixels, kbit/s and LUFS)",
    "enabled": true
   },
   {
