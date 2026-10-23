@@ -87,6 +87,10 @@ class LauncherTests(unittest.TestCase):
         self.assertEqual(r.returncode, 1)
         self.assertIn("BASHCUTPRO_CLI", r.stderr)
 
+    @unittest.skip("test ticket: BASHCUT_IN_APP_AGENT=1 makes the launcher exit 0 with one stderr line and start no CLI")
+    def test_in_app_agent_starts_no_server(self):
+        pass
+
 
 if __name__ == "__main__":
     unittest.main()

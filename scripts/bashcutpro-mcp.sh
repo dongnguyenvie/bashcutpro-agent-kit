@@ -18,7 +18,15 @@
 #   BASHCUT_MCP            the bashcut-mcp binary; else bashcut-mcp next to the CLI, on PATH, the usual places
 #   BASHCUTPRO_ROOTS       more folders agents may write to (path list), read by bashcut-mcp
 #   BASHCUTPRO_NO_LOCK=1   skip bashcut-mcp: plain bashcutpro-cli mcp (no window lookup, lock or write guard)
+#   BASHCUT_IN_APP_AGENT=1 set by BashCutPro on the agent it starts: exit 0 at once, serve nothing (the app has its own server)
 # Neither bridge, project nor demo: bashcut-mcp looks for the window, else a headless session with an empty project.
+
+# Inside BashCutPro's own Agent panel the app serves the `bashcutpro` server itself (bridged to the open window) and
+# sets BASHCUT_IN_APP_AGENT=1: a second copy of the same tools would only confuse the agent, so serve nothing.
+if [ "${BASHCUT_IN_APP_AGENT-}" = "1" ]; then
+    echo "bashcutpro-mcp: running inside BashCutPro's Agent panel, which brings its own bashcutpro server; not starting a second one" >&2
+    exit 0
+fi
 
 CONFIG="${BASHCUTPRO_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/bashcutpro/mcp.env}"
 if [ -f "$CONFIG" ]; then

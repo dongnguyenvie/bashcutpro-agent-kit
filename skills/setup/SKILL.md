@@ -10,6 +10,9 @@ its tools answer: `command_list`, `command_run`, `command_batch`, `doc_inspect`,
 binary, registers the server and proves it works. It changes nothing in the user's project.
 
 Plain words: the user may not be technical. Never remove or rewrite MCP servers that are not `bashcutpro`.
+Inside BashCutPro's Agent panel (the app sets `BASHCUT_IN_APP_AGENT=1`; no shell command is needed to know it: the
+first message or the `bashcutpro` tools already answering say so) skip registration (steps 2 to 4), do steps 1 and 5
+only, and say in one sentence that setup runs inside BashCutPro.
 
 ## 0. How this skill runs
 
@@ -25,7 +28,8 @@ It works the same in an interactive terminal and in a session nobody answers mid
   do not retry it, do not try another command that does the same, and do not ask for broader permission. Tell the
   user in one sentence what was denied and give the exact command to run in their own terminal, then go on with
   what you can check without it.
-- **In BashCutPro's Agent panel** the app brings its own `bashcutpro` server bridged to the open window: never
+- **In BashCutPro's Agent panel** (the app sets `BASHCUT_IN_APP_AGENT=1`; the plugin's launcher then exits at once
+  with one stderr line and serves nothing) the app brings its own `bashcutpro` server bridged to the open window: never
   register another one there (Claude would see two copies of the same tools). If its tools are missing, the fix is
   in the app (step 5's table), not in Claude's settings.
 
@@ -177,6 +181,7 @@ they can ask for next.
 | Agent panel: tools missing | the app's control channel is off: the user turns on "Allow AI agents to control BashCutPro" (Agent section) or unsets `BASHCUT_CONTROL=0`, then sends the prompt again |
 | Bridge: connection refused | the app is not running, or the user turned off "Allow AI agents to control BashCutPro" (Agent section) or set `BASHCUT_CONTROL=0`; the port is in `<data dir>/bashcut/automation.json` |
 | A command or tool call is denied | not a bug to work around: tell the user what was denied and the command to run in their terminal (step 0) |
+| Plugin server shows `failed` in `system/init` or `/mcp` | the launcher exits 1 when it finds no CLI (the message is on its stderr): install one (step 2) or set `BASHCUTPRO_CLI` in `mcp.env`; a path in `BASHCUTPRO_CLI` that does not exist counts as not found |
 | Not signed in to Claude Code (`authentication_failed`) | the user runs `claude` in a terminal and types `/login`; never handle credentials |
 | Exit 2 at start | an option the server does not take (only `--project`, `--demo`, `--data-dir`, `--bridge`) |
 | `isError` from `command_run` | the engine's message; read it, then `command_list {"filter": "<id>"}` for the command's params |
