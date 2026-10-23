@@ -80,7 +80,7 @@ Never place a Pixabay URL: download first (Pixabay asks that files are cached, n
 All pops in one call: `fetch_emoji.py --words "wow,money,fire,tiền" --dest <project dir>/media/emoji` draws one
 sheet, a row per word (English or Vietnamese). One look, then `--pick "wow=1@120:30;money=2@300:30"`. Place each
 like a still on V2, small (scale 25–40), on the payoff word, off faces, with a pop. Noto's are animated WebP; if
-`media_import` refuses one or it plays still, pick the OpenMoji PNG (`--set openmoji`): FilmCraft plays animated
+`media_import` refuses one or it plays still, pick the OpenMoji PNG (`--set openmoji`): BashCutPro plays animated
 GIF and APNG.
 
 ## Brand and tool logos (Simple Icons)

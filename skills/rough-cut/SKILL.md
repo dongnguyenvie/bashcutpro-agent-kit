@@ -148,7 +148,7 @@ rounds). A `cutInWord` inside a measured silence is the transcriber stretching a
 
 ## Several shorts from one source
 
-FilmCraft has no project derive: **one sequence per short** in the same project. For each kept short,
+BashCutPro has no project derive: **one sequence per short** in the same project. For each kept short,
 `file.newSequence {name: "short-03-crash-story", width: 1080, height: 1920, fps}`, then its ranges tightened into
 it (`tighten.py` per short, the hook range first); finish each through the stages of `bcp:edit-workflow` (its own
 captions and `bashcut.review.run`). A separate file per short when the user wants them apart: `file.saveCopy

@@ -352,7 +352,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("mode", choices=["group", "plan", "report", "apply"])
     ap.add_argument("path", nargs="?", help="group: words JSON; plan, report: captions.list JSON (ticks) or an SRT / VTT")
-    ap.add_argument("--cli", default=os.environ.get("BASHCUTPRO_CLI") or "bashcutpro-cli", help="apply: the engine (bashcutpro-cli, bcpro or filmcraft-cli)")
+    ap.add_argument("--cli", default=os.environ.get("BASHCUTPRO_CLI") or "bashcutpro-cli", help="apply: the engine (bashcutpro-cli, bcpro, or filmcraft-cli: the older engine name)")
     ap.add_argument("--project", default=os.environ.get("BASHCUT_PROJECT"), help="apply: the saved project")
     ap.add_argument("--name", default="Captions", help="apply: the caption track's name")
     ap.add_argument("--out", help="group, apply: the SRT to write")

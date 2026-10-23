@@ -5,7 +5,7 @@ description: Captions and on-screen text in BashCutPro: captions from speech (tr
 
 # Captions and on-screen text
 
-FilmCraft draws all text itself (captions tracks, graphics clips); never render text into a video with Pillow or
+BashCutPro draws all text itself (captions tracks, graphics clips); never render text into a video with Pillow or
 ffmpeg. The numbers below are ranges with their sources (T09 = BashCut's captions study): read the measurement
 first, choose a value inside the range for this speaker, genre and frame, and say why. Detail:
 `<skill_dir>/REFERENCE.md` (one section at a time).
@@ -150,7 +150,7 @@ on its line. In and Out animation: `bcp:effects`; animated graphics: `bcp:motion
   not the number.
 - Text is **read** (big, with contrast) or **texture** (dimmed or blurred so nobody tries): a line meant to be read
   that cannot be is enlarged or deleted; the closing URL or CTA is never the smallest line.
-- **Fonts for Vietnamese** need every stacked mark (Ắ, Ở, Ữ). `fonts.list` lists what FilmCraft finds; check a
+- **Fonts for Vietnamese** need every stacked mark (Ắ, Ở, Ữ). `fonts.list` lists what BashCutPro finds; check a
   frame with real words of the project. Helvetica Neue's condensed faces misplace stacked marks: avoid them. Open
   fonts with Vietnamese: `"${BASHCUT_PYTHON:-python3}" <skill_dir>/fetch_font.py --subset vietnamese --category sans-serif`, then
   `--family "Be Vietnam Pro" --weights 600,800 --dest /abs/project/fonts --import` (REFERENCE "Fonts"). At most 2

@@ -9,7 +9,7 @@ next to every file they save, and reports picks (`--pick "slot=n@frame:duration"
 the agent to place with `timeline.place`. The plugin is found from $BASHCUTPRO_RESOURCES_DIR, the BashCutPro
 install folder (<data dir>/bashcut-plugins/bashcut.resources; the data dir in the order of BashCutPro's bashcut-dirs:
 $BASHCUTPRO_DATA_DIR, else $FILMCRAFT_DATA_DIR, else ~/Library/Application Support/BashCutPro, %APPDATA%\BashCutPro or
-$XDG_DATA_HOME/bashcutpro; with neither variable set, upstream FilmCraft's folder next), or a bashcutpro-plugins
+$XDG_DATA_HOME/bashcutpro; with neither variable set, the older engine's FilmCraft folder next), or a bashcutpro-plugins
 checkout next to this kit.
 Standard library only.
 """
@@ -37,7 +37,7 @@ def per_user(names):
 
 
 def data_dirs():
-    """BashCutPro's data dir, then upstream FilmCraft's (read only) when no variable picks the folder."""
+    """BashCutPro's data dir, then the older engine's FilmCraft folder (read only) when no variable picks the folder."""
     for name in OVERRIDES:
         if os.environ.get(name):
             return [Path(os.environ[name])]

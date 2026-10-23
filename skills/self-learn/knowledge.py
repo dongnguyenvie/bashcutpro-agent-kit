@@ -14,7 +14,7 @@
     knowledge.py export [--out FILE]
     knowledge.py hook correction|after-compact     # Claude Code hooks (hooks/hooks.json), on only with the setting
 
-Global store: `<data dir>/bashcut/knowledge/` (FilmCraft's data dir: FILMCRAFT_DATA_DIR, else ~/Library/Application
+Global store: `<data dir>/bashcut/knowledge/` (older engine name FilmCraft: FILMCRAFT_DATA_DIR, else ~/Library/Application
 Support/FilmCraft, %APPDATA%\\FilmCraft, $XDG_DATA_HOME/filmcraft or ~/.local/share/filmcraft; BASHCUT_KNOWLEDGE_DIR
 overrides): `lessons.jsonl` (one lesson per line), `prefs.json` ({key: {value, words, updated}}), `skills/` (proposed
 skill changes, never applied by this script), `corrections.jsonl` (lesson candidates the hook kept). Per project:
@@ -72,7 +72,7 @@ def store_dir(env=None):
 
 
 def filmcraft_store_dir(env=None):
-    """Upstream FilmCraft's knowledge folder, read only; None when a variable picks the folder."""
+    """The older engine's (FilmCraft) knowledge folder, read only; None when a variable picks the folder."""
     env = os.environ if env is None else env
     if env.get("BASHCUT_KNOWLEDGE_DIR") or any(env.get(name) for name in OVERRIDES):
         return None
@@ -137,7 +137,7 @@ def slug(text):
 
 class Store:
     def __init__(self, root=None, fallback=None):
-        """`fallback` is read when a file is missing in `root`; by default FilmCraft's folder for the default root."""
+        """`fallback` is read when a file is missing in `root`; by default the older engine's folder for the default root."""
         if root is None:
             root, fallback = store_dir(), filmcraft_store_dir()
         self.root, self.fallback = root, fallback

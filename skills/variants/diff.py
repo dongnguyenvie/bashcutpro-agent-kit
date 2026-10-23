@@ -25,7 +25,7 @@ import argparse
 import json
 import sys
 
-TPS = 254016000000  # FilmCraft ticks per second
+TPS = 254016000000  # engine ticks per second
 BLOCKING = {"blocker", "blocking", "high", "error"}
 
 

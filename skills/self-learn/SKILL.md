@@ -7,7 +7,7 @@ description: Turn what went wrong or what the user corrected while editing in Ba
 
 A problem solved in chat but not written down **will happen again**. The kit keeps what it learns as files
 (`<skill_dir>/knowledge.py`, standard library), not in the app: lessons and preferences for every project in
-`<data dir>/bashcut/knowledge/` (BashCutPro's data dir; a file it does not have yet is read from FilmCraft's old folder,
+`<data dir>/bashcut/knowledge/` (BashCutPro's data dir; a file it does not have yet is read from the older engine's folder (`FilmCraft`),
 never moved), facts for one project in `<name>.fcproj.bashcut/facts.json` next to it.
 
 ```sh
