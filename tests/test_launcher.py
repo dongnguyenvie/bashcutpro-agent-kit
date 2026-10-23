@@ -1,6 +1,7 @@
 """scripts/bashcutpro-mcp.sh finds the CLI by exact name: `bashcutpro-cli`, then `bcpro`, then `filmcraft-cli`
 (never plain `bashcutpro`, the desktop app), with fakes on PATH."""
 
+import json
 import os
 import shutil
 import subprocess
@@ -31,7 +32,7 @@ class LauncherTests(unittest.TestCase):
         os.chmod(path, 0o755)
         return path
 
-    def launch(self, **env):
+    def launch(self, stdin="", **env):
         e = {k: v for k, v in os.environ.items() if k not in ("BASHCUTPRO_CLI", "BASHCUT_FILMCRAFT_CLI", "FILMCRAFT_CLI", "BASHCUT_MCP", "BASHCUTPRO_BRIDGE", "BASHCUTPRO_PROJECT")}
         e.update(
             PATH=os.pathsep.join([self.bin, os.path.dirname(SH)]),
@@ -41,7 +42,7 @@ class LauncherTests(unittest.TestCase):
             BASHCUTPRO_NO_LOCK="1",
         )
         e.update(env)
-        return subprocess.run([SH, LAUNCHER], capture_output=True, text=True, env=e, timeout=30)
+        return subprocess.run([SH, LAUNCHER], capture_output=True, text=True, env=e, timeout=30, input=stdin)
 
     def test_only_bashcutpro_cli_on_path(self):
         self.fake("bashcutpro-cli")
@@ -86,6 +87,30 @@ class LauncherTests(unittest.TestCase):
         r = self.launch()
         self.assertEqual(r.returncode, 1)
         self.assertIn("BASHCUTPRO_CLI", r.stderr)
+
+    def test_none_answers_initialize_with_the_hint(self):
+        # a closed pipe shows as CONNECTION_CLOSED in Claude Code: the reason must travel in a JSON-RPC error instead
+        init = '{"jsonrpc":"2.0","id":0,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"x","version":"1"}}}'
+        note = '{"jsonrpc":"2.0","method":"notifications/initialized"}'
+        call = '{"jsonrpc":"2.0","id":"abc","method":"tools/list"}'
+        r = self.launch(stdin="\n".join([init, note, call]) + "\n")
+        self.assertEqual(r.returncode, 1)
+        replies = [json.loads(line) for line in r.stdout.splitlines()]
+        self.assertEqual([x["id"] for x in replies], [0, "abc"])
+        for x in replies:
+            self.assertEqual(x["jsonrpc"], "2.0")
+            self.assertIn("bashcutpro-cli not found: install BashCutPro or set BASHCUTPRO_CLI", x["error"]["message"])
+            self.assertIn("/bcp:setup", x["error"]["message"])
+
+    def test_none_with_quoted_path_in_hint_stays_valid_json(self):
+        config = os.path.join(self.dir, 'we"ird.env')
+        r = self.launch(stdin='{"jsonrpc":"2.0","id":7,"method":"initialize"}\n', BASHCUTPRO_CONFIG=config)
+        self.assertIn("we\"ird.env", json.loads(r.stdout)["error"]["message"])
+
+    def test_in_app_agent_wins_over_missing_cli(self):
+        r = self.launch(stdin='{"jsonrpc":"2.0","id":1,"method":"initialize"}\n', BASHCUT_IN_APP_AGENT="1")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(r.stdout, "")
 
     def test_in_app_agent_starts_no_server(self):
         # a CLI is on PATH and would print if started; inside BashCutPro's Agent panel the launcher steps aside

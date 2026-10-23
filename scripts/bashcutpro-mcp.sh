@@ -62,8 +62,34 @@ for candidate in "${BASHCUTPRO_CLI-}" "${BASHCUT_FILMCRAFT_CLI-}" "${FILMCRAFT_C
     fi
 done
 if [ -z "$cli" ]; then
-    echo "bashcutpro-cli (or bcpro, filmcraft-cli) not found. Run the kit's setup skill, or set BASHCUTPRO_CLI in $CONFIG" >&2
-    echo "(build it with: cargo build --release -p bashcutpro-cli, in a BashCutPro checkout)." >&2
+    hint="bashcutpro-cli not found: install BashCutPro or set BASHCUTPRO_CLI (in $CONFIG). Run /bcp:setup for the steps."
+    echo "$hint" >&2
+    echo "(build it with: cargo build --release -p bashcutpro-cli, in a BashCutPro checkout.)" >&2
+    # A closed stdio server shows up in Claude Code as a bare CONNECTION_CLOSED. Answer every request with a JSON-RPC
+    # error carrying the hint instead, until the client hangs up (notifications have no id and get no answer).
+    # (plain sh only: PATH may hold nothing but the shell's own directory)
+    json_hint=""
+    rest="$hint"
+    while [ -n "$rest" ]; do
+        ch="${rest%"${rest#?}"}"
+        rest="${rest#?}"
+        case "$ch" in
+            '\'|'"') json_hint="$json_hint\\$ch";;
+            *) json_hint="$json_hint$ch";;
+        esac
+    done
+    while IFS= read -r line || [ -n "$line" ]; do
+        case "$line" in *'"id"'*) ;; *) continue;; esac
+        rest="${line#*\"id\"}"
+        rest="${rest#*:}"
+        rest="${rest#"${rest%%[![:space:]]*}"}"
+        case "$rest" in
+            '"'*) id="${rest#\"}"; id="\"${id%%\"*}\"";;
+            *) id="${rest%%[!0-9-]*}";;
+        esac
+        [ -n "$id" ] || continue
+        printf '{"jsonrpc":"2.0","id":%s,"error":{"code":-32000,"message":"%s"}}\n' "$id" "$json_hint"
+    done
     exit 1
 fi
 
