@@ -126,7 +126,8 @@ It links each skill as `~/.agents/skills/bcp-<name>` and registers the launcher 
 
 With `bashcut-mcp` installed (BashCutPro, `cargo build -p bashcut-mcp`), the launcher runs it: with no mode set it
 bridges to the open BashCutPro window when that window runs its control channel (on by default: the window writes
-`<data dir>/bashcut/automation.json` with its `127.0.0.1` address and pid; `--control <port>` picks the port), else
+`<data dir>/bashcut/automation.json` with its `127.0.0.1` address and pid; `--control <port>` picks the port; the window also publishes a session token there, which the app
+and `bashcutpro-cli` pass on, and a script that talks to the port itself must send as `"token"`), else
 it starts headless. A headless engine holds the project's engine lock, so a second one on the same project is
 refused. Writes outside the project folder and `BASHCUTPRO_ROOTS` come back as tool errors. Without `bashcut-mcp`,
 or for the demo, it runs `bashcutpro-cli mcp` directly, and with none of the mode names set the server is headless

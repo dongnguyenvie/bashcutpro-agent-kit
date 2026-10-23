@@ -109,7 +109,9 @@ BashCutPro#223). In a headless agent, type that name itself (`python <script>`):
 Headless also takes `--data-dir DIR` (user presets). Any other option is rejected with exit 2. For the bridge
 the app must be running with its control channel, which listens on `127.0.0.1` only. It is on by default (a free
 port, written to `<data dir>/bashcut/automation.json`); `bashcutpro --control 9876` picks the port (a source
-build: `filmcraft --control 9876`). Starting the app is the user's step.
+build: `filmcraft --control 9876`). The channel needs a session token: the app makes one per launch and writes it to `automation.json` (owner-only),
+and `bashcutpro-mcp` / `bashcutpro-cli` pick it up. If a tool says "control authentication failed", the user restarts
+BashCutPro and the agent; never print the token. Starting the app is the user's step.
 
 If a `ui_*` request answers `window not in front … call ui.focus {}`, call `ui.focus {}` once, then re-read
 (`ui.elements`, `ui.screenshot`) before acting again; details in `bcp:edit-workflow` (`REFERENCE.md`).
