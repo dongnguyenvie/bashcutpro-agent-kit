@@ -7,5 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: python3 scripts/check.py
+      - run: python3 scripts/check.py  # also fails when scripts/skill-commands.json is stale
+      - run: python3 -m unittest discover -s tests
       - run: sh -n scripts/bashcutpro-mcp.sh scripts/install-codex.sh

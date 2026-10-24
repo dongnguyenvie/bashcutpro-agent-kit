@@ -156,6 +156,7 @@ skills/<name>/agents/openai.yaml  Codex policy, only for a user-only skill (disa
 scripts/bashcutpro-mcp.sh         finds bashcutpro-cli (else bcpro, filmcraft-cli) and starts `bashcutpro-cli mcp` in the configured mode
 scripts/install-codex.sh          Codex setup
 scripts/check.py                  checks skills, links, the Skills table and the packaging files
+scripts/skill-commands.json        skill -> command ids index (agents too), written by `check.py --write-index`; the doctor and the app compare it with the running engine
 scripts/refresh_bashcut.py        refreshes BashCutPro's bashcut.* ids in commands.json from a checkout (engine + window commands)
 scripts/refresh_commands.py       refreshes commands.json from a build's own command_list (the authority; window ids kept)
 ```
@@ -169,6 +170,7 @@ scripts/refresh_commands.py       refreshes commands.json from a build's own com
 - Only rules that were observed (a measurement, an error, a user's correction), with the number that proves it.
 - Run `python3 scripts/check.py` and `python3 -m unittest discover -s tests` before committing. A change to `skills/` raises `version` in
   `.claude-plugin/plugin.json`: Claude Code caches an installed plugin per version.
+- A change to the command ids a skill or agent names changes `scripts/skill-commands.json`: run `python3 scripts/check.py --write-index` and commit it (plain `check.py` fails when it is stale).
 
 ## License
 
