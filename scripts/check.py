@@ -2,7 +2,8 @@
 """Check the kit: every skill's frontmatter (name matches its folder, description within limits and ending in
 trigger phrases), its size, the files it references and the command ids it names (against scripts/commands.json,
 copied from BashCutPro's bashcut/commands.json plus its merged bashcut.* ids and a `pending` list); relative links in every Markdown file; the README's
-Skills table; the plugin, marketplace and MCP files. Prints one line per skill, then OK or the problems; exit 1
+Skills table; the plugin, marketplace and MCP files; scripts/skill-commands.json (skill -> command ids, for the engine check)
+is up to date. `--write-index` rewrites that index. Prints one line per skill, then OK or the problems; exit 1
 on any problem. Standard library only."""
 import json, os, re, sys
 
@@ -26,17 +27,60 @@ ID = re.compile(r"`([a-z][A-Za-z0-9]*(?:\.[A-Za-z0-9]+)+)`")
 FILE_EXT = {"py", "json", "md", "sh", "cube", "fcgt", "fcproj", "srt", "vtt", "wav", "mp4", "png", "yaml", "txt"}
 
 
-def check_command_ids(path):
-    text = open(path, encoding="utf-8").read()
-    for cid in sorted(set(ID.findall(text))):
+def named_ids(text):
+    """The engine command ids a Markdown text names (plugin ids and file names excluded), sorted."""
+    ids = set()
+    for cid in ID.findall(text):
         if cid.rsplit(".", 1)[1] in FILE_EXT or cid.split(".", 1)[0] not in NAMESPACES:
             continue
         if cid.startswith("bashcut.") and cid.count(".") == 1:
             continue  # a plugin id (`bashcut.vision`), not an engine command (`bashcut.profiles.apply`)
+        ids.add(cid)
+    return sorted(ids)
+
+
+def check_command_ids(path):
+    for cid in named_ids(open(path, encoding="utf-8").read()):
         if cid in PENDING:
             continue
         if cid not in COMMANDS and not any(c.startswith(cid + ".") for c in COMMANDS):
             problems.append(f"{rel(path)}: command `{cid}` is not in scripts/commands.json")
+
+
+def build_index(root=ROOT):
+    """skill -> command ids named in its SKILL.md and REFERENCE.md, agent -> ids in agents/<name>.md, plus the
+    kit version and the catalogue the ids were checked against (read by the doctor and the Agent panel)."""
+    def ids_of(*paths):
+        text = "\n".join(open(p, encoding="utf-8").read() for p in paths if os.path.isfile(p))
+        return named_ids(text)
+
+    skills_dir, agents_dir = os.path.join(root, "skills"), os.path.join(root, "agents")
+    names = sorted(n for n in os.listdir(skills_dir) if os.path.isfile(os.path.join(skills_dir, n, "SKILL.md")))
+    agent_files = sorted(f for f in os.listdir(agents_dir) if f.endswith(".md")) if os.path.isdir(agents_dir) else []
+    plugin = json.load(open(os.path.join(root, ".claude-plugin", "plugin.json"), encoding="utf-8"))
+    return {
+        "kit": plugin.get("version"),
+        "catalogue": CATALOGUE.get("source"),
+        "skills": {n: ids_of(*(os.path.join(skills_dir, n, f) for f in ("SKILL.md", "REFERENCE.md"))) for n in names},
+        "agents": {f[:-3]: ids_of(os.path.join(agents_dir, f)) for f in agent_files},
+    }
+
+
+def index_text(index):
+    return json.dumps(index, indent=2, ensure_ascii=False) + "\n"
+
+
+INDEX_PATH = os.path.join(ROOT, "scripts", "skill-commands.json")
+
+
+def check_index(index):
+    try:
+        committed = open(INDEX_PATH, encoding="utf-8").read()
+    except OSError:
+        problems.append("scripts/skill-commands.json is missing: run python3 scripts/check.py --write-index")
+        return
+    if committed != index_text(index):
+        problems.append("scripts/skill-commands.json is stale: run python3 scripts/check.py --write-index and commit it")
 
 
 def rel(path):
@@ -109,57 +153,69 @@ def load_json(path):
         return {}
 
 
-skills = sorted(n for n in os.listdir(SKILLS) if os.path.isfile(os.path.join(SKILLS, n, "SKILL.md")))
-for name in skills:
-    check_skill(name)
-    for f in ("SKILL.md", "REFERENCE.md"):
-        if os.path.isfile(os.path.join(SKILLS, name, f)):
-            check_command_ids(os.path.join(SKILLS, name, f))
-for f in sorted(os.listdir(os.path.join(ROOT, "agents"))) if os.path.isdir(os.path.join(ROOT, "agents")) else []:
-    if f.endswith(".md"):
-        check_command_ids(os.path.join(ROOT, "agents", f))
-
-for folder, dirs, files in os.walk(ROOT):
-    dirs[:] = [d for d in dirs if not d.startswith(".") and d not in ("node_modules", "_scratch")]
-    for f in files:
+def main():
+    skills = sorted(n for n in os.listdir(SKILLS) if os.path.isfile(os.path.join(SKILLS, n, "SKILL.md")))
+    for name in skills:
+        check_skill(name)
+        for f in ("SKILL.md", "REFERENCE.md"):
+            if os.path.isfile(os.path.join(SKILLS, name, f)):
+                check_command_ids(os.path.join(SKILLS, name, f))
+    for f in sorted(os.listdir(os.path.join(ROOT, "agents"))) if os.path.isdir(os.path.join(ROOT, "agents")) else []:
         if f.endswith(".md"):
-            check_links(os.path.join(folder, f))
+            check_command_ids(os.path.join(ROOT, "agents", f))
 
-# The README's Skills table lists every skill, once, and nothing else.
-readme = open(os.path.join(ROOT, "README.md"), encoding="utf-8").read()
-table = re.search(r"^## Skills\n(.*?)^## ", readme, re.S | re.M)
-listed = re.findall(r"^\| `([a-z0-9-]+)` \|", table.group(1), re.M) if table else []
-if not table:
-    problems.append("README.md: no ## Skills section")
-for name in sorted(set(skills) - set(listed)):
-    problems.append(f"README.md: skill {name} missing from the Skills table")
-for name in sorted(set(listed) - set(skills)):
-    problems.append(f"README.md: Skills table lists {name}, which is not a skill")
-for name in sorted({n for n in listed if listed.count(n) > 1}):
-    problems.append(f"README.md: Skills table lists {name} twice")
+    for folder, dirs, files in os.walk(ROOT):
+        dirs[:] = [d for d in dirs if not d.startswith(".") and d not in ("node_modules", "_scratch")]
+        for f in files:
+            if f.endswith(".md"):
+                check_links(os.path.join(folder, f))
 
-# Packaging: the marketplace serves this plugin, and the MCP server's launcher exists and runs.
-plugin = load_json(os.path.join(ROOT, ".claude-plugin", "plugin.json"))
-market = load_json(os.path.join(ROOT, ".claude-plugin", "marketplace.json"))
-if not re.fullmatch(r"\d+\.\d+\.\d+", str(plugin.get("version", ""))):
-    problems.append(".claude-plugin/plugin.json: version must be MAJOR.MINOR.PATCH")
-served = [p for p in market.get("plugins", []) if p.get("name") == plugin.get("name")]
-if not served or served[0].get("source") != "./":
-    problems.append(f".claude-plugin/marketplace.json: must list plugin '{plugin.get('name')}' with source ./")
-for server, spec in load_json(os.path.join(ROOT, ".mcp.json")).get("mcpServers", {}).items():
-    command = spec.get("command", "").replace("${CLAUDE_PLUGIN_ROOT}", ROOT)
-    if command.startswith(ROOT) and not os.access(command, os.X_OK):
-        problems.append(f".mcp.json: {server} command {rel(command)} is missing or not executable")
+    # The README's Skills table lists every skill, once, and nothing else.
+    readme = open(os.path.join(ROOT, "README.md"), encoding="utf-8").read()
+    table = re.search(r"^## Skills\n(.*?)^## ", readme, re.S | re.M)
+    listed = re.findall(r"^\| `([a-z0-9-]+)` \|", table.group(1), re.M) if table else []
+    if not table:
+        problems.append("README.md: no ## Skills section")
+    for name in sorted(set(skills) - set(listed)):
+        problems.append(f"README.md: skill {name} missing from the Skills table")
+    for name in sorted(set(listed) - set(skills)):
+        problems.append(f"README.md: Skills table lists {name}, which is not a skill")
+    for name in sorted({n for n in listed if listed.count(n) > 1}):
+        problems.append(f"README.md: Skills table lists {name} twice")
 
-# No FilmCraft wording for users (AK2): skills, README, plugin.json; scripts/commands.json keeps its provenance field.
-branded = [os.path.join(ROOT, "README.md"), os.path.join(ROOT, ".claude-plugin", "plugin.json"),
-           os.path.join(ROOT, "scripts", "commands.json")]
-for folder, dirs, files in os.walk(SKILLS):
-    dirs[:] = [d for d in dirs if d != "__pycache__"]
-    branded += [os.path.join(folder, f) for f in files if f.endswith((".md", ".json", ".py", ".sh", ".yaml"))]
-for path in branded:
-    for n, line in brand_leaks(open(path, encoding="utf-8").read()):
-        problems.append(f"{rel(path)}:{n}: says FilmCraft (use BashCutPro, or the older engine): {line[:80]}")
+    # Packaging: the marketplace serves this plugin, and the MCP server's launcher exists and runs.
+    plugin = load_json(os.path.join(ROOT, ".claude-plugin", "plugin.json"))
+    market = load_json(os.path.join(ROOT, ".claude-plugin", "marketplace.json"))
+    if not re.fullmatch(r"\d+\.\d+\.\d+", str(plugin.get("version", ""))):
+        problems.append(".claude-plugin/plugin.json: version must be MAJOR.MINOR.PATCH")
+    served = [p for p in market.get("plugins", []) if p.get("name") == plugin.get("name")]
+    if not served or served[0].get("source") != "./":
+        problems.append(f".claude-plugin/marketplace.json: must list plugin '{plugin.get('name')}' with source ./")
+    for server, spec in load_json(os.path.join(ROOT, ".mcp.json")).get("mcpServers", {}).items():
+        command = spec.get("command", "").replace("${CLAUDE_PLUGIN_ROOT}", ROOT)
+        if command.startswith(ROOT) and not os.access(command, os.X_OK):
+            problems.append(f".mcp.json: {server} command {rel(command)} is missing or not executable")
 
-print("\n".join(problems) or "OK")
-sys.exit(1 if problems else 0)
+    # No FilmCraft wording for users (AK2): skills, README, plugin.json; scripts/commands.json keeps its provenance field.
+    branded = [os.path.join(ROOT, "README.md"), os.path.join(ROOT, ".claude-plugin", "plugin.json"),
+               os.path.join(ROOT, "scripts", "commands.json")]
+    for folder, dirs, files in os.walk(SKILLS):
+        dirs[:] = [d for d in dirs if d != "__pycache__"]
+        branded += [os.path.join(folder, f) for f in files if f.endswith((".md", ".json", ".py", ".sh", ".yaml"))]
+    for path in branded:
+        for n, line in brand_leaks(open(path, encoding="utf-8").read()):
+            problems.append(f"{rel(path)}:{n}: says FilmCraft (use BashCutPro, or the older engine): {line[:80]}")
+
+    index = build_index()
+    if "--write-index" in sys.argv[1:]:
+        open(INDEX_PATH, "w", encoding="utf-8", newline="\n").write(index_text(index))
+        print(f"wrote {rel(INDEX_PATH)}")
+    else:
+        check_index(index)
+
+    print("\n".join(problems) or "OK")
+    sys.exit(1 if problems else 0)
+
+
+if __name__ == "__main__":
+    main()
