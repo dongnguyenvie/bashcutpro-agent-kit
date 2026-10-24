@@ -5,6 +5,8 @@ description: Recipe for news and documentary from photos, archive and source scr
 
 # News and documentary
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Reply in the user's language. News carries facts the viewer will repeat: plan the facts and their sources first
 (bcp:vlog-hook-script), then the pictures that prove them. Plan with bcp:vlog-plan, edit with bcp:edit-workflow.
 RC = the Reelcrew / AgentVid study (measured 2026-10-07: a 45 s vertical news piece and three landscape documentaries

@@ -1,5 +1,5 @@
 {
-  "kit": "0.2.31",
+  "kit": "0.2.32",
   "catalogue": "bashcutpro-cli 0.10.0 mcp --demo, tools/call command_list {} (whisper, Windows)",
   "skills": {
     "audio-mix": [

@@ -1,0 +1,1 @@
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).

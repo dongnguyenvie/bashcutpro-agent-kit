@@ -5,6 +5,8 @@ description: Give an edit rhythm by measurement: beat grid from music or word ed
 
 # Beat cutting and punch-in reframes
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 The loop: **measure → choose → cut → measure again → adjust**. Numbers are ranges with their source (the BashCut
 kit's research notes, naming the editors' kits they came from). Starting points, not targets: a user's reference,
 measured with `bcp:style-study`, wins.

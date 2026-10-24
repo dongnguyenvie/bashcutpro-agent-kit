@@ -5,6 +5,8 @@ description: Connect Claude Code or Codex to BashCutPro: install bashcutpro-cli,
 
 # Setting up BashCutPro's MCP server
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 BashCutPro is driven through one MCP server, `bashcutpro` (`bashcutpro-cli mcp`, stdio). Every later skill assumes
 its tools answer: `command_list`, `command_run`, `command_batch`, `doc_inspect`, `render_frame`. This skill gets the
 binary, registers the server and proves it works. It changes nothing in the user's project.
@@ -191,3 +193,10 @@ they can ask for next.
 | Not signed in to Claude Code (`authentication_failed`) | the user runs `claude` in a terminal and types `/login`; never handle credentials |
 | Exit 2 at start | an option the server does not take (only `--project`, `--demo`, `--data-dir`, `--bridge`) |
 | `isError` from `command_run` | the engine's message; read it, then `command_list {"filter": "<id>"}` for the command's params |
+
+## Kit and engine versions differ
+
+When `command_run` answers "unknown command" for an id a skill names, or `command_list` lacks it, do not try other
+ids. List what the engine has (the sentence under the title), tell the user the kit and BashCutPro versions differ,
+and fix the older side: update BashCutPro, or in the app's Plugins section choose Download kit. Then go on with the
+ids the engine lists.

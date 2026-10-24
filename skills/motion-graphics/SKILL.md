@@ -5,6 +5,8 @@ description: Designed, animated graphics over footage: stat and checklist cards,
 
 # Motion graphics
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Sources: T13 = motion-graphics study, T22 = renderer study. Choose inside each range from this video's speech, genre
 and frame; say why. Captions and plain titles: bcp:captions-text; transitions, punch-ins, a clip's In/Out:
 bcp:effects. BashCutPro has no graphics renderer of its own: simple cards are native graphics clips, everything

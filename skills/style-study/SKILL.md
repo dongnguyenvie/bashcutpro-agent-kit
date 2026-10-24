@@ -5,6 +5,8 @@ description: Learn a creator's or channel's editing style by measurement (pacing
 
 # Study a style
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 **Measure → look at frames → profile with tolerances → differences.** Profile numbers come from the references,
 never from this skill.
 

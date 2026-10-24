@@ -5,6 +5,8 @@ description: Find and place pictures the footage lacks: stock photo and video, a
 
 # Stock photos, video, emoji, logos and illustrations
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 The fetch scripts next to this skill (`fetch_stock.py`, `fetch_emoji.py`, `fetch_logos.py`,
 `fetch_illustrations.py`) run BashCut's scripts through the `bashcut.resources` plugin of bashcutpro-plugins: same
 flags (`--help`), same output lines, then one summary line with `files` (each saved file, its licence, author,

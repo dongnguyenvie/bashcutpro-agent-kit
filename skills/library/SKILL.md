@@ -5,6 +5,8 @@ description: Keep a creator's reusable pieces in one library (bashcut.library): 
 
 # Library: grow it, harvest after an edit, prune
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 A creator's channel looks like itself because the same lower third, look, sting and caption style come back in
 every video. The `bashcut.library` plugin (in `bashcutpro-plugins`, `plugins/library`; its own skill `library-plugin`
 has every flag) keeps them in `<data dir>/bashcut/library/` with a purpose line, tags, licence, favourite and uses

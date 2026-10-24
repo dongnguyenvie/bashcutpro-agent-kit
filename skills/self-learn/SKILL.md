@@ -5,6 +5,8 @@ description: Turn what went wrong or what the user corrected into lasting knowle
 
 # Self-learn
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 A problem solved in chat but not written down **will happen again**. The kit keeps what it learns as files
 (`<skill_dir>/knowledge.py`, standard library), not in the app: lessons and preferences for every project in
 `<data dir>/bashcut/knowledge/` (BashCutPro's data dir; a file it does not have yet is read from the older engine's folder (`FilmCraft`),

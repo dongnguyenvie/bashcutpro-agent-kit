@@ -5,6 +5,8 @@ description: Turn a plot, excerpt or scene idea into a cinematic 6-30 s prompt f
 
 # Scene prompt
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 > Based on [cinematic-video-prompt-engineer](https://github.com/CyberJ0605/cinematic-video-prompt-engineer-skill)
 > v1.8.0 by CyberJ0605 (MIT, see `<skill_dir>/LICENSE-upstream`), translated from Chinese. This copy adds the
 > BashCutPro notes, keeps the long rules in `<skill_dir>/references/` and moves the duration, continuation, output,

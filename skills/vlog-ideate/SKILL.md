@@ -5,6 +5,8 @@ description: Find a vlog's angle before planning: footage first, 3-5 angles back
 
 # Ideate: find the angle
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Reply in the user's language. This skill decides **what the video is about** and writes it down as the brief;
 bcp:vlog-plan then decides how to make it. The footage limits which angles are honest: an idea the footage cannot
 show is the most common failure of a footage-first editor (T01 §4). Numbers are sample ranges (T01 = ideation

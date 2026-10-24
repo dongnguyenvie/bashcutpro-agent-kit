@@ -5,6 +5,8 @@ description: Start any vlog or short video: route the brief to the right recipe 
 
 # Plan a vlog
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Reply in the user's language. The `vlog-*` skills are **recipes**: what one kind of vlog keeps (structure, hook,
 text, sound and look intent) and **sample ranges** from published practice, each with why it varies. The numbers
 are starting points, not settings: survey the footage, choose a value inside a range, and write it into the plan with

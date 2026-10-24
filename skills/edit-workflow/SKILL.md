@@ -5,6 +5,8 @@ description: The spine of every edit, raw footage to export: brief and plan, sur
 
 # Editing a video in BashCutPro
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 This skill runs the process; the stage skills hold the craft. Read **one section** of
 `<skill_dir>/REFERENCE.md` when a step names it (`sed -n '/^## Intake/,/^## [A-Z]/p' <skill_dir>/REFERENCE.md`),
 never the whole file. A recipe (`bcp:vlog-<kind>`, routed by `bcp:vlog-plan`) adds structure, ranges and checks to

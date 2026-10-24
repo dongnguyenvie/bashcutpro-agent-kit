@@ -3,7 +3,8 @@
 trigger phrases), its size, the files it references and the command ids it names (against scripts/commands.json,
 copied from BashCutPro's bashcut/commands.json plus its merged bashcut.* ids and a `pending` list); relative links in every Markdown file; the README's
 Skills table; the plugin, marketplace and MCP files; scripts/skill-commands.json (skill -> command ids, for the engine check)
-is up to date. `--write-index` rewrites that index. Prints one line per skill, then OK or the problems; exit 1
+is up to date; every skill naming command ids carries the shared sentence scripts/shared/engine-check.md verbatim.
+`--write-index` rewrites that index. Prints one line per skill, then OK or the problems; exit 1
 on any problem. Standard library only."""
 import json, os, re, sys
 
@@ -45,6 +46,20 @@ def check_command_ids(path):
             continue
         if cid not in COMMANDS and not any(c.startswith(cid + ".") for c in COMMANDS):
             problems.append(f"{rel(path)}: command `{cid}` is not in scripts/commands.json")
+
+
+ENGINE_CHECK_PATH = os.path.join(ROOT, "scripts", "shared", "engine-check.md")
+# Any line that talks like the shared sentence must be the sentence, so a reworded copy cannot drift.
+ENGINE_CHECK_MARKERS = ("never guess an id", "command_list` (or `bashcutpro-cli describe")
+
+
+def check_engine_check(name, text, sentence):
+    """A skill naming engine ids carries the shared engine-check sentence verbatim, and no edited copy of it."""
+    if named_ids(text) and sentence not in text:
+        problems.append(f"skills/{name}/SKILL.md: names command ids but lacks the sentence in scripts/shared/engine-check.md")
+    for n, line in enumerate(text.splitlines(), 1):
+        if sentence not in line and any(m in line for m in ENGINE_CHECK_MARKERS):
+            problems.append(f"skills/{name}/SKILL.md:{n}: edited copy of the engine-check sentence (use scripts/shared/engine-check.md verbatim)")
 
 
 def build_index(root=ROOT):
@@ -155,8 +170,15 @@ def load_json(path):
 
 def main():
     skills = sorted(n for n in os.listdir(SKILLS) if os.path.isfile(os.path.join(SKILLS, n, "SKILL.md")))
+    try:
+        sentence = open(ENGINE_CHECK_PATH, encoding="utf-8").read().strip()
+    except OSError:
+        sentence = ""
+        problems.append("scripts/shared/engine-check.md is missing")
     for name in skills:
         check_skill(name)
+        if sentence:
+            check_engine_check(name, open(os.path.join(SKILLS, name, "SKILL.md"), encoding="utf-8").read(), sentence)
         for f in ("SKILL.md", "REFERENCE.md"):
             if os.path.isfile(os.path.join(SKILLS, name, f)):
                 check_command_ids(os.path.join(SKILLS, name, f))

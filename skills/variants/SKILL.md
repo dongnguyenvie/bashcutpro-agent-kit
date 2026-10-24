@@ -5,6 +5,8 @@ description: A/B versions of an edit as sequences in one project, compared with 
 
 # Variants
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Reply in the user's language. A variant is a **second sequence in the same project**, not a second project: the
 footage, bins and lessons stay shared and the versions sit side by side. A revision the user asked for is made in
 place (`bcp:edit-workflow`, "Revisions"); a variant is for comparing or testing.

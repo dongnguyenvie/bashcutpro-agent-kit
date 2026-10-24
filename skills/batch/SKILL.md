@@ -5,6 +5,8 @@ description: Run one edit pipeline over many inputs with the batch runner: prese
 
 # Batch runs
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Reply in the user's language. `bashcut-batch` runs one pipeline over many inputs: **every input becomes its own
 project** (open and fix any of them later), up to `concurrency` items run at once, each step in its own
 `bashcutpro-cli` (engine) process, and the job book survives the app, the runner or the machine stopping. The app does not need

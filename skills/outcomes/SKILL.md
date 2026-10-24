@@ -5,6 +5,8 @@ description: Learn from a published video's retention export: map drops and rewa
 
 # Outcomes
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Reply in the user's language. A retention curve says **when** viewers left; the edit says **what** was on screen
 then. Together they turn "the video flopped" into a lesson the next edit uses. Privacy: only files the user gives
 you (an analytics export they downloaded); never log in, scrape or fetch from their accounts.

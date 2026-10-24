@@ -5,6 +5,8 @@ description: Decide what the viewer sees on every line of a talking video: one t
 
 # Visual plan
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Building skills decide one moment; this plan decides the whole video first, so treatments vary, land on words and
 reach the density and look needed. Plan and research here; the building skills build. The plan lives in the
 project notes (`project.notes` to read, `project.setNotes {text, merge}` to write; bcp:edit-workflow REFERENCE

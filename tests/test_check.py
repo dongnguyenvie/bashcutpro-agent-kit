@@ -22,5 +22,19 @@ class SkillIndexTests(unittest.TestCase):
         pass
 
 
+class EngineCheckTests(unittest.TestCase):
+    @unittest.skip("test ticket: a skill naming command ids without the engine-check sentence fails check.py")
+    def test_missing_sentence_fails(self):
+        pass
+
+    @unittest.skip("test ticket: a reworded copy of the engine-check sentence fails check.py")
+    def test_edited_sentence_fails(self):
+        pass
+
+    @unittest.skip("test ticket: a skill naming no ids needs no sentence; the verbatim sentence passes")
+    def test_verbatim_sentence_passes(self):
+        pass
+
+
 if __name__ == "__main__":
     unittest.main()

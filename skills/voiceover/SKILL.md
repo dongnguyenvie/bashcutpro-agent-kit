@@ -5,6 +5,8 @@ description: Voiceover: speaking rate and narration windows, lines sized to them
 
 # Voiceover
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 The numbers below are ranges with their source: choose with the measurements in hand, then measure again. Commands
 and JSON shapes: [REFERENCE.md](REFERENCE.md). A whole script goes to the `voice` sub-agent (`agents/voice.md`);
 no sub-agent (Codex): follow `<skill_dir>/../../agents/voice.md` yourself.

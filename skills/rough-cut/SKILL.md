@@ -5,6 +5,8 @@ description: Build the rough cut by quote: lines found with transcript.search, w
 
 # Rough cut by quote
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 You choose by **text**; the transcript's word times give the frames. Never type timestamps from memory or from
 SRT lines: tools that let the model write times are off by 0.6–1.5 s (T06 §4). Every time you cut on comes from
 a word's `start` / `end` (`transcript.search`, `transcript.inspect`). The ranges below are starting points; choose

@@ -5,6 +5,8 @@ description: Review an edit before export in 1-3 rounds: bashcut.review.run on e
 
 # Reviewing an edit
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Measure, look, judge by what a viewer perceives, fix, measure again. Passing checks is not proof of a good video:
 one tool's edit had all 29 actions on the beat and every cut on a bar line, and still had cramped frames, small
 text and titles over the icons: "the model will satisfy whatever can be quantified" (guizang). Look at the pixels.

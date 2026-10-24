@@ -5,6 +5,8 @@ description: Recipe for an ad or selling video (paid, commerce, UGC, launch): tr
 
 # Product ad
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Reply in the user's language. An ad sells one thing to one audience; a review (bcp:vlog-product-review) judges it.
 Plan with bcp:vlog-plan, edit with bcp:edit-workflow. A measured reference ad the user points to wins over every
 range here (T15 §7). Outputs: vertical → TikTok, Reels, Shorts; feed 4:5 or square; landscape promo → YouTube 1080p.
