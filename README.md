@@ -171,6 +171,8 @@ scripts/refresh_commands.py       refreshes commands.json from a build's own com
 - Run `python3 scripts/check.py` and `python3 -m unittest discover -s tests` before committing. A change to `skills/` raises `version` in
   `.claude-plugin/plugin.json`: Claude Code caches an installed plugin per version.
 - A change to the command ids a skill or agent names changes `scripts/skill-commands.json`: run `python3 scripts/check.py --write-index` and commit it (plain `check.py` fails when it is stale).
+- After bumping `.claude-plugin/plugin.json` version, tag the merge commit: `git tag v<version> <sha> && git push origin v<version>`. The BashCutPro app
+  reads `bashcut/kit.lock` at build time and clones/checks out that exact tag, so `kit.lock` must be updated in the same PR or the next one.
 
 ## License
 
