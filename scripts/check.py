@@ -170,8 +170,15 @@ def load_json(path):
 
 def main():
     skills = sorted(n for n in os.listdir(SKILLS) if os.path.isfile(os.path.join(SKILLS, n, "SKILL.md")))
+    try:
+        sentence = open(ENGINE_CHECK_PATH, encoding="utf-8").read().strip()
+    except OSError:
+        sentence = ""
+        problems.append("scripts/shared/engine-check.md is missing")
     for name in skills:
         check_skill(name)
+        if sentence:
+            check_engine_check(name, open(os.path.join(SKILLS, name, "SKILL.md"), encoding="utf-8").read(), sentence)
         for f in ("SKILL.md", "REFERENCE.md"):
             if os.path.isfile(os.path.join(SKILLS, name, f)):
                 check_command_ids(os.path.join(SKILLS, name, f))

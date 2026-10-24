@@ -197,6 +197,6 @@ they can ask for next.
 ## Kit and engine versions differ
 
 When `command_run` answers "unknown command" for an id a skill names, or `command_list` lacks it, do not try other
-ids. Run `command_list` (or `bashcutpro-cli describe <id>`), tell the user the kit and BashCutPro versions differ,
+ids. List what the engine has (the sentence under the title), tell the user the kit and BashCutPro versions differ,
 and fix the older side: update BashCutPro, or in the app's Plugins section choose Download kit. Then go on with the
 ids the engine lists.
