@@ -1,6 +1,6 @@
 ---
 name: visual-plan
-description: Decide what the viewer sees on every line of a talking video in BashCutPro: one treatment per line (speaker, punch-in, own B-roll, stock, icon, text, graphic, generated, screen, nothing) anchored to a word, balanced across the video, written as visuals rows in the plan in the project notes, then handed to the building skills (AI pictures through the bashcut.image-gen plugin). Triggers: "minh hoạ", "kế hoạch hình ảnh", "câu này hiện gì", "b-roll cho script", "visual plan", "thêm hình cho lời nói".
+description: Decide what the viewer sees on every line of a talking video: one treatment per line (speaker, punch-in, B-roll, stock, icon, text, graphic, generated, screen) anchored to a word, written as visuals rows in the plan. Not for fetching the pictures (bcp:stock-images) or the script words (bcp:vlog-hook-script). Triggers: "minh hoạ", "kế hoạch hình ảnh", "câu này hiện gì", "b-roll cho script", "visual plan", "thêm hình cho lời nói".
 ---
 
 # Visual plan

@@ -1,6 +1,6 @@
 ---
 name: audio-mix
-description: Balance sound in a BashCutPro edit by measurement: voice cleaned and levelled to the output profile with bashcut.audio.polish, a fixed music bed under the voice (ducking only for long silences), fades, volume keyframes, SFX at cuts, music retimed with remix, licensed music and SFX found with fetch_audio.py, loudness measured on the timeline with bashcut.audio.loudness, one export per output profile with its true peak (≤ −1 dBTP) checked on the file, loudness.py for stems. Triggers: "trộn âm thanh", "cân âm lượng", "nhạc to quá", "thêm sfx", "tìm nhạc", "nhạc không bản quyền", "meme sound", "audio mix", "ducking", "loudness".
+description: Balance sound in an edit by measurement: voice polish, music bed under the voice, fades, SFX, licensed music, loudness checked and one export per profile. Not for writing or voicing lines (bcp:voiceover) or cutting to the beat (bcp:beat-cut). Triggers: "trộn âm thanh", "cân âm lượng", "nhạc to quá", "thêm sfx", "tìm nhạc", "nhạc không bản quyền", "meme sound", "audio mix", "ducking", "loudness".
 ---
 
 # Audio mix

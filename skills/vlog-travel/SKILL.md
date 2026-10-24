@@ -1,6 +1,6 @@
 ---
 name: vlog-travel
-description: Recipe for a travel vlog or guide, vertical by default: a cost or time hook, numbered place sections with place cards, a cost recap and a save CTA, with shot, rhythm, transition and graphic ranges. Use after bcp:vlog-plan picks travel, or for footage of a trip, city or route. Triggers: "travel vlog", "trip video", "check-in", "vlog du lịch", "review chuyến đi", "48h ở", "lịch trình".
+description: Recipe for a travel vlog or guide, vertical by default: cost or time hook, numbered place sections with place cards, cost recap, save CTA. Use after bcp:vlog-plan picks travel. Not for daily routines (bcp:vlog-daily) or food (bcp:vlog-food). Triggers: "travel vlog", "trip video", "check-in", "vlog du lịch", "review chuyến đi", "48h ở", "lịch trình".
 ---
 
 # Travel vlog

@@ -1,6 +1,6 @@
 ---
 name: vlog-tutorial
-description: Recipe for a tutorial or tool demo: the result first, dead air cut from measured silences (loudness.py --tighten) and silent waiting sped up, numbered steps with step cards, one zoom per narration line onto what is clicked, presenter levelled to the voiceover, limits and next steps; landscape plus a vertical cut. Use after bcp:vlog-plan picks tutorial. Triggers: "tutorial", "how to", "software demo", "screen recording", "video hướng dẫn", "demo phần mềm", "cách làm", "từng bước", "quay màn hình".
+description: Recipe for a tutorial or tool demo: result first, dead air cut, numbered steps with step cards, a zoom per narration line onto what is clicked. Use after bcp:vlog-plan picks tutorial. Not for talking to camera (bcp:vlog-talking-head) or knowledge explainers (bcp:vlog-explainer). Triggers: "tutorial", "how to", "software demo", "screen recording", "video hướng dẫn", "demo phần mềm", "cách làm", "từng bước", "quay màn hình".
 ---
 
 # Tutorial and tool demo

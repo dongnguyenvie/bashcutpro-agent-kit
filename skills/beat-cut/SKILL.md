@@ -1,6 +1,6 @@
 ---
 name: beat-cut
-description: Give a BashCutPro edit rhythm by measurement: word edges from the transcript for speech-led edits, a beat grid from beats.py (an out-of-process estimate on a WAV) for music-led ones, shot lengths per section from sourced ranges, speech tightened on word edges (rough-cut tighten.py), cuts in one bashcut.batch, rhythm and beat sync checked, punch-ins sized from zoom headroom. Use when cutting to music or the cut feels flat or rushed. Triggers: "cắt theo nhịp", "cắt theo beat", "khớp nhạc", "lệch nhịp", "bản dựng phẳng", "nhàm", "punch-in", "cut to the beat".
+description: Give an edit rhythm by measurement: beat grid from music or word edges from speech, shot lengths per section, punch-ins, beat sync checked. Use when cutting to music or the cut feels flat. Not for cutting speech by quote (bcp:rough-cut) or transitions and speed (bcp:effects). Triggers: "cắt theo nhịp", "cắt theo beat", "khớp nhạc", "lệch nhịp", "bản dựng phẳng", "nhàm", "punch-in", "cut to the beat".
 ---
 
 # Beat cutting and punch-in reframes

@@ -1,6 +1,6 @@
 ---
 name: stock-images
-description: Find and place pictures the footage lacks in a BashCutPro edit: stock photos and video (Wikimedia, Openverse, NASA, Internet Archive; Pixabay and Pexels with a key), animated emoji, brand logos, Iconify icons, illustration sets in one style, each file's licence recorded next to it; placed with media_import, timeline.place and Motion keyframes. Triggers: "ảnh minh hoạ", "video minh hoạ", "ảnh stock", "pexels", "lấy ảnh trên mạng", "icon", "emoji", "logo", "b-roll", "stock photo".
+description: Find and place pictures the footage lacks: stock photo and video, animated emoji, logos, icons, illustration sets, licence recorded per file. Not for your own saved assets (bcp:library), deciding what each line shows (bcp:visual-plan) or AI video (bcp:vlog-scene-prompt). Triggers: "ảnh minh hoạ", "video minh hoạ", "ảnh stock", "pexels", "lấy ảnh trên mạng", "icon", "emoji", "logo", "b-roll", "stock photo".
 ---
 
 # Stock photos, video, emoji, logos and illustrations

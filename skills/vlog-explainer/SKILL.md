@@ -1,6 +1,6 @@
 ---
 name: vlog-explainer
-description: Recipe for an explainer with little or no footage: a question-and-number hook, one data graphic per section timed to the voice (table, chart, map, counter), fixed frame chrome, every number sourced, a voiced or music-only version. Use after bcp:vlog-plan picks explainer. Triggers: "explainer", "infographic", "knowledge video", "video giải thích", "video kiến thức", "lịch sử", "luật", "bất động sản".
+description: Recipe for an explainer with little or no footage: question-and-number hook, one data graphic per section timed to the voice, every number sourced. Use after bcp:vlog-plan picks explainer. Not for news from photos and archive (bcp:vlog-news) or screen demos (bcp:vlog-tutorial). Triggers: "explainer", "infographic", "knowledge video", "video giải thích", "video kiến thức", "lịch sử", "luật", "bất động sản".
 ---
 
 # Explainer

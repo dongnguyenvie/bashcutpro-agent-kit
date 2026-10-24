@@ -1,6 +1,6 @@
 ---
 name: vlog-news
-description: Recipe for news and documentary from photos, archive and source screenshots: a vertical news short with fixed chrome, or a landscape documentary with date cards; honesty rules for every claim, picture, credit, date and quote. Use after bcp:vlog-plan picks news. Triggers: "news", "documentary", "breaking news", "tin tức", "bản tin", "tin nóng", "thời sự", "phóng sự", "phim tài liệu".
+description: Recipe for news and documentary from photos, archive and source screenshots: vertical news short with fixed chrome or landscape documentary with date cards; honesty rules for claims, credits, dates, quotes. Use after bcp:vlog-plan picks news. Not for data explainers (bcp:vlog-explainer). Triggers: "news", "documentary", "breaking news", "tin tức", "bản tin", "tin nóng", "thời sự", "phóng sự", "phim tài liệu".
 ---
 
 # News and documentary

@@ -1,6 +1,6 @@
 ---
 name: rough-cut
-description: Build the rough cut in BashCutPro by quote: lines found in the transcript with transcript.search, word edges refined from the audio (bashcut.transcript.refineEdges), selects tightened on word edges by tighten.py (fillers, false starts and dead air cut, one bashcut.batch), selects kept with reasons, bashcut.review.run on every output; also long → short clips from a podcast or stream, one sequence per short. Triggers: "cắt thô", "rough cut", "chọn đoạn", "lọc câu hay", "cắt podcast thành short", "highlight", "selects", "cắt giữa chữ", "cut by quote".
+description: Build the rough cut by quote: lines found with transcript.search, word edges refined, selects tightened with tighten.py (fillers, false starts, dead air), kept with reasons; also long to short clips. Not for finding the angle (bcp:vlog-ideate), the plan (bcp:vlog-plan) or beat-led rhythm (bcp:beat-cut). Triggers: "cắt thô", "rough cut", "chọn đoạn", "lọc câu hay", "cắt podcast thành short", "highlight", "selects", "cắt giữa chữ", "cut by quote".
 ---
 
 # Rough cut by quote

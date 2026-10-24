@@ -1,6 +1,6 @@
 ---
 name: vlog-scene-prompt
-description: Turn a plot, novel excerpt or scene idea into a cinematic 6–30 s prompt for AI video models (Seedance, Kling, Veo, Sora…), plan reference images, continue a series, fix a failed generation, and bring the kept take into the edit. Use when a shot must be generated. Triggers: "video prompt", "AI video prompt", "Kling prompt", "viết prompt video", "prompt video AI", "prompt Kling", "cảnh điện ảnh", "viết tiếp đoạn sau", "sửa prompt video".
+description: Turn a plot, excerpt or scene idea into a cinematic 6-30 s prompt for AI video models (Seedance, Kling, Veo, Sora), plan reference images, fix a failed generation, import the kept take. Not for stock pictures (bcp:stock-images) or the vlog script (bcp:vlog-hook-script). Triggers: "video prompt", "AI video prompt", "Kling prompt", "viết prompt video", "prompt video AI", "prompt Kling", "cảnh điện ảnh", "viết tiếp đoạn sau", "sửa prompt video".
 ---
 
 # Scene prompt

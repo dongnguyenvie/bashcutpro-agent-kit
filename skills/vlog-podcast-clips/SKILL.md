@@ -1,6 +1,6 @@
 ---
 name: vlog-podcast-clips
-description: Recipe for shorts cut from a long podcast, interview, livestream or talk: clips proposed by quote, the standalone test, a blind second pass, the user picks; one sequence per clip with its hook first, tightened on word edges with tighten.py (dead air, fillers, false starts: 8–15 cuts in a 40 s clip), captions from bashcut.captions.create inside the safe area, bashcut.review.run on every clip, one profile export each. Use after bcp:vlog-plan picks podcast-clips. Triggers: "podcast clips", "long to short", "clips from a livestream", "cắt podcast", "cắt clip ngắn từ video dài", "cắt shorts từ livestream".
+description: Recipe for shorts cut from a long podcast, interview, livestream or talk: clips proposed by quote, standalone test, hook first, tightened on word edges, captions, review, one export each. Use after bcp:vlog-plan picks podcast-clips. Not for one person talking to camera (bcp:vlog-talking-head). Triggers: "podcast clips", "long to short", "clips from a livestream", "cắt podcast", "cắt clip ngắn từ video dài", "cắt shorts từ livestream".
 ---
 
 # Podcast clips (long → short)

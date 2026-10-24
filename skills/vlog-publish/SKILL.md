@@ -1,6 +1,6 @@
 ---
 name: vlog-publish
-description: Finish a reviewed vlog for posting: platform facts, one export per output at its own loudness target, another shape as its own sequence, a no-music version, cover candidates checked at phone size, YouTube chapters from section markers, post title, caption and hashtags. Use when the edit passed review and the user wants to export or post. Triggers: "export for TikTok", "post to YouTube", "make a cover", "xuất video", "đăng TikTok", "đăng Reels", "đăng YouTube", "hashtag", "ảnh bìa", "chương YouTube".
+description: Finish a reviewed vlog for posting: platform facts, one export per output at its loudness target, other shapes, cover candidates, YouTube chapters, post title, caption and hashtags. Use when the edit passed review. Not for reviewing (bcp:review) or many files (bcp:batch). Triggers: "export for TikTok", "post to YouTube", "make a cover", "xuất video", "đăng TikTok", "đăng Reels", "đăng YouTube", "hashtag", "ảnh bìa", "chương YouTube".
 ---
 
 # Publish

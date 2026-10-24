@@ -1,6 +1,6 @@
 ---
 name: review
-description: Review a BashCutPro edit before export as a capped loop of 1-3 rounds: bashcut.review.run on every output sequence, each finding fixed by its check (captions speed, cuts in words, gaps, frozen picture, loudness, true peak), measured from the timeline with one export per output, frames at phone size at every cut and text, judge each finding by what a viewer perceives, fix, re-measure, with an independent critic sub-agent. Triggers: "review", "kiểm tra video", "soát lỗi", "xem lại bản dựng", "chấm bản dựng", "QC", "trước khi xuất", "check my edit".
+description: Review an edit before export in 1-3 rounds: bashcut.review.run on every output, frames at every cut and text, fix each finding by what a viewer perceives, re-measure, independent critic sub-agent. Not for a published video's analytics (bcp:outcomes) or building the cut (bcp:edit-workflow). Triggers: "review", "kiểm tra video", "soát lỗi", "xem lại bản dựng", "chấm bản dựng", "QC", "trước khi xuất", "check my edit".
 ---
 
 # Reviewing an edit

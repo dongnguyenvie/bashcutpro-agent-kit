@@ -1,6 +1,6 @@
 ---
 name: library
-description: Keeping a BashCutPro creator's reusable pieces in one library with the bashcut.library plugin: look there first (titles, lower thirds, looks, LUTs, effect presets, stickers, overlays, sounds, music beds, project templates, the brand kit), harvest what an edit made worth keeping, apply the brand kit, prune what is never used, and share packs. Triggers: "thư viện", "lưu lại để dùng sau", "dùng lại", "brand kit", "bộ nhận diện thương hiệu", "preset của tôi", "my library", "save this title", "reuse the look", "library pack".
+description: Keep a creator's reusable pieces in one library (bashcut.library): look there first for titles, looks, LUTs, presets, music, the brand kit; harvest what is worth keeping; share packs. Not for new stock pictures (bcp:stock-images) or grading (bcp:color-grade). Triggers: "thư viện", "lưu lại để dùng sau", "dùng lại", "brand kit", "bộ nhận diện thương hiệu", "preset của tôi", "my library", "save this title", "reuse the look", "library pack".
 ---
 
 # Library: grow it, harvest after an edit, prune

@@ -1,6 +1,6 @@
 ---
 name: variants
-description: A/B versions of an edit as sequences in the same project (named "<base> — <variant>", each with its brief in the project sidecar), compared with diff.py (cuts, length, opening, music, looks, captions, review scores) and exported each with its own output profile. Hooks and openings A/B, look A/B, length cuts (60 / 30 / 15 s), one-change ad tests. Use when the user wants several versions to compare or test. Triggers: "A/B", "A/B test", "variant", "two versions", "another version", "hook B", "shorter version", "phiên bản khác", "làm 2 bản", "bản ngắn hơn", "thử hook khác", "so sánh hai bản".
+description: A/B versions of an edit as sequences in one project, compared with diff.py, each exported with its own profile: hook and look A/B, length cuts, one-change ad tests. Not for many inputs (bcp:batch) or learning another channel's style (bcp:style-study). Triggers: "A/B", "A/B test", "variant", "two versions", "another version", "hook B", "shorter version", "phiên bản khác", "làm 2 bản", "bản ngắn hơn", "thử hook khác", "so sánh hai bản".
 ---
 
 # Variants

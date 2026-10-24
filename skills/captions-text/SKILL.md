@@ -1,6 +1,6 @@
 ---
 name: captions-text
-description: Captions and on-screen text in BashCutPro: captions from speech (transcript.generate or imported words), cues grouped from the words at ≤ 20 characters a second with captions_fit.py (or transcript.createCaptions) and fast cues fixed, word-by-word styles, SRT/VTT import and export, fixing text and times with captions.*, the caption look per track, titles, place and chapter cards with graphics.* and .fcgt templates, Vietnamese fonts (fetch_font.py), size, contrast, safe area and sync. Triggers: "phụ đề", "sub", "caption", "chữ trên hình", "tiêu đề", "thẻ chương", "nhãn địa điểm", "font", "lỗi font tiếng Việt", "add subtitles".
+description: Captions and on-screen text: captions from speech, SRT/VTT import and export, word-by-word styles, caption look, titles, place and chapter cards, Vietnamese fonts, safe area and sync. Not for writing the words (bcp:vlog-hook-script) or animated stat cards and charts (bcp:motion-graphics). Triggers: "phụ đề", "sub", "caption", "chữ trên hình", "tiêu đề", "thẻ chương", "nhãn địa điểm", "font", "lỗi font tiếng Việt", "add subtitles".
 ---
 
 # Captions and on-screen text

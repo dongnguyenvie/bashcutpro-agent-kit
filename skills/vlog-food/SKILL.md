@@ -1,6 +1,6 @@
 ---
 name: vlog-food
-description: Recipe for a food vlog or review, vertical by default: the bite or pour with the price as the hook, a place card, quick process inserts, tasting reactions, a verdict and address, with insert, slow-motion, sound and look ranges. Use after bcp:vlog-plan picks food, or for eating, cooking or a street stall. Triggers: "food review", "food vlog", "mukbang", "review món", "review quán", "vlog ăn uống", "nấu ăn".
+description: Recipe for a food vlog or review, vertical by default: the bite or pour with the price as hook, place card, process inserts, tasting reactions, verdict and address. Use after bcp:vlog-plan picks food. Not for product reviews (bcp:vlog-product-review) or trips (bcp:vlog-travel). Triggers: "food review", "food vlog", "mukbang", "review món", "review quán", "vlog ăn uống", "nấu ăn".
 ---
 
 # Food vlog

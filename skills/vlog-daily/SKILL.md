@@ -1,6 +1,6 @@
 ---
 name: vlog-daily
-description: Recipe for a daily-life vlog (a day in my life, routines, study or work with me): time-stamped moments in order, a calm pace with holds and quick sequences, diary voiceover or small captions, one calm music bed, a soft look. Use after bcp:vlog-plan picks daily. Triggers: "a day in my life", "daily vlog", "morning routine", "study with me", "một ngày của tôi", "vlog đời thường".
+description: Recipe for a daily-life vlog (day in my life, routines, study with me): time-stamped moments, calm pace, diary voiceover or small captions, one music bed, soft look. Use after bcp:vlog-plan picks daily. Not for trips (bcp:vlog-travel). Triggers: "a day in my life", "daily vlog", "morning routine", "study with me", "một ngày của tôi", "vlog đời thường".
 ---
 
 # Daily vlog

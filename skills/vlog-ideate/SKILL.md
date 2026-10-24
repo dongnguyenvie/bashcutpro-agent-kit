@@ -1,6 +1,6 @@
 ---
 name: vlog-ideate
-description: Find a vlog's angle before planning: footage first, 3–5 angles each backed by real shots, research only when it changes the choice, three hooks per angle screened against shots, a decision table, then the brief in the project notes. Use before bcp:vlog-plan when there is no clear angle or brief. Triggers: "what video can I make", "video ideas", "brainstorm", "làm video gì", "ý tưởng video", "góc kể", "nên kể gì", "footage này làm được gì".
+description: Find a vlog's angle before planning: footage first, 3-5 angles backed by real shots, hooks screened against shots, then the brief in project notes. Use when there is no clear angle or brief. Not for the edit plan (bcp:vlog-plan), the script (bcp:vlog-hook-script) or surveying (bcp:footage-survey). Triggers: "what video can I make", "video ideas", "brainstorm", "làm video gì", "ý tưởng video", "góc kể", "nên kể gì", "footage này làm được gì".
 ---
 
 # Ideate: find the angle

@@ -1,6 +1,6 @@
 ---
 name: vlog-plan
-description: Start any vlog or short video in BashCutPro: read the brief, route it to the right recipe (travel, food, daily, review, ad, talking head, podcast clips, tutorial, explainer, news, promo), survey the footage, write the edit plan with chosen ranges and reasons into the project notes, then hand over to bcp:edit-workflow. Use first, before cutting, even when the footage is still to be shot. Triggers: "make a vlog", "plan a vlog", "shot list", "làm vlog", "dựng vlog", "một prompt ra video", "lên kịch bản vlog", "cần quay những gì".
+description: Start any vlog or short video: route the brief to the right recipe (travel, food, daily, review, ad, talking head, podcast, tutorial, explainer, news, promo), write the plan into project notes, hand to bcp:edit-workflow. Use first. Not for finding an angle (bcp:vlog-ideate) or the edit (bcp:edit-workflow). Triggers: "make a vlog", "plan a vlog", "shot list", "làm vlog", "dựng vlog", "một prompt ra video", "lên kịch bản vlog", "cần quay những gì".
 ---
 
 # Plan a vlog

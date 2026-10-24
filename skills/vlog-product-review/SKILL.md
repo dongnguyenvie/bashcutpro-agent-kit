@@ -1,6 +1,6 @@
 ---
 name: vlog-product-review
-description: Recipe for a product review or unboxing: a verdict or price-question hook, what it is, two to four points shown in use with pros and cons, a verdict card with the price and who it is for, sponsorship disclosed early, true-to-life colour. Use after bcp:vlog-plan picks product-review. Triggers: "product review", "unboxing", "is it worth it", "review sản phẩm", "đập hộp", "có nên mua", "đáng tiền không", "so sánh".
+description: Recipe for a product review or unboxing: verdict or price-question hook, what it is, 2-4 points shown in use with pros and cons, verdict card, sponsorship disclosed early. Use after bcp:vlog-plan picks product-review. Not for selling ads (bcp:vlog-product-ad) or food (bcp:vlog-food). Triggers: "product review", "unboxing", "is it worth it", "review sản phẩm", "đập hộp", "có nên mua", "đáng tiền không", "so sánh".
 ---
 
 # Product review

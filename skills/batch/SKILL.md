@@ -1,6 +1,6 @@
 ---
 name: batch
-description: Run the same edit over many inputs with BashCutPro's batch runner (bashcut-batch): when a batch is the right tool, the built-in presets (Vietsub a folder, podcast to shorts, every platform, captions draft, clean audio), writing a bashcut-batch/1 pipeline (engine steps, plugin and agent steps, output profiles), running it headless and in parallel, watching the job book, and fixing failed, tripped or needs-fix items with retry. Triggers: "batch", "batch these", "do this for every clip", "a whole folder", "100 videos", "làm hàng loạt", "cả thư mục", "xuất hàng loạt", "vietsub cả thư mục", "chạy batch", "process all".
+description: Run one edit pipeline over many inputs with the batch runner: presets (Vietsub a folder, podcast to shorts, every platform), writing a pipeline, running it in parallel, retrying failed items. Not for a single video (bcp:edit-workflow). Triggers: "batch", "batch these", "do this for every clip", "a whole folder", "100 videos", "làm hàng loạt", "cả thư mục", "xuất hàng loạt", "vietsub cả thư mục", "chạy batch", "process all".
 ---
 
 # Batch runs

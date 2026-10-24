@@ -1,6 +1,6 @@
 ---
 name: vlog-talking-head
-description: Recipe for one person talking to camera (opinion, story time, tips): the strongest line first, cuts on word edges with tighten.py (≥ 70 % of cuts on a word edge, fillers and false starts out, breaths kept), punch-ins every 4–6 s, captions from bashcut.captions.create inside the safe area, B-roll on claims, bashcut.review.run before the one export. Use after bcp:vlog-plan picks talking-head. Triggers: "talking head", "story time", "opinion video", "video nói chuyện", "nói trước camera", "chia sẻ quan điểm".
+description: Recipe for one person talking to camera (opinion, story time, tips): strongest line first, cuts on word edges, punch-ins every 4-6 s, captions, B-roll on claims. Use after bcp:vlog-plan picks talking-head. Not for clips from a long podcast (bcp:vlog-podcast-clips) or screen demos (bcp:vlog-tutorial). Triggers: "talking head", "story time", "opinion video", "video nói chuyện", "nói trước camera", "chia sẻ quan điểm".
 ---
 
 # Talking head
