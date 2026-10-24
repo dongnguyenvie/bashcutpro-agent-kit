@@ -7,6 +7,7 @@ is up to date; every skill naming command ids carries the shared sentence script
 `--write-index` rewrites that index. Prints one line per skill, then OK or the problems; exit 1
 on any problem. Standard library only."""
 import json, os, re, sys
+from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from brandcheck import brand_leaks
@@ -17,7 +18,7 @@ MAX_LINES = 250
 problems = []
 
 # Command ids are checked only in namespaces the catalogue knows, so `grade.py` or `looks.json` are not ids.
-CATALOGUE = json.load(open(os.path.join(ROOT, "scripts", "commands.json"), encoding="utf-8"))
+CATALOGUE = json.loads(Path(os.path.join(ROOT, "scripts", "commands.json")).read_text(encoding="utf-8"))
 COMMANDS = {c["id"] for c in CATALOGUE["commands"]}
 # BashCutPro's window commands (bashcut.ui.*, bashcut.agent.*, bashcut.batch.*, …): bridge mode only.
 COMMANDS |= {c["id"] for c in (CATALOGUE.get("frontend") or {}).get("ids", [])}
@@ -41,7 +42,7 @@ def named_ids(text):
 
 
 def check_command_ids(path):
-    for cid in named_ids(open(path, encoding="utf-8").read()):
+    for cid in named_ids(Path(path).read_text(encoding="utf-8")):
         if cid in PENDING:
             continue
         if cid not in COMMANDS and not any(c.startswith(cid + ".") for c in COMMANDS):
@@ -66,13 +67,13 @@ def build_index(root=ROOT):
     """skill -> command ids named in its SKILL.md and REFERENCE.md, agent -> ids in agents/<name>.md, plus the
     kit version and the catalogue the ids were checked against (read by the doctor and the Agent panel)."""
     def ids_of(*paths):
-        text = "\n".join(open(p, encoding="utf-8").read() for p in paths if os.path.isfile(p))
+        text = "\n".join(Path(p).read_text(encoding="utf-8") for p in paths if os.path.isfile(p))
         return named_ids(text)
 
     skills_dir, agents_dir = os.path.join(root, "skills"), os.path.join(root, "agents")
     names = sorted(n for n in os.listdir(skills_dir) if os.path.isfile(os.path.join(skills_dir, n, "SKILL.md")))
     agent_files = sorted(f for f in os.listdir(agents_dir) if f.endswith(".md")) if os.path.isdir(agents_dir) else []
-    plugin = json.load(open(os.path.join(root, ".claude-plugin", "plugin.json"), encoding="utf-8"))
+    plugin = json.loads(Path(os.path.join(root, ".claude-plugin", "plugin.json")).read_text(encoding="utf-8"))
     return {
         "kit": plugin.get("version"),
         "catalogue": CATALOGUE.get("source"),
@@ -90,7 +91,7 @@ INDEX_PATH = os.path.join(ROOT, "scripts", "skill-commands.json")
 
 def check_index(index):
     try:
-        committed = open(INDEX_PATH, encoding="utf-8").read()
+        committed = Path(INDEX_PATH).read_text(encoding="utf-8")
     except OSError:
         problems.append("scripts/skill-commands.json is missing: run python3 scripts/check.py --write-index")
         return
@@ -109,7 +110,7 @@ def frontmatter(text):
 
 def check_skill(name):
     path = os.path.join(SKILLS, name, "SKILL.md")
-    text = open(path, encoding="utf-8").read()
+    text = Path(path).read_text(encoding="utf-8")
     meta = frontmatter(text)
     if meta is None:
         problems.append(f"{name}: no frontmatter")
@@ -138,7 +139,7 @@ def check_skill(name):
     user_only = meta.get("disable-model-invocation", "").strip() == "true"
     policy = os.path.join(SKILLS, name, "agents", "openai.yaml")
     codex_off = os.path.isfile(policy) and re.search(
-        r"^\s*allow_implicit_invocation:\s*false\s*$", open(policy, encoding="utf-8").read(), re.M) is not None
+        r"^\s*allow_implicit_invocation:\s*false\s*$", Path(policy).read_text(encoding="utf-8"), re.M) is not None
     if user_only != codex_off:
         problems.append(f"{name}: disable-model-invocation: true and agents/openai.yaml "
                         "policy.allow_implicit_invocation: false go together")
@@ -150,7 +151,7 @@ def check_skill(name):
 
 def check_links(path):
     """Relative Markdown links and images must point at a file or folder in the kit."""
-    text = open(path, encoding="utf-8").read()
+    text = Path(path).read_text(encoding="utf-8")
     text = re.sub(r"```.*?```", "", text, flags=re.S)  # code blocks are not links
     for target in re.findall(r"\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)", text):
         if re.match(r"[a-z][a-z0-9+.-]*:", target, re.I) or target.startswith("#"):
@@ -162,7 +163,7 @@ def check_links(path):
 
 def load_json(path):
     try:
-        return json.load(open(path, encoding="utf-8"))
+        return json.loads(Path(path).read_text(encoding="utf-8"))
     except (OSError, ValueError) as e:
         problems.append(f"{rel(path)}: {e}")
         return {}
@@ -171,14 +172,14 @@ def load_json(path):
 def main():
     skills = sorted(n for n in os.listdir(SKILLS) if os.path.isfile(os.path.join(SKILLS, n, "SKILL.md")))
     try:
-        sentence = open(ENGINE_CHECK_PATH, encoding="utf-8").read().strip()
+        sentence = Path(ENGINE_CHECK_PATH).read_text(encoding="utf-8").strip()
     except OSError:
         sentence = ""
         problems.append("scripts/shared/engine-check.md is missing")
     for name in skills:
         check_skill(name)
         if sentence:
-            check_engine_check(name, open(os.path.join(SKILLS, name, "SKILL.md"), encoding="utf-8").read(), sentence)
+            check_engine_check(name, Path(os.path.join(SKILLS, name, "SKILL.md")).read_text(encoding="utf-8"), sentence)
         for f in ("SKILL.md", "REFERENCE.md"):
             if os.path.isfile(os.path.join(SKILLS, name, f)):
                 check_command_ids(os.path.join(SKILLS, name, f))
@@ -193,7 +194,7 @@ def main():
                 check_links(os.path.join(folder, f))
 
     # The README's Skills table lists every skill, once, and nothing else.
-    readme = open(os.path.join(ROOT, "README.md"), encoding="utf-8").read()
+    readme = Path(os.path.join(ROOT, "README.md")).read_text(encoding="utf-8")
     table = re.search(r"^## Skills\n(.*?)^## ", readme, re.S | re.M)
     listed = re.findall(r"^\| `([a-z0-9-]+)` \|", table.group(1), re.M) if table else []
     if not table:
@@ -225,12 +226,12 @@ def main():
         dirs[:] = [d for d in dirs if d != "__pycache__"]
         branded += [os.path.join(folder, f) for f in files if f.endswith((".md", ".json", ".py", ".sh", ".yaml"))]
     for path in branded:
-        for n, line in brand_leaks(open(path, encoding="utf-8").read()):
+        for n, line in brand_leaks(Path(path).read_text(encoding="utf-8")):
             problems.append(f"{rel(path)}:{n}: says FilmCraft (use BashCutPro, or the older engine): {line[:80]}")
 
     index = build_index()
     if "--write-index" in sys.argv[1:]:
-        open(INDEX_PATH, "w", encoding="utf-8", newline="\n").write(index_text(index))
+        Path(INDEX_PATH).write_text(index_text(index), encoding="utf-8")
         print(f"wrote {rel(INDEX_PATH)}")
     else:
         check_index(index)

@@ -11,7 +11,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import check  # noqa: E402
 
-SENTENCE = open(check.ENGINE_CHECK_PATH, encoding="utf-8").read().strip()
+with open(check.ENGINE_CHECK_PATH, encoding="utf-8") as _f:
+    SENTENCE = _f.read().strip()
 # Two real engine ids, deliberately out of alphabetical order.
 ID_B, ID_A = sorted(check.COMMANDS)[-1], sorted(check.COMMANDS)[0]
 

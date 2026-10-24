@@ -85,7 +85,8 @@ def main():
     if not engine:
         sys.exit("no bashcut.* engine commands found: wrong --repo or --ref?")
 
-    cat = json.load(open(CATALOGUE, encoding="utf-8"))
+    with open(CATALOGUE, encoding="utf-8") as _f:
+        cat = json.load(_f)
     old = {c["id"]: c for c in cat["commands"] if c["id"].startswith("bashcut.")}
     changes = []
     for cid in sorted(set(old) - set(engine)):
