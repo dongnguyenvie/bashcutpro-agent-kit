@@ -30,7 +30,8 @@ It works the same in an interactive terminal and in a session nobody answers mid
   what you can check without it.
 - **In BashCutPro's Agent panel** (the app sets `BASHCUT_IN_APP_AGENT=1`; the plugin's launcher then exits at once
   with one stderr line and serves nothing) the app brings its own `bashcutpro` server bridged to the open window: never
-  register another one there (Claude would see two copies of the same tools). If its tools are missing, the fix is
+  register another one there (Claude would see two copies of the same tools) and never ask for a global plugin install
+  (the app loads the kit itself). If its tools are missing, the fix is
   in the app (step 5's table), not in Claude's settings.
 
 The only shell commands this skill runs, all short and non-interactive (`<cli>` is a candidate from step 2:

@@ -73,7 +73,10 @@ themselves.
 
 ## Install
 
-**Claude Code** (one command each, in a terminal):
+**BashCutPro's Agent panel:** nothing to install. The app downloads the kit to its data folder and loads it itself
+with `claude --plugin-dir`; the `bashcutpro` server it brings is bridged to the open window.
+
+**Claude Code in a terminal** (global, the recommended way; one command each):
 
 ```sh
 claude plugin marketplace add dongnguyenvie/bashcutpro-agent-kit
@@ -81,7 +84,8 @@ claude plugin install bcp@bashcutpro-agent-kit
 ```
 
 Or inside Claude Code: `/plugin marketplace add dongnguyenvie/bashcutpro-agent-kit`, then
-`/plugin install bcp@bashcutpro-agent-kit`. The plugin brings the skills and a `bashcutpro` MCP server whose
+`/plugin install bcp@bashcutpro-agent-kit`. To limit it to one folder, add `--scope project` to the install
+command, run in that folder (`claude plugin install bcp@bashcutpro-agent-kit --scope project`). The plugin brings the skills and a `bashcutpro` MCP server whose
 launcher, [`scripts/bashcutpro-mcp.sh`](scripts/bashcutpro-mcp.sh), finds `bashcutpro-cli` (`BASHCUTPRO_CLI`,
 `BASHCUT_FILMCRAFT_CLI` or `FILMCRAFT_CLI`, then `bashcutpro-cli`, `bcpro` and `filmcraft-cli` on `PATH` by exact name,
 then the usual install places) and picks the mode from `~/.config/bashcutpro/mcp.env`. Then run
@@ -94,8 +98,8 @@ try a local checkout for one session:
 On Windows the launcher (a POSIX shell script) may not start; `/bcp:setup` registers `bashcutpro-cli.exe`
 directly instead.
 
-In BashCutPro's own Agent panel (which runs `claude -p`) the app brings its `bashcutpro` server for the open
-window; there `/bcp:setup` only checks the connection and registers nothing. It runs only short, non-interactive
+In BashCutPro's own Agent panel (which runs `claude -p`) the app brings the kit and its `bashcutpro` server for the
+open window, with no global plugin needed; there `/bcp:setup` only checks the connection and registers nothing. It runs only short, non-interactive
 commands, listed in the skill, and changes nothing without the user's yes.
 
 **Codex** (macOS, Linux):
