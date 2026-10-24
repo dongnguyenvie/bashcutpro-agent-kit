@@ -1,6 +1,6 @@
 ---
 name: outcomes
-description: Learn from how a published video actually performed: read the platform's audience retention export (YouTube Studio, TikTok, Facebook) that the user downloaded, map drops and rewatches onto the exported sequence with outcomes.py (the cut, the section, what was on screen), mark them on a copy of the sequence, tie each to a cause on the frame, and record lessons through self-learn. Files the user provides only; nothing fetched from accounts. Triggers: "retention", "audience retention", "why did viewers leave", "analytics", "how did the video do", "drop-off", "tỉ lệ giữ chân", "người xem bỏ đi", "video chạy thế nào", "xem số liệu video", "outcomes".
+description: Learn from a published video's retention export: map drops and rewatches onto the cut, tie each to a cause, record lessons. User files only. Not for pre-export checks (bcp:review) or general lessons (bcp:self-learn). Triggers: "retention", "audience retention", "why did viewers leave", "analytics", "how did the video do", "drop-off", "tỉ lệ giữ chân", "người xem bỏ đi", "video chạy thế nào", "xem số liệu video", "outcomes".
 ---
 
 # Outcomes

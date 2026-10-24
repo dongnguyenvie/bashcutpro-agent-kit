@@ -1,6 +1,6 @@
 ---
 name: vlog-product-ad
-description: Recipe for an ad or selling video (paid, commerce, UGC, launch, channel teaser): a truth source, hook and CTA as a pair, an arc chosen from what the product has, beat proportions, disclosure rules, one-change A/B variants as sequences. Use after bcp:vlog-plan picks product-ad. Triggers: "product ad", "sales video", "UGC ad", "quảng cáo", "video bán hàng", "TVC", "chạy ads", "UGC", "A/B test".
+description: Recipe for an ad or selling video (paid, commerce, UGC, launch): truth source, hook and CTA pair, arc, beat proportions, disclosure rules, one-change A/B variants. Use after bcp:vlog-plan picks product-ad. Not for honest reviews (bcp:vlog-product-review) or brand hype (bcp:vlog-promo). Triggers: "product ad", "sales video", "UGC ad", "quảng cáo", "video bán hàng", "TVC", "chạy ads", "UGC", "A/B test".
 ---
 
 # Product ad

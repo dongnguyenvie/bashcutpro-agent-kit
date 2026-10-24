@@ -1,6 +1,6 @@
 ---
 name: footage-survey
-description: Survey footage before a BashCutPro edit: inventory, shot cuts found by scene detection, contact sheets from rendered frames, transcripts (Whisper build or an outside transcriber imported with transcript.set), recording cues and restarts, shot descriptions stored in metadata, missing coverage, silent audio, broken files, HDR or log, mixed orientation; a camera synced with a screen recording by sound. Use at the start of an edit; the surveyor sub-agent does it and returns hooks, quotes with times and angles. Triggers: "khảo sát footage", "xem footage", "contact sheet", "có những cảnh gì", "đồng bộ", "quay màn hình", "survey footage", "what's in this footage".
+description: Survey footage before an edit: inventory, scene cuts, contact sheets, transcripts, shot descriptions, missing coverage, broken files; the surveyor sub-agent returns hooks and quotes. Use at the start of an edit. Not for finding an angle (bcp:vlog-ideate) or choosing ranges (bcp:rough-cut). Triggers: "khảo sát footage", "xem footage", "contact sheet", "có những cảnh gì", "đồng bộ", "quay màn hình", "survey footage", "what's in this footage".
 ---
 
 # Footage survey

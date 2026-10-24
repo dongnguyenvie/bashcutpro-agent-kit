@@ -1,6 +1,6 @@
 ---
 name: vlog-promo
-description: Recipe for a promo, hype or showreel (brand hype, portfolio, motion comic): beat cuts, kinetic type, rolling counters, a declared transition motif of two or three kinds, sourced numbers, only the person's own work. Use after bcp:vlog-plan picks promo (identity, not a sale). Triggers: "promo", "teaser", "showreel", "portfolio", "hype video", "video hype", "motion comic".
+description: Recipe for a promo, hype or showreel (brand hype, portfolio, motion comic): beat cuts, kinetic type, rolling counters, a transition motif, only the person's own work. Use after bcp:vlog-plan picks promo (identity, not a sale). Not for selling products (bcp:vlog-product-ad). Triggers: "promo", "teaser", "showreel", "portfolio", "hype video", "video hype", "motion comic".
 ---
 
 # Promo, hype and showreel

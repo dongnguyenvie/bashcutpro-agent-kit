@@ -1,6 +1,6 @@
 ---
 name: style-study
-description: Learn a creator's or channel's editing style by measurement (pacing, shots, hook, speech, sound, colour, text) in a separate study project, using the survey, beat and colour tools, and turn it into a profile with tolerances, a look, caption and title presets and an edit plan, without copying content. Triggers: "học style", "phân tích kênh", "làm giống kênh X", "dựng theo phong cách này", "phân tích video của tôi", "kênh của tôi", "style study", "edit like this video".
+description: Learn a creator's or channel's editing style by measurement (pacing, hook, sound, colour, text) in a separate study project and turn it into a profile, look, presets and plan, without copying content. Not for A/B versions of your own edit (bcp:variants). Triggers: "học style", "phân tích kênh", "làm giống kênh X", "dựng theo phong cách này", "phân tích video của tôi", "kênh của tôi", "style study", "edit like this video".
 ---
 
 # Study a style

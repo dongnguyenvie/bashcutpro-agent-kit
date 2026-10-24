@@ -1,6 +1,6 @@
 ---
 name: voiceover
-description: Voiceover in BashCutPro: measured speaking rate and narration windows (narration.py), lines sized to them, text prepared for TTS, English lines with the built-in tts.* voices, Vietnamese lines with the bashcut.vieneu-tts plugin, every take checked against its text, re-takes in place, fit to picture, dubbing; the voice sub-agent runs a whole script. Triggers: "lồng tiếng", "thuyết minh", "đọc lời", "giọng AI", "clone giọng", "TTS", "dịch lồng tiếng", "voiceover", "narration".
+description: Voiceover: speaking rate and narration windows, lines sized to them, English via tts.*, Vietnamese via the bashcut.vieneu-tts plugin, each take checked against its text, fit to picture, dubbing. Not for writing the script or hooks (bcp:vlog-hook-script) or mixing levels (bcp:audio-mix). Triggers: "lồng tiếng", "thuyết minh", "đọc lời", "giọng AI", "clone giọng", "TTS", "dịch lồng tiếng", "voiceover", "narration".
 ---
 
 # Voiceover

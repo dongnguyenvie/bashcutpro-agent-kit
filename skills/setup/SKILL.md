@@ -1,6 +1,6 @@
 ---
 name: setup
-description: Connect Claude Code or Codex to BashCutPro: get the bashcutpro-cli command line (source build or release) on macOS, Windows or Linux, register its MCP server headless (a project or the demo) or bridged to the running app (--control), and check command_list answers. Works in BashCutPro's own Agent panel and other non-interactive sessions (claude -p): it checks first, changes nothing without the user's yes, and says what to run when a command is denied. Use when the BashCutPro tools are missing or fail to start. Triggers: "/bcp:setup", "setup BashCutPro", "connect BashCutPro", "install bashcutpro", "install bashcutpro-cli", "install bcpro", "MCP not connected", "cài BashCutPro", "kết nối BashCutPro".
+description: Connect Claude Code or Codex to BashCutPro: install bashcutpro-cli, register its MCP server (headless or --control), check command_list; changes nothing without a yes. Use only when BashCutPro tools are missing or fail to start; not for editing. Triggers: "/bcp:setup", "setup BashCutPro", "connect BashCutPro", "install bashcutpro", "install bashcutpro-cli", "install bcpro", "MCP not connected", "cài BashCutPro", "kết nối BashCutPro".
 ---
 
 # Setting up BashCutPro's MCP server

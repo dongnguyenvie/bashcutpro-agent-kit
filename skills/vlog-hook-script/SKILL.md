@@ -1,6 +1,6 @@
 ---
 name: vlog-hook-script
-description: Write a vlog's words: who owns the sound, story options, 3–5 hooks checked against real shots, the script as beats (job, on screen, source) sized to the measured speaking rate, a counterfactual review, on-screen text and the CTA. Use for a hook, a script, a voiceover, titles, or a boring opening. Triggers: "write a hook", "write the script", "boring opening", "viết hook", "câu mở đầu", "mở đầu nhàm", "viết kịch bản", "viết lời đọc", "CTA".
+description: Write a vlog's words: story options, 3-5 hooks checked against real shots, the script as beats sized to the speaking rate, on-screen text and CTA. Use for a hook, script or boring opening. Not for voicing or TTS (bcp:voiceover), caption styling (bcp:captions-text) or finding the angle (bcp:vlog-ideate). Triggers: "write a hook", "write the script", "boring opening", "viết hook", "câu mở đầu", "mở đầu nhàm", "viết kịch bản", "viết lời đọc", "CTA".
 ---
 
 # Hook and script

@@ -1,6 +1,6 @@
 ---
 name: edit-workflow
-description: The spine of every BashCutPro edit, raw footage to export: intake questions, a brief and plan kept in the project notes, survey, story, the cut tightened on word edges (tighten.py) and applied as one bashcut.batch per stage, sound to the output profile, captions from bashcut.captions.create, colour, effects, bashcut.review.run on every output sequence as the gate, one profile export per output, through the user's gates; many inputs go to bcp:batch; names the one skill to read per stage. Use at the start of any edit or revision. Triggers: "dựng video", "cắt video", "làm vlog", "dựng giúp", "sửa lại video", "edit this", "edit my footage", "bắt đầu từ đâu", "video quảng cáo".
+description: The spine of every edit, raw footage to export: brief and plan, survey, cut on word edges, sound, captions, colour, review gate, export; names the one skill per stage. Use for any edit or revision. Not for picking a vlog recipe (bcp:vlog-plan) or many inputs (bcp:batch). Triggers: "dựng video", "cắt video", "làm vlog", "dựng giúp", "sửa lại video", "edit this", "edit my footage", "bắt đầu từ đâu", "video quảng cáo".
 ---
 
 # Editing a video in BashCutPro

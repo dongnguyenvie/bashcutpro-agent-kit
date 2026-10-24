@@ -1,6 +1,6 @@
 ---
 name: effects
-description: Pick the effect that fits the moment and genre, then make it with BashCutPro's commands: video and audio transitions (Cross Dissolve, the Wipe folder, recipes for whip, crash-zoom, glitch, flash), Ken Burns and punch-in with Motion keyframes, speed ramps (Time Remapping), reverse, freeze frames, reframing to vertical (Auto Reframe, Motion, blurred backdrop), masks that follow and blur a logo, effect presets. Use when the user asks for transitions, motion, speed changes or a vertical reframe, or when a cut looks flat or repetitive. Triggers: "effects", "add a transition", "speed ramp", "Ken Burns", "punch-in", "freeze frame", "reframe to vertical", "hiệu ứng", "chuyển cảnh", "tua nhanh", "làm chậm", "zoom vào màn hình", "cắt khung dọc", "chữ nhảy".
+description: Pick and make effects: transitions, Ken Burns, speed ramps, reverse, freeze frames, vertical reframe, masks. Use when a cut looks flat or repetitive. Not for cards, counters or charts (bcp:motion-graphics) or colour (bcp:color-grade). Triggers: "effects", "add a transition", "speed ramp", "Ken Burns", "punch-in", "freeze frame", "reframe to vertical", "hiệu ứng", "chuyển cảnh", "tua nhanh", "làm chậm", "zoom vào màn hình", "cắt khung dọc".
 ---
 
 # Effects: look, then when, then how

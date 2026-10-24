@@ -1,6 +1,6 @@
 ---
 name: motion-graphics
-description: Designed, animated graphics over footage in BashCutPro: stat and checklist cards, counters, lower thirds, charts, diagrams, maps, kinetic type. Whether a sentence needs one, which tool makes it (graphics.* and .fcgt templates for simple cards, the bashcut.hyperframes plugin for HTML/GSAP rendered outside and imported with alpha), timed to the word with transcript.search, held and checked with render_frame. Triggers: "đồ hoạ", "motion graphic", "thẻ thông tin", "số liệu chạy", "counter", "lower third", "infographic", "animation chữ", "biểu đồ", "bản đồ".
+description: Designed, animated graphics over footage: stat and checklist cards, counters, lower thirds, charts, maps, kinetic type; picks graphics.* or the hyperframes plugin. Not for plain captions or titles (bcp:captions-text), transitions (bcp:effects) or deciding what each line shows (bcp:visual-plan). Triggers: "đồ hoạ", "motion graphic", "thẻ thông tin", "số liệu chạy", "counter", "lower third", "infographic", "animation chữ", "biểu đồ", "bản đồ".
 ---
 
 # Motion graphics

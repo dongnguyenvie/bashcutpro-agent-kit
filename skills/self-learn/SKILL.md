@@ -1,6 +1,6 @@
 ---
 name: self-learn
-description: Turn what went wrong or what the user corrected while editing in BashCutPro into lasting knowledge kept as plain files (knowledge.py): lessons (symptom, cause, fix), the user's preferences in their own words, project facts (names, brand, spelling, people), or a proposed kit change. Use after a failed or redone step, a user correction, repeated review findings, or at session end. Triggers: "rút kinh nghiệm", "học từ lỗi này", "nhớ lần sau", "lần sau đừng", "nhớ là", "cập nhật skill", "remember this", "next time", "learn from this", "self-learn".
+description: Turn what went wrong or what the user corrected into lasting knowledge in plain files: lessons, preferences in their words, project facts, proposed kit changes. Use after a failed step, a correction or at session end. Not for a video's retention data (bcp:outcomes). Triggers: "rút kinh nghiệm", "học từ lỗi này", "nhớ lần sau", "lần sau đừng", "nhớ là", "cập nhật skill", "remember this", "next time", "learn from this", "self-learn".
 ---
 
 # Self-learn
