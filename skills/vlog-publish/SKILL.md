@@ -5,6 +5,8 @@ description: Finish a reviewed vlog for posting: platform facts, one export per 
 
 # Publish
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Reply in the user's language. The brief in `project.notes` lists the outputs; the first is the primary platform.
 Platform facts change: quote them with their date, check the platform's help page when a limit matters, and when a
 fact is unknown say so instead of filling it in (T17 §4).

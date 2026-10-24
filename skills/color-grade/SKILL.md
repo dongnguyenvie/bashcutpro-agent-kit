@@ -5,6 +5,8 @@ description: Colour-grade an edit by measurement: HDR/log probe, scopes, Lumetri
 
 # Colour grade
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Grade after picture lock, before captions. The loop: **probe → measure → candidates → check → back off**.
 Numbers are readings with their source, not targets: what to change and how much follows the footage and the
 intent. Every `command_run` is one undo step (`edit.undo`), so a bad try costs nothing.

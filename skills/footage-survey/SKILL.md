@@ -5,6 +5,8 @@ description: Survey footage before an edit: inventory, scene cuts, contact sheet
 
 # Footage survey
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Run this **first**, before promising anything about the edit. It reads and describes; it never edits the edit
 sequence. **Then actually look at every sheet**, every cell: that is the whole value of this skill.
 

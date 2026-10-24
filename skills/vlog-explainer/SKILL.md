@@ -5,6 +5,8 @@ description: Recipe for an explainer with little or no footage: question-and-num
 
 # Explainer
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Reply in the user's language. An explainer carries its meaning in the words and the graphics, not in footage: plan
 the script and the facts first (bcp:vlog-hook-script), then one graphic per section that builds while the voice says
 it. Plan with bcp:vlog-plan, edit with bcp:edit-workflow. RC = the Reelcrew / AgentVid study (30 explainer and promo

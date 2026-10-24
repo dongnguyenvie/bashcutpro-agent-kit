@@ -5,6 +5,8 @@ description: Recipe for a tutorial or tool demo: result first, dead air cut, num
 
 # Tutorial and tool demo
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Reply in the user's language. Survey, choose values from the ranges below and write them into the plan with
 bcp:vlog-plan, then edit with bcp:edit-workflow. A measured reference replaces these ranges. Outputs: landscape →
 YouTube 1080p plus a vertical Shorts cut; vertical-first (a 30–60 s tip) → Shorts, TikTok, Reels.

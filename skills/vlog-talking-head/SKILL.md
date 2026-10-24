@@ -5,6 +5,8 @@ description: Recipe for one person talking to camera (opinion, story time, tips)
 
 # Talking head
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Reply in the user's language. Survey, choose values from the ranges below and write them into the plan with
 bcp:vlog-plan, then edit with bcp:edit-workflow. A measured reference replaces these ranges. Outputs: vertical →
 Shorts, TikTok, Reels; landscape → YouTube 1080p. Word times come from `transcript.inspect` after

@@ -5,6 +5,8 @@ description: Write a vlog's words: story options, 3-5 hooks checked against real
 
 # Hook and script
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Reply in the user's language; write viewer-facing words in the video's language (the brief). Read the brief and
 plan in `project.notes` first and use the chosen recipe's structure (bcp:vlog-plan). Numbers are sample ranges
 (T02 = script notes, T10 = voiceover notes); a **measured** rate of this speaker or voice always replaces them.

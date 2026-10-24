@@ -5,6 +5,8 @@ description: Recipe for shorts cut from a long podcast, interview, livestream or
 
 # Podcast clips (long → short)
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Reply in the user's language. One long source becomes several shorts, each its own sequence. The selection is the
 hard part: the select-by-quote loop is bcp:rough-cut's; this recipe adds the genre's ranges and order. Each clip is
 then edited with bcp:vlog-talking-head. Plan with bcp:vlog-plan. A measured reference (shorts from a channel the

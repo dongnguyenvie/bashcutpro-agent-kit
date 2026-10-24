@@ -5,6 +5,8 @@ description: Captions and on-screen text: captions from speech, SRT/VTT import a
 
 # Captions and on-screen text
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 BashCutPro draws all text itself (captions tracks, graphics clips); never render text into a video with Pillow or
 ffmpeg. The numbers below are ranges with their sources (T09 = BashCut's captions study): read the measurement
 first, choose a value inside the range for this speaker, genre and frame, and say why. Detail:

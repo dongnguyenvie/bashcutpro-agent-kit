@@ -5,6 +5,8 @@ description: Pick and make effects: transitions, Ken Burns, speed ramps, reverse
 
 # Effects: look, then when, then how
 
+An id or param this engine rejects: run `command_list` (or `bashcutpro-cli describe <id>`) and use what it lists; never guess an id; if a skill's id is missing, say the kit and BashCutPro versions differ (bcp:setup).
+
 Decide **when** first; most cuts stay hard. The ranges below come from the editors' kits that BashCut's research
 notes compared (T08 effects, T07 pacing, T19 reframing); a measured reference or the user's taste wins. Measure,
 choose, act, look again. Tables, the transition name map and recipes: `<skill_dir>/REFERENCE.md`.
